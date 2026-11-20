@@ -108,6 +108,12 @@ SLIDE_FAR = 0.21
 # (stacking seed 11).
 SLIDE_PASS = 0.10
 RESCUE_ABOVE = 0.03
+# Real setup: once the withdrawing hand is within HOME_NEAR of home's grasp centre on its last leg, the arm
+# goes the rest of the way to HOME_ARM_QPOS in joint space and stays there (env.go_home, phase "home").
+# The pose control brings back the grasp centre only, the hand still in the grasp orientation, so a
+# trajectory ended up to 119 degrees (hand_roll) from where the next one starts (2026-11-20).
+HOME_RETURN = SETUPS[SETUP].get("home_return", False)
+HOME_NEAR = 0.02
 
 
 def _reset_reach(env: JaxGraspEnv) -> None:
@@ -326,7 +332,7 @@ def scripted_palm_place(env: JaxGraspEnv, step: int) -> np.ndarray:
         # move: the reach's deadline counts from when that is done. Once a joint-space move has
         # been tried, a turn that never settles no longer holds the deadline off.
         env._palm_since = env._step_count
-    if env._step_count - env._palm_since > budget and phase not in ("back", "park"):
+    if env._step_count - env._palm_since > budget and phase not in ("back", "park", "home"):
         phase = _recover(env, phase, moving, carrying, hand, cube)
 
     target, wanted = over_pick, 0.0
@@ -470,6 +476,9 @@ def scripted_palm_place(env: JaxGraspEnv, step: int) -> np.ndarray:
         if grip <= 0.02 and not touching[moving]:
             env._palm_phase = "back"
             env._palm_since = env._step_count
+    elif phase == "home":
+        # The arm on its joint-space way to HOME_ARM_QPOS, or held there (env.go_home): nothing to ask.
+        target, wanted = env._pose_target_position.copy(), 0.0
     elif phase == "park":
         # Retries spent. Hold still where it is, holding whatever is in the hand: moving home
         # from here has no collision check, and an open hand here dropped a carried cube.
@@ -498,6 +507,10 @@ def scripted_palm_place(env: JaxGraspEnv, step: int) -> np.ndarray:
             target = np.array([retreat[0], retreat[1], over_drop[2]])
         else:
             target = retreat
+            if (HOME_RETURN and moving + 1 >= env.n_objects and not rising
+                    and np.linalg.norm(hand - retreat) < HOME_NEAR):
+                env.go_home()
+                env._palm_phase = "home"
         wanted = 0.0
         # A tower is this, repeated. Once this cube counts as placed and the hand is clear of
         # it, the next cube becomes the moving one and the phases start over.

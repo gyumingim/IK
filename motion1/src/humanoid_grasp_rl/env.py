@@ -52,7 +52,7 @@ SETUPS = {
                  hand_tilt=-40.0, grasp_dz=0.0215, pad_friction=2.0, hand_turn_rate=30.0, episode_steps=1600,
                  lower_rate=0.001, travel_rate=0.002, carry_rate=0.0004, place_align=0.006,
                  hand_flip=True, grasp_misalign=30.0, hand_footprint=(0.059, 0.025, 0.077), empty_clear=0.07,
-                 reach_rescue=True, slow_lower_rate=0.0005, hand_roll_limit=88.0,
+                 reach_rescue=True, slow_lower_rate=0.0005, hand_roll_limit=88.0, home_return=True,
                  home=(0.4727, 0.1093, 2.4948, -0.9200, -1.5708, 1.4812, 0.1006)),
 }
 SETUP = os.environ.get("JAX_SETUP", "sim")
@@ -440,6 +440,7 @@ class JaxGraspEnv(gym.Env[np.ndarray, np.ndarray]):
         self._hand_flips = np.zeros(self.n_objects, dtype=bool)   # and whether it is half-turned
         self._misalign = np.zeros(self.n_objects)    # and how many degrees it is off the cube's faces
         self._joint_goal = None   # arm angles a joint-space move is heading for (start_joint_move)
+        self._holding_home = False   # the arm held on HOME_ARM_QPOS (go_home)
         self.layout_fallbacks = getattr(self, "layout_fallbacks", 0)
         self._placed_latch = np.zeros(self.n_objects, dtype=bool)
         # The pads' closing curve: where each finger joint goes for a closure g.
@@ -606,6 +607,7 @@ class JaxGraspEnv(gym.Env[np.ndarray, np.ndarray]):
         self._arm_targets = HOME_ARM_QPOS.copy()
         self._commanded_rotation, self.hand_turn_lag = self._rest_rotation.copy(), 0.0
         self._joint_goal = None
+        self._holding_home = False
         self.data.ctrl[self.arm_actuator_ids] = self._arm_targets
         self._grip = 0.0
         self._set_grip(0.0)
@@ -908,6 +910,8 @@ class JaxGraspEnv(gym.Env[np.ndarray, np.ndarray]):
         if self._joint_goal is not None:
             self._step_joint_move()
             return
+        if self._holding_home:
+            return   # go_home: the arm stays on HOME_ARM_QPOS
         self._ik_data.qpos[:] = self.data.qpos
         self._ik_data.qpos[self.qpos_ids[:7]] = self._arm_targets
         self._ik_data.qvel.fill(0.0)
@@ -936,9 +940,20 @@ class JaxGraspEnv(gym.Env[np.ndarray, np.ndarray]):
             self.model, self._ik_data, self.site_id, self.arm_joint_ids, position, self.grasp_rotation(),
             HOME_ARM_QPOS, position_tolerance=0.0005, rotation_tolerance=0.004, max_iterations=400)
         self._joint_goal = self._ik_data.qpos[self.qpos_ids[:7]].copy()
+        self._holding_home = False
+
+    def go_home(self) -> None:
+        """Move the arm in joint space to HOME_ARM_QPOS itself, no joint faster than JOINT_MOVE_RATE, and
+        hold it there until the next joint move or cancel_joint_move. The pose control only brings the
+        grasp centre back to home's position, in the grasp orientation (_hand_rotation), so the arm ended
+        a delivery up to 119 degrees (hand_roll) from the angles the next trajectory starts at (real
+        setup, 2026-11-20)."""
+        self._joint_goal = HOME_ARM_QPOS.copy()
+        self._holding_home = True
 
     def cancel_joint_move(self) -> None:
         self._joint_goal = None
+        self._holding_home = False
 
     def _step_joint_move(self) -> None:
         """One control step of a joint-space move. The commanded pose and the hand's commanded

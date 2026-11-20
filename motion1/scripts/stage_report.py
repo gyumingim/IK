@@ -48,7 +48,8 @@ from humanoid_grasp_rl.demonstration import scripted_palm_place
 from humanoid_grasp_rl.single_env import JaxDeliveryEnv
 
 STAGES = {"reach": "grasp", "down": "grasp", "grip": "grasp", "up": "lift", "cross": "transport",
-          "lower": "place", "settle": "place", "let go": "release", "back": "release", "park": "park"}
+          "lower": "place", "settle": "place", "let go": "release", "back": "release", "home": "release",
+          "park": "park"}
 ORDER = ("grasp", "lift", "transport", "place", "release")
 CARRIED = ("up", "cross", "lower")
 
