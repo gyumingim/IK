@@ -108,12 +108,13 @@ SLIDE_FAR = 0.21
 # (stacking seed 11).
 SLIDE_PASS = 0.10
 RESCUE_ABOVE = 0.03
-# Real setup: once the withdrawing hand is within HOME_NEAR of home's grasp centre on its last leg, the arm
-# goes the rest of the way to HOME_ARM_QPOS in joint space and stays there (env.go_home, phase "home").
-# The pose control brings back the grasp centre only, the hand still in the grasp orientation, so a
-# trajectory ended up to 119 degrees (hand_roll) from where the next one starts (2026-11-20).
+# Real setup: once the withdrawing hand is clear of the spot and its straight way home passes SLIDE_PASS
+# from it (the last leg below), the arm goes the rest of the way to HOME_ARM_QPOS in joint space and stays
+# there (env.go_home, phase "home"). The pose control brings back the grasp centre only, the hand still in
+# the grasp orientation, and often not even that (delivery seed 10: the arm stopped on a joint limit 13 cm
+# from home and 7 cm below it, under the +-88 hand_roll). A trajectory ended up to 119 degrees (hand_roll) from where
+# the next one starts (2026-11-20).
 HOME_RETURN = SETUPS[SETUP].get("home_return", False)
-HOME_NEAR = 0.02
 
 
 def _reset_reach(env: JaxGraspEnv) -> None:
@@ -507,8 +508,7 @@ def scripted_palm_place(env: JaxGraspEnv, step: int) -> np.ndarray:
             target = np.array([retreat[0], retreat[1], over_drop[2]])
         else:
             target = retreat
-            if (HOME_RETURN and moving + 1 >= env.n_objects and not rising
-                    and np.linalg.norm(hand - retreat) < HOME_NEAR):
+            if HOME_RETURN and moving + 1 >= env.n_objects and not rising:
                 env.go_home()
                 env._palm_phase = "home"
         wanted = 0.0

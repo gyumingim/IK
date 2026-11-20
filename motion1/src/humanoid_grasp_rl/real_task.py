@@ -32,6 +32,10 @@ from humanoid_grasp_rl.single_env import JaxDeliveryEnv
 sys.path.insert(0, str(Path(__file__).parent))
 import realcoords as R  # noqa: E402
 
+# At most this many control steps past the episode to finish the joint-space move home (10 s at 30 deg/s:
+# more than any joint's full range here).
+HOME_EXTRA_STEPS = 500
+
 # status -> what it means; "playable" is the only one a robot may run
 STATUSES = {
     "playable": "delivered in the sim with no retry",
@@ -78,6 +82,13 @@ def plan_delivery(cube, target, d: float | None = None) -> dict:
             frames.append(env.data.ctrl[actuators].tolist())
             if terminated or truncated:
                 break
+        # The arm on its way back to the home angles when the episode ran out (env.go_home): finished here,
+        # so the trajectory ends where the next one starts. Still counted delivered only if it still is.
+        extra = 0
+        while env.joint_moving and getattr(env, "_palm_phase", None) == "home" and extra < HOME_EXTRA_STEPS:
+            _, _, _, _, info = env.step(scripted_palm_place(env, env.max_steps + extra))
+            frames.append(env.data.ctrl[actuators].tolist())
+            extra += 1
         delivered = bool(info.get("is_success")) and bool(info.get("success_now"))
         retries = [{"step": int(t), "phase": ph, "hand": what}
                    for t, _, ph, what in getattr(env, "_palm_failures", [])]
