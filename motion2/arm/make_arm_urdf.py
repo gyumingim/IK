@@ -22,6 +22,9 @@ from scipy.spatial.transform import Rotation as Rot
 HERE = os.path.dirname(os.path.abspath(__file__))
 PKG = os.path.join(HERE, "..", "..", "URDF_1108", "JAXV3_Assembly_description")
 SRC = os.path.join(PKG, "urdf", "JAXV3_Assembly.urdf")
+# Joint limits (rad) that replace the CAD URDF's. Elbow widened from +-100 deg to +-135 deg (2026-11-20, user);
+# the forearm/upper-arm clearance at the ends is not checked on the real arm.
+LIMIT_OVERRIDE = {"upper_arm_to_under_arm": (-2.356194, 2.356194)}
 SRC_MESH = os.path.join(PKG, "meshes", "JAXV3_Assembly")
 # The previous export (URDF_1006, V2). The masses/inertias and the finger collision STLs still come
 # from it (load()).
@@ -223,6 +226,8 @@ class Urdf:
         return _origin(self.joints[joint])
 
     def limits(self, joint):
+        if joint in LIMIT_OVERRIDE:
+            return LIMIT_OVERRIDE[joint]
         lim = self.joints[joint].find("limit")
         return float(lim.get("lower")), float(lim.get("upper"))
 
