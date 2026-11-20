@@ -192,8 +192,16 @@ GRIP_RATE = 0.10
 # Where the grasp centre may be commanded. The top is where the arm can still hold the
 # fingers straight down in the middle of the table. The heights follow the table (0.24 and 0.42
 # in the sim setup; rounded so that they are exactly those numbers there).
-WORKSPACE_LOW = np.array([-0.08, -0.32, round(TABLE_SURFACE_Z - 0.01, 4)])
-WORKSPACE_HIGH = np.array([0.28, 0.32, round(TABLE_SURFACE_Z + 0.17, 4)])
+# Real setup (user 2026-11-20: "remove the work box"): no box. The poses are judged by the IK alone, and the target
+# is clipped only to a 0.7 m cube around the shoulder (beyond the arm's reach) and, still, to 10 mm below the table
+# top (a physical limit: the hand cannot go into the table). It was x -0.08..0.28, y +-0.32, z table -0.01..+0.17,
+# which refused every pose outside it (_poses_servable, the slide-out in demonstration.py, the map builders).
+if SETUP == "real":
+    WORKSPACE_LOW = np.array([round(SHOULDER_X - 0.7, 4), -0.7, round(TABLE_SURFACE_Z - 0.01, 4)])
+    WORKSPACE_HIGH = np.array([round(SHOULDER_X + 0.7, 4), 0.7, round(SHOULDER_Z + 0.7, 4)])
+else:
+    WORKSPACE_LOW = np.array([-0.08, -0.32, round(TABLE_SURFACE_Z - 0.01, 4)])
+    WORKSPACE_HIGH = np.array([0.28, 0.32, round(TABLE_SURFACE_Z + 0.17, 4)])
 # How far from straight down the fingers may lean, in radians, for a pose to count as reachable.
 # A plate leaning away from the cube turns the squeeze into a push down its side (see FINGER_OPEN),
 # and the lean margin the closing path leaves at contact is about 0.04, so a pose the solver can
