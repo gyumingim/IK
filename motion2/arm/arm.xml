@@ -143,7 +143,7 @@
     <position name="shoulder_roll_act" joint="shoulder_roll" kp="1000" kv="60" ctrlrange="-0.785398 0.785398"/>
     <position name="shoulder_yaw_act" joint="shoulder_yaw" kp="1000" kv="60" ctrlrange="0.000000 0.872665"/>
     <position name="upper_arm_roll_act" joint="upper_arm_roll" kp="1000" kv="60" ctrlrange="-1.570796 4.188790"/>
-    <position name="elbow_act" joint="elbow" kp="1000" kv="60" ctrlrange="-1.745329 1.745329"/>
+    <position name="elbow_act" joint="elbow" kp="1000" kv="60" ctrlrange="-2.356194 2.356194"/>
     <position name="wrist_pitch_act" joint="wrist_pitch" kp="1000" kv="60" ctrlrange="-1.570796 1.570796"/>
     <position name="wrist_yaw_act" joint="wrist_yaw" kp="1000" kv="60" ctrlrange="-1.570796 1.570796"/>
     <position name="hand_roll_act" joint="hand_roll" kp="1000" kv="60" ctrlrange="-2.094395 2.094395"/>
