@@ -1,0 +1,93 @@
+{
+ "created": "2026-11-20 15:52:15",
+ "joints": [
+  "shoulder_roll",
+  "shoulder_yaw",
+  "upper_arm_roll",
+  "elbow",
+  "wrist_pitch",
+  "wrist_yaw",
+  "hand_roll"
+ ],
+ "table_top": 0.735,
+ "home_now": {
+  "q_deg": [
+   27.08,
+   6.26,
+   142.94,
+   -52.71,
+   -90.0,
+   0.0,
+   5.76
+  ],
+  "grasp_centre": [
+   -0.1516,
+   -0.0475,
+   0.8555
+  ],
+  "above_table_mm": 120.5,
+  "hand_axis_tilt_deg": 72.9,
+  "lowest_hand_geom_above_table_mm": 62.5,
+  "contacts": []
+ },
+ "wrist_yaw0": {
+  "q_deg": [
+   27.08,
+   6.26,
+   142.94,
+   -52.71,
+   -90.0,
+   0.0,
+   5.76
+  ],
+  "grasp_centre": [
+   -0.1516,
+   -0.0475,
+   0.8555
+  ],
+  "above_table_mm": 120.5,
+  "hand_axis_tilt_deg": 72.9,
+  "lowest_hand_geom_above_table_mm": 62.5,
+  "contacts": []
+ },
+ "wrist_yaw0_pitch0": {
+  "q_deg": [
+   27.08,
+   6.26,
+   142.94,
+   -52.71,
+   0.0,
+   0.0,
+   5.76
+  ],
+  "grasp_centre": [
+   -0.1525,
+   -0.0477,
+   0.8583
+  ],
+  "above_table_mm": 123.3,
+  "hand_axis_tilt_deg": 72.9,
+  "lowest_hand_geom_above_table_mm": 64.2,
+  "contacts": []
+ },
+ "wrist_pitch0": {
+  "q_deg": [
+   27.08,
+   6.26,
+   142.94,
+   -52.71,
+   0.0,
+   0.0,
+   5.76
+  ],
+  "grasp_centre": [
+   -0.1525,
+   -0.0477,
+   0.8583
+  ],
+  "above_table_mm": 123.3,
+  "hand_axis_tilt_deg": 72.9,
+  "lowest_hand_geom_above_table_mm": 64.2,
+  "contacts": []
+ }
+}

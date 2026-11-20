@@ -1,0 +1,104 @@
+{
+ "label": "s2_wrist0_pitch0_compare",
+ "created": "2026-11-20 15:52:34",
+ "cmd": "plan_one.py s2_wrist0_pitch0_compare C:/Users/a3162/Documents/GitHub/IK/motion1/artifacts/tilt_20261120",
+ "home_deg": [
+  27.08,
+  6.26,
+  142.94,
+  -52.71,
+  0.0,
+  0.0,
+  5.76
+ ],
+ "hand_tilts": [
+  -40.0,
+  -30.0,
+  -50.0,
+  -20.0,
+  -60.0,
+  -10.0,
+  0.0,
+  10.0,
+  20.0,
+  30.0,
+  40.0,
+  50.0,
+  60.0
+ ],
+ "reach_cells_yaw0": 36,
+ "readme": {
+  "status": "playable",
+  "reason": "delivered in the sim with no retry",
+  "reach_map": {
+   "reachable": false,
+   "reason": "no grasp holds the cube there at cube yaw +20 deg"
+  },
+  "sim": {
+   "cube": [
+    0.040000000000000036,
+    -0.04800000000000002,
+    0.76
+   ],
+   "target": [
+    0.07,
+    0.001999999999999981
+   ],
+   "cube_yaw_deg": 20.0,
+   "hand_yaw_deg": 12.5,
+   "hand_half_turned": true,
+   "grasp_off_faces_deg": -7.5,
+   "hand_tilt_deg": -30.0
+  },
+  "wall_s": 4.0,
+  "retries": [],
+  "err_mm": 3.1,
+  "frames": 1601,
+  "hand_roll": [
+   5.8,
+   82.9
+  ],
+  "q_min": [
+   27.1,
+   6.3,
+   130.9,
+   -83.7,
+   -75.4,
+   0.0,
+   5.8
+  ],
+  "q_max": [
+   45.0,
+   31.8,
+   142.9,
+   -52.7,
+   0.0,
+   88.9,
+   82.9
+  ],
+  "last_to_home_deg": 0.0,
+  "check_fatal": null,
+  "check_problems": []
+ },
+ "user_pt": {
+  "status": "unreachable",
+  "reason": "the arm cannot serve this layout (cubes [[-0.019999999999999962, 0.08199999999999998]], yaw [0.0] deg, targets [[0.07, 0.001999999999999981]])",
+  "reach_map": {
+   "reachable": false,
+   "reason": "no grasp holds the cube there at cube yaw +0 deg"
+  },
+  "sim": {
+   "cube": [
+    -0.019999999999999962,
+    0.08199999999999998,
+    0.76
+   ],
+   "target": [
+    0.07,
+    0.001999999999999981
+   ],
+   "cube_yaw_deg": 0.0
+  },
+  "wall_s": 4.4
+ }
+}
