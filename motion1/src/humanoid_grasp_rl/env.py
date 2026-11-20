@@ -54,9 +54,7 @@ SETUPS = {
                  hand_flip=True, grasp_misalign=30.0, hand_footprint=(0.059, 0.025, 0.077), empty_clear=0.07,
                  reach_rescue=True, slow_lower_rate=0.0005, hand_roll_limit=(-88.0, 88.0), home_return=True,
                  hand_tilts=(-40.0, -30.0, -50.0, -20.0, -60.0, -10.0, 0.0, 10.0, 20.0, 30.0, 40.0, 50.0, 60.0),
-                 # wrist_yaw 1.4812 -> 0 (user 2026-11-20: "rest the wrist at 0"); the rest as find_home.py chose it.
-                 # The grasp centre at home moves from (0.160, -0.150, table + 0.100) to (-0.152, -0.048, table + 0.121).
-                 home=(0.4727, 0.1093, 2.4948, -0.9200, -1.5708, 0.0, 0.1006)),
+                 home=(0.4727, 0.1093, 2.4948, -0.9200, -1.5708, 1.4812, 0.1006)),
 }
 SETUP = os.environ.get("JAX_SETUP", "sim")
 if SETUP not in SETUPS:

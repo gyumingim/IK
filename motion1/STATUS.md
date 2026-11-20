@@ -1245,3 +1245,5 @@ critic 교정 (종료 에피소드 표본, gamma=0.99, min(Q1,Q2), deterministic
 - 2026-09-22: SB3 2.7.0 SAC actor update에 persistent BC loss를 결합. 계수 100의 4k best는 20/20·68스텝 성공했지만 5k final은 실패했고, 계수 1000도 실패. 여러 학습 seed 재현성 또는 동적 loss 균형을 다음 결정으로 기록.
 - 2026-09-22: 바구니를 도달 범위로 옮기고 pregrasp reset과 전체 place 시연을 구현. 고정 위치 10/10, 542스텝 안정 성공을 검증하고 단계별 렌더 감사를 생성. 단순 좌표 보정 random 기준선은 0/10으로 기록.
 - 2026-09-22: 1080p/50 fps EGL 녹화 파이프라인과 scene 시각 설정을 추가. scripted 및 random residual SAC 성공 MP4를 생성하고 실제 인코딩 metadata를 재검증했으며 육안 판정과 신규 영상 의존성 승인을 사용자에게 남김.
+
+- 2026-11-20 (사용자): 13절의 HOME 손목 0°(d23bea0)는 되돌림 — 사용자 점(−0.03,−0.36)이 다시 unreachable 이 됐고 얻은 이득이 없어서. 기울기(fb93a20)·작업 상자 제거(37377c8)는 유지. 측정 기록(artifacts/tilt_20261120/*wrist0*)은 남김.
