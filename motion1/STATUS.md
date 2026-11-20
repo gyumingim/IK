@@ -2,6 +2,21 @@
 
 최종 갱신: 2026-11-20
 
+## 도달 맵을 파지별로 — 2026-11-20 (12) (브랜치 `handroll-limit`)
+
+문제: 대시보드 지도·`realcoords.plan()`이 "됨"이라던 배치(실좌표 큐브 0.202, −0.26, yaw 0 → −0.073, −0.26; 시뮬 (0.08, −0.15) → (0.08, 0.125))를 `pick_place`가 "the arm cannot serve this layout"로 거절. 큐브 칸은 손 반 바퀴(`HAND_FLIP`)로만, 놓을 칸은 손 그대로로만 되는데, 맵이 두 파지를 `np.any`로 합쳐 저장해 구분이 없었다. 한 배달은 한 파지로 끝까지 가므로(`_servable`) 거절이 맞다.
+
+| 무엇 | 바뀐 것 | 파일 |
+|---|---|---|
+| 맵 | `grasp/place/feasible_by_flip` 추가(yaw 0: [flip, i, j], yaw 맵: [yaw, offset, flip, i, j]) + `flips`. 기존 `grasp/place/feasible`은 그 OR로 그대로(바이트 동일 확인) → env 샘플러·`HAND_HOLD_X`·서명 그대로. yaw 0: 손 그대로 2칸 / 반 바퀴 34칸, 겹침 0. 시뮬 맵은 안 건드림(파지 하나라 키도 그대로) | `build_reachmap.py`, `reachmap_real*.npz` |
+| 판정 | `grasp_maps`/`grasps_for`/`cube_grasps` 추가. `plan()`은 큐브 칸과 놓을 칸에 **같은 (손 돌림, flip)** 이 있어야 됨, 결과에 `flip`·`grasps`·`cube_grasps`·`target_grasps`. 손 돌림 후보 = 큐브 세 면(env `_grasp_turns`와 같게; 전에는 yaw 0에서 0°만 봐서 −90° 면 12칸을 놓쳤음 → yaw 0 지도 36 → 48칸) | `realcoords.py` |
+
+검증(`motion1/artifacts/grasp_split_20261120/`, git 무시·로컬만, `eval_pairs.py`, env = `reset(options)` → `_servable`):
+- 문제 배치: 전 "됨" → 후 "안 됨: the cube only with the hand turned +0 deg, half-turned, the target only with the hand turned +0 deg"; env 거절과 일치.
+- 옛 지도 "됨" 51쌍(yaw 0 40 + 무작위 yaw 10 + 문제 배치, 칸 중심): 지도↔env 일치 **47/51 → 50/51**. 남은 1개(0.202, −0.28 → −0.073, −0.28)는 지도 "안 됨", env "됨": env가 면에서 22.5° 비껴 잡는 파지(`GRASP_MISALIGN` 30°)를 쓰는데 맵엔 그 파지가 없음.
+- 새 지도 "됨" 50쌍(다른 시드): 50/50 env 통과.
+- 칸 중심만 시험함(칸 안 지터·높이 다른 배치는 안 봄). `run_tests.sh`의 m1_realcoords·m1_real_yaw·m1_run_real 블록 통과(venv 대신 pydeps 파이썬).
+
 ## 실물 hand_roll을 서보 범위로 — 2026-11-20 (11) (브랜치 `handroll-limit`)
 
 실물 hand_roll은 0~180° 서보(시뮬 0 = 서보 90, jax_ros2 `arm_control/calibration.json`의 W_X, verified=false)라 −90~90°만 재생된다. URDF ±120°로 풀던 실물 배치 IK가 회전 없는 배달에서 3.7~113.8°, 회전 ±45°에서 −120~120°를 명령했고(100개 중 94개·76개가 ±90° 밖), README 예시 궤적(큐브 0.10, −0.30, 20° → 0.05, −0.27)은 −113.4°까지 가서 `play.check_trajectory`가 "hand_roll ... would be cut short"를 냈다.

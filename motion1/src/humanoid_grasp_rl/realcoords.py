@@ -83,33 +83,79 @@ def _cell(xs, ys, xy):
     return int(np.argmin(np.abs(xs - xy[0]))), int(np.argmin(np.abs(ys - xy[1])))
 
 
-def reachable_turned(spots, yaw_sim, reach_file=YAW_REACH_FILE):
-    """Can the arm grip a cube turned yaw_sim (degrees, sim) and serve every spot in `spots` (sim
-    xy) with one hand turn? The map's nearest yaw (90-degree period) and nearest cells are used;
-    the env checks the exact poses again. Returns (ok, hand yaw in degrees or None, reason)."""
+def grasp_name(turn, flip) -> str:
+    """A grasp as the reasons print it: the hand's turn, and whether it is half-turned."""
+    return f"hand turned {turn:+.0f} deg" + (", half-turned" if flip else "")
+
+
+def grasp_maps(yaw_sim, reach_file=YAW_REACH_FILE):
+    """The reach band of each grasp for a cube turned yaw_sim (degrees, sim): (xs, ys, [(hand yaw in
+    degrees, flip, feasible[i, j])]), least turn first and the plain hand before the half-turned one
+    (flip: the half-turned hand, env.HAND_FLIP). The grasps are the cube's three faces (the env tries
+    all of them on the real setup, env._grasp_turns) on the map's nearest yaw (90-degree period). A map
+    built before the grasps were kept apart (no feasible_by_flip) gives flip None for either."""
     with np.load(reach_file) as reach:
-        yaws, offsets, xs, ys, feasible = (reach[k] for k in ("yaws", "offsets", "xs", "ys", "feasible"))
+        yaws, offsets, xs, ys = (reach[k] for k in ("yaws", "offsets", "xs", "ys"))
+        if "feasible_by_flip" in reach.files:
+            flips, feasible = [bool(f) for f in reach["flips"]], reach["feasible_by_flip"]
+        else:
+            flips, feasible = [None], reach["feasible"][:, :, None]
     k = int(np.argmin(np.abs([fold_yaw(v - yaw_sim) for v in yaws])))
-    cells = [_cell(xs, ys, s) for s in spots]
-    if any(c is None for c in cells):
-        return False, None, "outside the reach map's grid"
     # The cube's yaw on the chosen map yaw's side of the +-45 fold. Measured from fold_yaw(yaw_sim)
     # instead, a cube at +37.5 to +45 (nearest map yaw -45) had each hand turn looked up 85-90 degrees
     # from itself: +40 was answered with the map's hand at -45.
     rep = yaws[k] + fold_yaw(yaw_sim - yaws[k])
-    for turn in hand_turns(yaw_sim):
+    y = fold_yaw(yaw_sim)
+    out = []
+    for turn in sorted((y, y + 90.0, y - 90.0), key=abs):
         o = int(np.argmin(np.abs(offsets - (turn - rep))))
         if abs(offsets[o] - (turn - rep)) > 1.0:
             continue   # a half turn from the map's yaw: not in the map
-        if all(feasible[k, o][c] for c in cells):
-            return True, turn, f"in the reach band with the hand turned {turn:+.0f} deg"
-    return False, None, f"no hand turn serves it at cube yaw {fold_yaw(yaw_sim):+.0f} deg"
+        out += [(float(turn), flip, feasible[k, o, f]) for f, flip in enumerate(flips)]
+    return xs, ys, out
+
+
+def grasps_for(spots, yaw_sim, reach_file=YAW_REACH_FILE):
+    """Every grasp that serves all of `spots` (sim xy) for a cube turned yaw_sim (degrees, sim), as
+    {"hand_yaw": degrees, "flip": half-turned hand or not} (grasp_maps' order), or None when a spot is
+    off the grid. One delivery keeps its grasp from the pick to the release (env._servable), so a cube
+    and its spot need one grasp that serves both. Nearest cells, no interpolation; the env checks the
+    exact poses again, and also grasps up to GRASP_MISALIGN off the faces, which the map does not hold."""
+    xs, ys, maps = grasp_maps(yaw_sim, reach_file)
+    cells = [_cell(xs, ys, s) for s in spots]
+    if any(c is None for c in cells):
+        return None
+    return [{"hand_yaw": turn, "flip": flip} for turn, flip, m in maps if all(m[c] for c in cells)]
+
+
+def cube_grasps(cube, d: float = MAP_D) -> dict:
+    """The grasps that can pick a cube = (x, y, yaw) in real coordinates (m, degrees) and set it down
+    again (grasps_for), with the sim yaw: a target serves that cube only where one of them serves it."""
+    first = real_to_sim(cube[0], cube[1], d, yaw=cube[2])
+    if abs(d - MAP_D) > D_TOLERANCE:
+        return {"yaw": first["yaw"], "grasps": [], "reason": first["reason"]}
+    g = grasps_for([first["cube"][:2]], first["yaw"])
+    return {"yaw": first["yaw"], "grasps": g or [],
+            "reason": "outside the reach map's grid" if g is None else
+            ("no grasp holds the cube there" if not g else "in the reach band")}
+
+
+def reachable_turned(spots, yaw_sim, reach_file=YAW_REACH_FILE):
+    """Can the arm grip a cube turned yaw_sim (degrees, sim) and serve every spot in `spots` (sim
+    xy) with one grasp (grasps_for)? Returns (ok, hand yaw in degrees or None, reason)."""
+    g = grasps_for(spots, yaw_sim, reach_file)
+    if g is None:
+        return False, None, "outside the reach map's grid"
+    if g:
+        return True, g[0]["hand_yaw"], f"in the reach band with the {grasp_name(g[0]['hand_yaw'], g[0]['flip'])}"
+    return False, None, f"no grasp serves it at cube yaw {fold_yaw(yaw_sim):+.0f} deg"
 
 
 def plan(cube, target, d: float) -> dict:
     """A delivery on the real table: cube = (x, y, yaw) and target = (x, y) in real coordinates (m,
     degrees), the table top d [m] below the shoulder axis. Returns the sim cube centre, target spot,
-    cube yaw and hand yaw, the approach target, and whether the arm can do it, with the reason.
+    cube yaw and hand yaw, the approach target, and whether the arm can do it, with the reason; also
+    the grasp (flip: the half-turned hand) and the grasps each spot alone allows (grasps_for).
     env.reset(options={"objects": [[*cube_sim[:2], yaw_sim]], "targets": [target_sim]}) runs it."""
     x, y, yaw = cube
     first = real_to_sim(x, y, d, yaw=yaw)
@@ -118,8 +164,27 @@ def plan(cube, target, d: float) -> dict:
            "yaw": first["yaw"], "hand_yaw": None}
     if abs(d - MAP_D) > D_TOLERANCE:
         return {**out, "reachable": False, "reason": first["reason"]}
-    ok, turn, why = reachable_turned([first["cube"][:2], target_sim], first["yaw"])
-    return {**out, "hand_yaw": turn, "reachable": ok, "reason": why}
+    # Each spot alone first, then the grasps both share: a cube only the half-turned hand grips and a
+    # spot only the plain hand serves is no delivery (the env refuses it, 2026-11-20).
+    cube_g = grasps_for([first["cube"][:2]], first["yaw"])
+    target_g = grasps_for([target_sim], first["yaw"])
+    both = grasps_for([first["cube"][:2], target_sim], first["yaw"])
+    out.update(cube_grasps=cube_g, target_grasps=target_g, grasps=both, flip=None)
+    if both is None:
+        return {**out, "reachable": False, "reason": "outside the reach map's grid"}
+    if both:
+        g = both[0]
+        return {**out, "hand_yaw": g["hand_yaw"], "flip": g["flip"], "reachable": True,
+                "reason": f"in the reach band with the {grasp_name(g['hand_yaw'], g['flip'])}"}
+    if not cube_g:
+        why = f"no grasp holds the cube there at cube yaw {first['yaw']:+.0f} deg"
+    elif not target_g:
+        why = "no grasp sets a cube down on the target"
+    else:
+        names = lambda gs: " or ".join(grasp_name(g["hand_yaw"], g["flip"]) for g in gs)
+        why = (f"the cube only with the {names(cube_g)}, the target only with the {names(target_g)}: "
+               "no one grasp serves both")
+    return {**out, "reachable": False, "reason": why}
 
 
 def real_to_sim(x: float, y: float, d: float, reach_file=REACH_FILE, yaw=None) -> dict:

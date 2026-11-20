@@ -49,13 +49,26 @@ def reachable(position):
     return env.reachable(position)
 
 
+FLIPS = (False, True) if E.HAND_FLIP else (False,)
+
+
 def solve(hand_yaw_deg):
-    """grasp, place and feasible over the grid, for the hand turned hand_yaw_deg: plain, or also
-    half-turned where the env may take that grasp (HAND_FLIP), a cell counting where either serves it.
+    """grasp, place and feasible over the grid, for the hand turned hand_yaw_deg, per grasp: [flip, i, j],
+    flip being the half-turned hand (FLIPS: plain only, or also half-turned where the env may take that
+    grasp, HAND_FLIP). One delivery keeps one grasp from the pick to the release (env._servable), so a
+    cube and its spot are served only where the same grasp serves both: realcoords.plan reads these.
+    Saved as grasp_by_flip, place_by_flip, feasible_by_flip; grasp, place and feasible stay the cells either
+    grasp serves (np.any over flip), which the env's sampler and every older reader take. Before
+    2026-11-20 only that OR was saved, and a cube only the half-turned hand grips was "reachable" with a
+    spot only the plain hand serves: the env refused the layout.
     With hand_roll held to its servo's +-88 (env.HAND_ROLL_LIMIT) the real setup's leaning hand holds its
     plain grasp at yaw 0 over 2 cells only, plain or half-turned over 36 (2026-11-20; 60 at +-120)."""
-    maps = [solve_grasp(hand_yaw_deg, flip) for flip in ((False, True) if E.HAND_FLIP else (False,))]
-    return tuple(np.any([m[k] for m in maps], axis=0) for k in range(3))
+    return tuple(np.array(m) for m in zip(*[solve_grasp(hand_yaw_deg, flip) for flip in FLIPS]))
+
+
+def merged(by_flip):
+    """The cells any grasp serves: what the map held before the grasps were kept apart."""
+    return np.any(by_flip, axis=-3)
 
 
 def solve_grasp(hand_yaw_deg, flip):
@@ -94,25 +107,32 @@ if args.yaws:
     yaws = np.array(sorted({E.fold_yaw(y) for y in args.yaws}))
     offsets = np.array([0.0, 90.0, -90.0])   # hand yaw = cube yaw + offset (env.hand_turns)
     maps = [[solve(y + o) for o in offsets] for y in yaws]
+    by = [np.array([[m[k] for m in row] for row in maps]) for k in range(3)]   # [yaw, offset, flip, i, j]
     out = E.REACH_FILE.with_name(E.REACH_FILE.stem + "_yaw.npz")
-    np.savez_compressed(out, yaws=yaws, offsets=offsets, xs=xs, ys=ys,
-                        grasp=np.array([[m[0] for m in row] for row in maps]),
-                        place=np.array([[m[1] for m in row] for row in maps]),
-                        feasible=np.array([[m[2] for m in row] for row in maps]),
+    np.savez_compressed(out, yaws=yaws, offsets=offsets, xs=xs, ys=ys, flips=np.array(FLIPS),
+                        grasp=merged(by[0]), place=merged(by[1]), feasible=merged(by[2]),
+                        grasp_by_flip=by[0], place_by_flip=by[1], feasible_by_flip=by[2],
                         signature=E.map_signature())
-    print(f"{out.name}: cells both grasp and place, per cube yaw and hand turn (offset from the cube yaw)")
+    print(f"{out.name}: cells both grasp and place, per cube yaw and hand turn (offset from the cube yaw), "
+          "plain / half-turned hand")
     for y, row in zip(yaws, maps):
-        counts = "  ".join(f"{o:+4.0f}: {m[2].sum():3d}" for o, m in zip(offsets, row))
+        counts = "  ".join(f"{o:+4.0f}: " + "/".join(f"{f.sum():2d}" for f in m[2]) for o, m in zip(offsets, row))
         usable = E.hand_turns(y)
-        union = np.any([m[2] for o, m in zip(offsets, row) if y + o in usable], axis=0)
+        union = np.any([merged(m[2]) for o, m in zip(offsets, row) if y + o in usable], axis=0)
         print(f"  yaw {y:+5.1f}  {counts}   any usable turn: {union.sum():3d}")
     env.close()
     raise SystemExit(0)
 
-grasp, place, feasible = solve(0.0)
+by = solve(0.0)
+grasp, place, feasible = (merged(m) for m in by)
+extra = {} if len(FLIPS) == 1 else dict(   # the sim setup has the plain grasp only: its map stays as it was
+    flips=np.array(FLIPS), grasp_by_flip=by[0], place_by_flip=by[1], feasible_by_flip=by[2])
 np.savez_compressed(E.REACH_FILE,   # the map of the setup JAX_SETUP picks (env.py)
                     xs=xs, ys=ys, grasp=grasp, place=place, feasible=feasible,
-                    signature=E.map_signature())
+                    signature=E.map_signature(), **extra)
+if len(FLIPS) > 1:
+    print("손 그대로/반 바퀴 둘다: " + " / ".join(f"{int(f.sum())}" for f in by[2])
+          + f",  같은 칸 둘 다 {int(np.all(by[2], axis=0).sum())}")
 print(f"격자 {grasp.size},  파지가능 {grasp.sum()},  놓기가능 {place.sum()},  "
       f"둘다 {feasible.sum()} ({100 * feasible.mean():.0f}%)")
 idx = np.argwhere(feasible)
