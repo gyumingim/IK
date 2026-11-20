@@ -109,12 +109,15 @@ SLIDE_FAR = 0.21
 SLIDE_PASS = 0.10
 RESCUE_ABOVE = 0.03
 # Real setup: once the withdrawing hand is clear of the spot and its straight way home passes SLIDE_PASS
-# from it (the last leg below), the arm goes the rest of the way to HOME_ARM_QPOS in joint space and stays
-# there (env.go_home, phase "home"). The pose control brings back the grasp centre only, the hand still in
+# from it (the last leg below), or once it has withdrawn for HOME_WAIT steps clear of the spot without
+# getting there, the arm goes the rest of the way to HOME_ARM_QPOS in joint space and stays there
+# (env.go_home, phase "home"). Delivery seed 16 stuck on a joint limit on its slide out, 13 cm from home,
+# for the rest of the episode. The pose control brings back the grasp centre only, the hand still in
 # the grasp orientation, and often not even that (delivery seed 10: the arm stopped on a joint limit 13 cm
 # from home and 7 cm below it, under the +-88 hand_roll). A trajectory ended up to 119 degrees (hand_roll) from where
 # the next one starts (2026-11-20).
 HOME_RETURN = SETUPS[SETUP].get("home_return", False)
+HOME_WAIT = 300
 
 
 def _reset_reach(env: JaxGraspEnv) -> None:
@@ -508,9 +511,11 @@ def scripted_palm_place(env: JaxGraspEnv, step: int) -> np.ndarray:
             target = np.array([retreat[0], retreat[1], over_drop[2]])
         else:
             target = retreat
-            if HOME_RETURN and moving + 1 >= env.n_objects and not rising:
-                env.go_home()
-                env._palm_phase = "home"
+        last_leg = slide is None and clear and _way_passes(hand, retreat, top) >= SLIDE_PASS
+        if (HOME_RETURN and moving + 1 >= env.n_objects and not rising and clear
+                and (last_leg or env._step_count - env._palm_since > HOME_WAIT)):
+            env.go_home()
+            env._palm_phase = "home"
         wanted = 0.0
         # A tower is this, repeated. Once this cube counts as placed and the hand is clear of
         # it, the next cube becomes the moving one and the phases start over.
