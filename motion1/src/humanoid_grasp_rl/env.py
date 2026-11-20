@@ -54,7 +54,13 @@ SETUPS = {
                  hand_flip=True, grasp_misalign=30.0, hand_footprint=(0.059, 0.025, 0.077), empty_clear=0.07,
                  reach_rescue=True, slow_lower_rate=0.0005, hand_roll_limit=(-88.0, 88.0), home_return=True,
                  hand_tilts=(-40.0, -30.0, -50.0, -20.0, -60.0, -10.0, 0.0, 10.0, 20.0, 30.0, 40.0, 50.0, 60.0),
-                 home=(0.4727, 0.1093, 2.4948, -0.9200, -1.5708, 1.4812, 0.1006)),
+                 # home = all joints 0 (user 2026-11-21): the arm hanging straight down beside the table, the
+                 # same pose homing_guard homes the AK45s at (jax_ros2 arm_control/homing.json). Its grip point is
+                 # 24 cm below the table top but off the table's near edge (sim x 0.20; fingers at x 0.31..0.38),
+                 # so planners must treat the table as its footprint, not a plane (jax_ros2 dashboard/pick_plan.py).
+                 # It was (0.4727, 0.1093, 2.4948, -0.9200, -1.5708, 1.4812, 0.1006), found by scripts/find_home.py;
+                 # the team scripts' reach map and HAND_HOLD_X turning were tuned with that one and are not re-checked.
+                 home=(0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0)),
 }
 SETUP = os.environ.get("JAX_SETUP", "sim")
 if SETUP not in SETUPS:
