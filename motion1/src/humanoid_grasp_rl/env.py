@@ -52,7 +52,7 @@ SETUPS = {
                  hand_tilt=-40.0, grasp_dz=0.0215, pad_friction=2.0, hand_turn_rate=30.0, episode_steps=1600,
                  lower_rate=0.001, travel_rate=0.002, carry_rate=0.0004, place_align=0.006,
                  hand_flip=True, grasp_misalign=30.0, hand_footprint=(0.059, 0.025, 0.077), empty_clear=0.07,
-                 reach_rescue=True, slow_lower_rate=0.0005, hand_roll_limit=88.0, home_return=True,
+                 reach_rescue=True, slow_lower_rate=0.0005, hand_roll_limit=(-88.0, 88.0), home_return=True,
                  home=(0.4727, 0.1093, 2.4948, -0.9200, -1.5708, 1.4812, 0.1006)),
 }
 SETUP = os.environ.get("JAX_SETUP", "sim")
@@ -240,12 +240,15 @@ REACH_STALL_STEPS = 25
 REACH_STALL_PROGRESS = 0.010
 REACH_STALL_NEAR = 0.02
 JOINT_MOVE_RATE = 30.0   # degrees per second
-# How far hand_roll may turn either way, degrees (None: the URDF's +-120). The real hand_roll is a hobby
-# servo with 0-180 degrees of travel, zero (sim 0) at 90 (team-jax/jax_ros2 arm_control/calibration.json,
-# W_X), so the robot can play +-90 only; past that arm_control cuts the command short. With the URDF's
-# +-120 the controller asked for up to -113 (2026-11-20). Applied to the model's joint range in __init__,
-# so the IK, the reach check, the layout check and the controller all see the servo's arm; 2 degrees are
-# left for the servo's zero being off.
+# hand_roll's range, (low, high) degrees (None: the URDF's +-120). The real hand_roll is a hobby servo with
+# 0-180 degrees of travel, sim 0 at its 90 (team-jax/jax_ros2 arm_control/calibration.json, W_X, not
+# verified), so the robot can play -90..90 only; past that arm_control cuts the command short. With the
+# URDF's +-120 the controller asked for up to 114, or -120..120 with turned cubes (2026-11-20). Applied to
+# the model's joint range in __init__, so the IK, the reach check, the layout check and the controller all
+# see the servo's arm; 2 degrees are left for the zero being off. At +-120 the leaning hand gripped unturned
+# cubes at hand_roll 55-114 (delivery seeds 0-99): at -88..88 the reach map is 36 cells, not 60, and 66 of 100 unturned deliveries grip 22.5
+# degrees off the faces. With the servo's horn moved so sim 0 is its 60 (-58..118 here, and the calibration's
+# zero_deg 60) the map is 69 cells and the deliveries square again (motion1/STATUS.md 2026-11-20).
 HAND_ROLL_LIMIT = SETUPS[SETUP].get("hand_roll_limit")
 
 # Each setup has its own reach map; the sim setup's keeps the name it always had.
@@ -291,7 +294,7 @@ def map_signature() -> np.ndarray:
         [TABLE_SURFACE_Z, OBJECT_SIZE, GRASP_DZ, HELD_DZ, REACH_TILT],
         WORKSPACE_LOW, WORKSPACE_HIGH, HOME_ARM_QPOS,
         [] if SETUP == "sim" else [SHOULDER_Z, HAND_TILT],
-        [] if HAND_ROLL_LIMIT is None else [HAND_ROLL_LIMIT],   # the IK's joint range (2026-11-20)
+        [] if HAND_ROLL_LIMIT is None else list(HAND_ROLL_LIMIT),   # the IK's joint range (2026-11-20)
     ]).astype(np.float64)
 
 
@@ -407,10 +410,10 @@ class JaxGraspEnv(gym.Env[np.ndarray, np.ndarray]):
         # The servo's travel, before anything reads the joint ranges (HAND_ROLL_LIMIT).
         if HAND_ROLL_LIMIT is not None:
             roll = self._id(mujoco.mjtObj.mjOBJ_JOINT, "hand_roll")
-            limit = np.radians(HAND_ROLL_LIMIT)
-            self.model.jnt_range[roll] = np.clip(self.model.jnt_range[roll], -limit, limit)
+            low, high = np.radians(HAND_ROLL_LIMIT)
+            self.model.jnt_range[roll] = np.clip(self.model.jnt_range[roll], low, high)
             servo = self._id(mujoco.mjtObj.mjOBJ_ACTUATOR, "hand_roll_act")
-            self.model.actuator_ctrlrange[servo] = np.clip(self.model.actuator_ctrlrange[servo], -limit, limit)
+            self.model.actuator_ctrlrange[servo] = np.clip(self.model.actuator_ctrlrange[servo], low, high)
         self.arm_ranges =self.model.jnt_range[self.arm_joint_ids].copy()
         self.finger_ranges = self.model.jnt_range[self.finger_joint_ids].copy()
         self.action_space = spaces.Box(-1.0, 1.0, shape=(4,), dtype=np.float32)
