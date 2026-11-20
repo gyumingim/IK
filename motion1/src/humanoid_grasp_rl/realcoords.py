@@ -83,20 +83,31 @@ def _cell(xs, ys, xy):
     return int(np.argmin(np.abs(xs - xy[0]))), int(np.argmin(np.abs(ys - xy[1])))
 
 
-def grasp_name(turn, flip) -> str:
-    """A grasp as the reasons print it: the hand's turn, and whether it is half-turned."""
-    return f"hand turned {turn:+.0f} deg" + (", half-turned" if flip else "")
+def grasp_name(turn, flip, tilt=None) -> str:
+    """A grasp as the reasons print it: the hand's turn, whether it is half-turned, and its lean."""
+    return f"hand turned {turn:+.0f} deg" + (", half-turned" if flip else "") + (
+        "" if tilt is None else f", leaning {tilt:+.0f} deg")
 
 
-def grasp_maps(yaw_sim, reach_file=YAW_REACH_FILE):
+def grasp_maps(yaw_sim, reach_file=YAW_REACH_FILE, by_tilt=False):
     """The reach band of each grasp for a cube turned yaw_sim (degrees, sim): (xs, ys, [(hand yaw in
     degrees, flip, feasible[i, j])]), least turn first and the plain hand before the half-turned one
     (flip: the half-turned hand, env.HAND_FLIP). The grasps are the cube's three faces (the env tries
     all of them on the real setup, env._grasp_turns) on the map's nearest yaw (90-degree period). A map
-    built before the grasps were kept apart (no feasible_by_flip) gives flip None for either."""
+    built before the grasps were kept apart (no feasible_by_flip) gives flip None for either.
+    by_tilt: one entry per grasp the map was solved for, (hand yaw, flip, lean in degrees, feasible), the
+    lean being part of the grasp (env.HAND_TILTS); a map with one lean gives lean None. Without it a flip's
+    entry is the cells some lean of it serves (the view before the leans)."""
     with np.load(reach_file) as reach:
         yaws, offsets, xs, ys = (reach[k] for k in ("yaws", "offsets", "xs", "ys"))
-        if "feasible_by_flip" in reach.files:
+        if by_tilt and "feasible_by_grasp" in reach.files:
+            flips = list(zip((bool(f) for f in reach["grasp_flips"]), (float(t) for t in reach["grasp_tilts"])))
+            feasible = reach["feasible_by_grasp"]
+        elif by_tilt and "feasible_by_flip" in reach.files:
+            flips, feasible = [(bool(f), None) for f in reach["flips"]], reach["feasible_by_flip"]
+        elif by_tilt:
+            flips, feasible = [(None, None)], reach["feasible"][:, :, None]
+        elif "feasible_by_flip" in reach.files:
             flips, feasible = [bool(f) for f in reach["flips"]], reach["feasible_by_flip"]
         else:
             flips, feasible = [None], reach["feasible"][:, :, None]
@@ -111,21 +122,24 @@ def grasp_maps(yaw_sim, reach_file=YAW_REACH_FILE):
         o = int(np.argmin(np.abs(offsets - (turn - rep))))
         if abs(offsets[o] - (turn - rep)) > 1.0:
             continue   # a half turn from the map's yaw: not in the map
-        out += [(float(turn), flip, feasible[k, o, f]) for f, flip in enumerate(flips)]
+        if by_tilt:
+            out += [(float(turn), flip, tilt, feasible[k, o, f]) for f, (flip, tilt) in enumerate(flips)]
+        else:
+            out += [(float(turn), flip, feasible[k, o, f]) for f, flip in enumerate(flips)]
     return xs, ys, out
 
 
 def grasps_for(spots, yaw_sim, reach_file=YAW_REACH_FILE):
     """Every grasp that serves all of `spots` (sim xy) for a cube turned yaw_sim (degrees, sim), as
-    {"hand_yaw": degrees, "flip": half-turned hand or not} (grasp_maps' order), or None when a spot is
+    {"hand_yaw": degrees, "flip": half-turned hand or not, "tilt": its lean} (grasp_maps' order), or None when a spot is
     off the grid. One delivery keeps its grasp from the pick to the release (env._servable), so a cube
     and its spot need one grasp that serves both. Nearest cells, no interpolation; the env checks the
     exact poses again, and also grasps up to GRASP_MISALIGN off the faces, which the map does not hold."""
-    xs, ys, maps = grasp_maps(yaw_sim, reach_file)
+    xs, ys, maps = grasp_maps(yaw_sim, reach_file, by_tilt=True)
     cells = [_cell(xs, ys, s) for s in spots]
     if any(c is None for c in cells):
         return None
-    return [{"hand_yaw": turn, "flip": flip} for turn, flip, m in maps if all(m[c] for c in cells)]
+    return [{"hand_yaw": turn, "flip": flip, "tilt": tilt} for turn, flip, tilt, m in maps if all(m[c] for c in cells)]
 
 
 def cube_grasps(cube, d: float = MAP_D) -> dict:
@@ -147,7 +161,7 @@ def reachable_turned(spots, yaw_sim, reach_file=YAW_REACH_FILE):
     if g is None:
         return False, None, "outside the reach map's grid"
     if g:
-        return True, g[0]["hand_yaw"], f"in the reach band with the {grasp_name(g[0]['hand_yaw'], g[0]['flip'])}"
+        return True, g[0]["hand_yaw"], f"in the reach band with the {grasp_name(g[0]['hand_yaw'], g[0]['flip'], g[0]['tilt'])}"
     return False, None, f"no grasp serves it at cube yaw {fold_yaw(yaw_sim):+.0f} deg"
 
 
@@ -169,19 +183,19 @@ def plan(cube, target, d: float) -> dict:
     cube_g = grasps_for([first["cube"][:2]], first["yaw"])
     target_g = grasps_for([target_sim], first["yaw"])
     both = grasps_for([first["cube"][:2], target_sim], first["yaw"])
-    out.update(cube_grasps=cube_g, target_grasps=target_g, grasps=both, flip=None)
+    out.update(cube_grasps=cube_g, target_grasps=target_g, grasps=both, flip=None, tilt=None)
     if both is None:
         return {**out, "reachable": False, "reason": "outside the reach map's grid"}
     if both:
         g = both[0]
-        return {**out, "hand_yaw": g["hand_yaw"], "flip": g["flip"], "reachable": True,
-                "reason": f"in the reach band with the {grasp_name(g['hand_yaw'], g['flip'])}"}
+        return {**out, "hand_yaw": g["hand_yaw"], "flip": g["flip"], "tilt": g["tilt"], "reachable": True,
+                "reason": f"in the reach band with the {grasp_name(g['hand_yaw'], g['flip'], g['tilt'])}"}
     if not cube_g:
         why = f"no grasp holds the cube there at cube yaw {first['yaw']:+.0f} deg"
     elif not target_g:
         why = "no grasp sets a cube down on the target"
     else:
-        names = lambda gs: " or ".join(grasp_name(g["hand_yaw"], g["flip"]) for g in gs)
+        names = lambda gs: " or ".join(grasp_name(g["hand_yaw"], g["flip"], g["tilt"]) for g in gs)
         why = (f"the cube only with the {names(cube_g)}, the target only with the {names(target_g)}: "
                "no one grasp serves both")
     return {**out, "reachable": False, "reason": why}

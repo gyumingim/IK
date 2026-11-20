@@ -1,0 +1,91 @@
+{
+ "label": "base_head5c87185",
+ "created": "2026-11-20 15:46:07",
+ "cmd": "plan_one.py base_head5c87185 C:/Users/a3162/Documents/GitHub/IK/motion1/artifacts/tilt_20261120",
+ "home_deg": [
+  27.08,
+  6.26,
+  142.94,
+  -52.71,
+  -90.0,
+  84.87,
+  5.76
+ ],
+ "hand_tilts": [
+  -40.0
+ ],
+ "reach_cells_yaw0": 36,
+ "readme": {
+  "status": "playable",
+  "reason": "delivered in the sim with no retry",
+  "reach_map": {
+   "reachable": false,
+   "reason": "no grasp holds the cube there at cube yaw +20 deg"
+  },
+  "sim": {
+   "cube": [
+    0.040000000000000036,
+    -0.04800000000000002,
+    0.76
+   ],
+   "target": [
+    0.07,
+    0.001999999999999981
+   ],
+   "cube_yaw_deg": 20.0,
+   "hand_yaw_deg": -2.5,
+   "hand_half_turned": true,
+   "grasp_off_faces_deg": -22.5
+  },
+  "wall_s": 2.1,
+  "retries": [],
+  "err_mm": 2.9,
+  "frames": 1601,
+  "hand_roll": [
+   2.7,
+   81.8
+  ],
+  "q_min": [
+   22.8,
+   6.3,
+   122.8,
+   -97.9,
+   -90.0,
+   64.0,
+   2.7
+  ],
+  "q_max": [
+   35.1,
+   35.8,
+   147.6,
+   -52.7,
+   -46.1,
+   85.3,
+   81.8
+  ],
+  "last_to_home_deg": 0.0,
+  "check_fatal": null,
+  "check_problems": []
+ },
+ "user_pt": {
+  "status": "unreachable",
+  "reason": "the arm cannot serve this layout (cubes [[-0.019999999999999962, 0.08199999999999998]], yaw [0.0] deg, targets [[0.07, 0.001999999999999981]])",
+  "reach_map": {
+   "reachable": false,
+   "reason": "no grasp holds the cube there at cube yaw +0 deg"
+  },
+  "sim": {
+   "cube": [
+    -0.019999999999999962,
+    0.08199999999999998,
+    0.76
+   ],
+   "target": [
+    0.07,
+    0.001999999999999981
+   ],
+   "cube_yaw_deg": 0.0
+  },
+  "wall_s": 0.5
+ }
+}

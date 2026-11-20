@@ -1,0 +1,136 @@
+{
+ "label": "s1_tilt",
+ "created": "2026-11-20 15:48:48",
+ "cmd": "plan_one.py s1_tilt C:/Users/a3162/Documents/GitHub/IK/motion1/artifacts/tilt_20261120",
+ "home_deg": [
+  27.08,
+  6.26,
+  142.94,
+  -52.71,
+  -90.0,
+  84.87,
+  5.76
+ ],
+ "hand_tilts": [
+  -40.0,
+  -30.0,
+  -50.0,
+  -20.0,
+  -60.0,
+  -10.0,
+  0.0,
+  10.0,
+  20.0,
+  30.0,
+  40.0,
+  50.0,
+  60.0
+ ],
+ "reach_cells_yaw0": 36,
+ "readme": {
+  "status": "playable",
+  "reason": "delivered in the sim with no retry",
+  "reach_map": {
+   "reachable": false,
+   "reason": "no grasp holds the cube there at cube yaw +20 deg"
+  },
+  "sim": {
+   "cube": [
+    0.040000000000000036,
+    -0.04800000000000002,
+    0.76
+   ],
+   "target": [
+    0.07,
+    0.001999999999999981
+   ],
+   "cube_yaw_deg": 20.0,
+   "hand_yaw_deg": 12.5,
+   "hand_half_turned": true,
+   "grasp_off_faces_deg": -7.5,
+   "hand_tilt_deg": -30.0
+  },
+  "wall_s": 2.9,
+  "retries": [],
+  "err_mm": 7.5,
+  "frames": 1601,
+  "hand_roll": [
+   2.7,
+   81.1
+  ],
+  "q_min": [
+   26.8,
+   6.3,
+   125.0,
+   -98.7,
+   -90.0,
+   72.2,
+   2.7
+  ],
+  "q_max": [
+   45.0,
+   31.1,
+   143.1,
+   -39.2,
+   -61.1,
+   90.0,
+   81.1
+  ],
+  "last_to_home_deg": 0.0,
+  "check_fatal": null,
+  "check_problems": []
+ },
+ "user_pt": {
+  "status": "playable",
+  "reason": "delivered in the sim with no retry",
+  "reach_map": {
+   "reachable": false,
+   "reason": "no grasp holds the cube there at cube yaw +0 deg"
+  },
+  "sim": {
+   "cube": [
+    -0.019999999999999962,
+    0.08199999999999998,
+    0.76
+   ],
+   "target": [
+    0.07,
+    0.001999999999999981
+   ],
+   "cube_yaw_deg": 0.0,
+   "hand_yaw_deg": -7.499999999999999,
+   "hand_half_turned": true,
+   "grasp_off_faces_deg": -7.5,
+   "hand_tilt_deg": -30.0
+  },
+  "wall_s": 3.3,
+  "retries": [],
+  "err_mm": 0.9,
+  "frames": 1601,
+  "hand_roll": [
+   2.7,
+   88.0
+  ],
+  "q_min": [
+   25.2,
+   0.0,
+   116.6,
+   -98.3,
+   -90.0,
+   66.7,
+   2.7
+  ],
+  "q_max": [
+   45.0,
+   35.7,
+   144.4,
+   -42.0,
+   -45.4,
+   85.4,
+   88.0
+  ],
+  "last_to_home_deg": 0.0,
+  "check_fatal": null,
+  "check_problems": []
+ }
+}

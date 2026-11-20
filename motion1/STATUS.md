@@ -2,6 +2,27 @@
 
 최종 갱신: 2026-11-20
 
+## 손 기울기 고정(−40°) 빼기 — 2026-11-20 (13) (브랜치 `handroll-limit`)
+
+사용자 지시: 손을 정확히 −40° 기울인 자세로만 풀게 하는 고정을 뺀다. 손가락이 닫히는 축(손 x, 손가락 1·2 ↔ 3) 둘레로 기울여도 패드는 같은 두 면에 평행하게 닿으므로 파지는 같고 팔 자세만 바뀐다.
+
+| 무엇 | 바뀐 것 | 파일 |
+|---|---|---|
+| 파지 후보 | 파지 = (손 돌림, 반 바퀴, 면 어긋남, **기울기**). 실물 `hand_tilts` = −40, −30, −50, −20, −60, −10, 0, 10 … 60 (−40 먼저). 정렬: 면 어긋남 → 기울기 순서 → HOME 에서 돌 각. 한 배달은 집기~놓기 같은 기울기(운반 중 안 바뀜) | `env.py` (`HAND_TILTS`, `palm_down()`, `_hand_tilts`, `_grasp_turns`, `grasp_rotation`) |
+| 운반 높이 | `HELD_BELOW_GC` → 파지 기울기별 `held_below_gc(tilt)` (−40 이면 그대로) | `env.py` `clear_height` |
+| `HAND_HOLD_X` | 허용 기울기 중 가장 큰 \|sin\| 로 (0.144 → 0.149) | `env.py` |
+| 도달 맵 | **다시 안 만듦**(사용자: 만들지 마라). 맵은 −40 파지만의 옛 맵 그대로, 서명도 그대로. `reset(options)` 로 준 배치는 맵이 아니라 `_servable`(IK)로 판정. 무작위 샘플러(`_sample_layout`)는 옛 맵 칸에서 뽑음. `build_reachmap.py` 는 −40 으로 풀도록 기울기를 명시 | `build_reachmap.py` |
+| 결과 | `plan_delivery` 에 `hand_tilt_deg`, `realcoords.plan/grasps_for` 는 맵에 파지별 기울기가 있으면 읽음(지금 맵엔 없음 → tilt None) | `real_task.py`, `realcoords.py` |
+
+측정(배치 성공률은 안 잼, `artifacts/tilt_20261120/plan_*.json`):
+
+| 경우 | 전 (5c87185) | 후 |
+|---|---|---|
+| README 예시 (0.10,−0.30,20)→(0.05,−0.27) | playable, 반 바퀴, 면 −22.5°, 오차 2.9 mm, hand_roll 2.7~81.8 | playable, 반 바퀴, 면 −7.5°, **기울기 −30°**, 오차 7.5 mm, hand_roll 2.7~81.1 |
+| 사용자 점 (−0.03,−0.36,0)→(0.05,−0.27) | unreachable (`_servable` 거절) | **playable**, 기울기 −30°, 면 −7.5°, 오차 0.9 mm, hand_roll 2.7~88.0 |
+
+`realcoords.plan` 의 `reach_map.reachable` 은 둘 다 옛 맵 기준 false(맵은 판정에 안 씀). run_tests.sh real 4개(m1_real_setup, m1_realcoords, m1_real_yaw, m1_run_real) 통과, sim smoke 통과.
+
 ## 도달 맵을 파지별로 — 2026-11-20 (12) (브랜치 `handroll-limit`)
 
 문제: 대시보드 지도·`realcoords.plan()`이 "됨"이라던 배치(실좌표 큐브 0.202, −0.26, yaw 0 → −0.073, −0.26; 시뮬 (0.08, −0.15) → (0.08, 0.125))를 `pick_place`가 "the arm cannot serve this layout"로 거절. 큐브 칸은 손 반 바퀴(`HAND_FLIP`)로만, 놓을 칸은 손 그대로로만 되는데, 맵이 두 파지를 `np.any`로 합쳐 저장해 구분이 없었다. 한 배달은 한 파지로 끝까지 가므로(`_servable`) 거절이 맞다.

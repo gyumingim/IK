@@ -72,6 +72,7 @@ def plan_delivery(cube, target, d: float | None = None) -> dict:
         # degrees the finger gap is off the cube's faces.
         out["sim"]["hand_half_turned"] = bool(env._hand_flips[0])
         out["sim"]["grasp_off_faces_deg"] = float(env._misalign[0])
+        out["sim"]["hand_tilt_deg"] = float(env._hand_tilts[0])   # its lean about the finger-gap axis (env.HAND_TILTS)
         names = list(env._robot.arm_joints) + list(env._robot.finger_joints)
         actuators = np.concatenate((env.arm_actuator_ids, env.finger_actuator_ids))
         dt = float(env.model.opt.timestep * env.frame_skip)

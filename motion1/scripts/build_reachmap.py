@@ -78,6 +78,9 @@ def solve_grasp(hand_yaw_deg, flip):
     # drawn from the map loaded, so a half-turned one left there made the map depend on the last map
     # (2026-11-12: 60 cells, then 69 over the same band edge).
     env._hand_flips[env.moving] = flip
+    # The map is solved at HAND_TILT only (2026-11-20: grasps may also lean other ways, env.HAND_TILTS, but the maps
+    # were not rebuilt for them - layouts given to reset(options) are judged by the IK, not the map).
+    env._hand_tilts[env.moving] = E.HAND_TILT
     grasp = np.zeros((len(xs), len(ys)), dtype=bool)
     place = np.zeros((len(xs), len(ys)), dtype=bool)
     clear_z = env.clear_height(E.OBJECT_Z)

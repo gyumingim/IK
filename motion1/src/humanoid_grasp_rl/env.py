@@ -53,6 +53,7 @@ SETUPS = {
                  lower_rate=0.001, travel_rate=0.002, carry_rate=0.0004, place_align=0.006,
                  hand_flip=True, grasp_misalign=30.0, hand_footprint=(0.059, 0.025, 0.077), empty_clear=0.07,
                  reach_rescue=True, slow_lower_rate=0.0005, hand_roll_limit=(-88.0, 88.0), home_return=True,
+                 hand_tilts=(-40.0, -30.0, -50.0, -20.0, -60.0, -10.0, 0.0, 10.0, 20.0, 30.0, 40.0, 50.0, 60.0),
                  home=(0.4727, 0.1093, 2.4948, -0.9200, -1.5708, 1.4812, 0.1006)),
 }
 SETUP = os.environ.get("JAX_SETUP", "sim")
@@ -153,7 +154,21 @@ EPISODE_STEPS = SETUPS[SETUP].get("episode_steps", 700)
 # grasp centre sits above the cube's centre (HELD_DZ runs along the leaning hand's axis), plus the
 # few millimetres it sits low in the pads.
 HAND_TILT = SETUPS[SETUP]["hand_tilt"]
-HELD_BELOW_GC = OBJECT_HALF_SIZE + HELD_DZ * float(np.cos(np.radians(HAND_TILT))) + 0.003
+# The leans a grasp may take (degrees about the finger-gap axis), in the order they are tried (HAND_TILT first).
+# Leaning about the axis the fingers close along keeps the pads square to the same two faces, so the grip is
+# the same; only the arm's pose changes. A grasp keeps its lean from the pick to the release (it is part of
+# the grasp, like the half turn: turning it while holding would tip the cube). The real setup tries every
+# 10 degrees from -60 to 60 (user 2026-11-20: "remove the fixed -40"); the sim setup HAND_TILT only.
+HAND_TILTS = tuple(float(t) for t in SETUPS[SETUP].get("hand_tilts", (HAND_TILT,)))
+assert HAND_TILTS[0] == HAND_TILT
+
+
+def held_below_gc(tilt_deg: float = HAND_TILT) -> float:
+    """How far the bottom of a held cube hangs under the grasp centre, for a hand leaning tilt_deg."""
+    return OBJECT_HALF_SIZE + HELD_DZ * float(np.cos(np.radians(tilt_deg))) + 0.003
+
+
+HELD_BELOW_GC = held_below_gc(HAND_TILT)
 # How far the grasp centre has to be from a delivered cube's spot for the episode to count.
 HAND_CLEAR = 0.10
 # Consecutive steps a cube must stay in hand and clear of the table before it counts as
@@ -198,10 +213,15 @@ REACH_TILT = 0.02
 HOME_ARM_QPOS = np.array(SETUPS[SETUP]["home"])
 # The hand's orientation for grasping. Palm down is the end-effector frame aligned with the world,
 # so the finger gap runs along x; the real setup leans it HAND_TILT degrees about that axis.
-_TILT = np.radians(HAND_TILT)
-PALM_DOWN = np.array([[1.0, 0.0, 0.0],
-                      [0.0, np.cos(_TILT), -np.sin(_TILT)],
-                      [0.0, np.sin(_TILT), np.cos(_TILT)]])
+def palm_down(tilt_deg: float = HAND_TILT) -> np.ndarray:
+    """The grasp orientation leaning tilt_deg about the finger-gap axis (x)."""
+    t = np.radians(tilt_deg)
+    return np.array([[1.0, 0.0, 0.0],
+                     [0.0, np.cos(t), -np.sin(t)],
+                     [0.0, np.sin(t), np.cos(t)]])
+
+
+PALM_DOWN = palm_down(HAND_TILT)
 # The hand turned half a turn about its own axis: fingers 1-2 and finger 3 change sides of the cube and
 # the lean stays as it is. The real setup's home pose holds the hand 90 degrees from it and 100 from the
 # plain grasp of a square cube (74 from the nearest grasp, a plain one turned 45).
@@ -283,7 +303,7 @@ else:
 # (x 0.13) from WORK_X_MAX itself left the hand up to 34 degrees off the grasp the layout was checked
 # for at a pick and 44 at a drop, and a gripped cube was thrown (motion1/STATUS.md 2026-11-10 (8)).
 # The sim setup's home lies inside the band, so its hand never turns towards home.
-HAND_HOLD_X = WORK_X_MAX + 0.01 + max(GRASP_DZ, HELD_DZ) * abs(np.sin(np.radians(HAND_TILT)))
+HAND_HOLD_X = WORK_X_MAX + 0.01 + max(GRASP_DZ, HELD_DZ) * max(abs(np.sin(np.radians(t))) for t in HAND_TILTS)
 
 
 def map_signature() -> np.ndarray:
@@ -442,6 +462,7 @@ class JaxGraspEnv(gym.Env[np.ndarray, np.ndarray]):
         self._hand_yaws = np.zeros(self.n_objects)   # the turn chosen for each cube (_grasp_turns)
         self._hand_flips = np.zeros(self.n_objects, dtype=bool)   # and whether it is half-turned
         self._misalign = np.zeros(self.n_objects)    # and how many degrees it is off the cube's faces
+        self._hand_tilts = np.full(self.n_objects, HAND_TILT)   # and its lean, degrees (HAND_TILTS)
         self._joint_goal = None   # arm angles a joint-space move is heading for (start_joint_move)
         self._holding_home = False   # the arm held on HOME_ARM_QPOS (go_home)
         self.layout_fallbacks = getattr(self, "layout_fallbacks", 0)
@@ -477,7 +498,8 @@ class JaxGraspEnv(gym.Env[np.ndarray, np.ndarray]):
         of its faces (or GRASP_MISALIGN at most off them). Exactly PALM_DOWN for an unturned cube in
         the sim setup."""
         yaw = self._hand_yaws[self.moving]
-        hand = PALM_DOWN @ HALF_TURN if self._hand_flips[self.moving] else PALM_DOWN
+        palm = palm_down(self._hand_tilts[self.moving])
+        hand = palm @ HALF_TURN if self._hand_flips[self.moving] else palm
         if yaw == 0.0:
             return hand
         return Rotation.from_euler("z", yaw).as_matrix() @ hand
@@ -598,7 +620,7 @@ class JaxGraspEnv(gym.Env[np.ndarray, np.ndarray]):
             self._cube_yaws = (self.np_random.uniform(-limit, limit, self.n_objects) if limit > 0
                                else np.zeros(self.n_objects))
             self._hand_yaws = self._cube_yaws.copy()
-            self._hand_flips[:], self._misalign[:] = False, 0.0
+            self._hand_flips[:], self._misalign[:], self._hand_tilts[:] = False, 0.0, HAND_TILT
             objects, targets = self._sample_layout()
         self._target_positions = targets
         self._target_heights = self._target_heights_for(objects, targets)
@@ -638,7 +660,7 @@ class JaxGraspEnv(gym.Env[np.ndarray, np.ndarray]):
             raise ValueError(f"this task has {self.n_objects} cube(s): give that many objects and targets")
         self._cube_yaws = np.radians([fold_yaw(y) for y in objects[:, 2]])
         self._hand_yaws = self._cube_yaws.copy()
-        self._hand_flips[:], self._misalign[:] = False, 0.0
+        self._hand_flips[:], self._misalign[:], self._hand_tilts[:] = False, 0.0, HAND_TILT
         objects = objects[:, :2].copy()
         if not self._servable(objects, targets):
             raise ValueError(f"the arm cannot serve this layout (cubes {objects.tolist()}, yaw "
@@ -667,7 +689,7 @@ class JaxGraspEnv(gym.Env[np.ndarray, np.ndarray]):
         standing *now* that matter, not the tower's final height: asked to clear the finished
         tower from the start, the hand was sent above where the arm can hold the fingers down.
         """
-        return max(standing_centre_z, OBJECT_Z) + OBJECT_HALF_SIZE + HELD_BELOW_GC + 0.012
+        return max(standing_centre_z, OBJECT_Z) + OBJECT_HALF_SIZE + held_below_gc(self._hand_tilts[self.moving]) + 0.012
 
     def standing_height(self, moving: int, heights: np.ndarray) -> float:
         """Centre height of the highest cube other than `moving`, once the cubes before it are
@@ -698,39 +720,45 @@ class JaxGraspEnv(gym.Env[np.ndarray, np.ndarray]):
                 self.moving = i
                 # The first grasp (least off the faces, then least turn) that holds every pose and
                 # comes down clear of the other cubes; the cube keeps it.
-                for turn, half_turned, off in self._grasp_turns(i):
+                for turn, half_turned, off, tilt in self._grasp_turns(i):
                     self._hand_yaws[i], self._hand_flips[i], self._misalign[i] = np.radians(turn), half_turned, off
+                    self._hand_tilts[i] = tilt
                     if (self._poses_servable(i, objects, targets, heights)
                             and self._footprint_clear(i, objects, targets)):
                         break
                 else:
                     self._hand_yaws[i], self._hand_flips[i], self._misalign[i] = self._cube_yaws[i], False, 0.0
+                    self._hand_tilts[i] = HAND_TILT
                     return False
             return True
         finally:
             self.moving = moving
 
-    def _grasp_turns(self, i) -> list[tuple[float, bool, float]]:
-        """The grasps to try on cube i, as (hand yaw in degrees, half-turned, degrees off its faces).
+    def _grasp_turns(self, i) -> list[tuple[float, bool, float, float]]:
+        """The grasps to try on cube i, as (hand yaw in degrees, half-turned, degrees off its faces, lean in degrees).
+        Each face grasp is tried at every lean in HAND_TILTS (HAND_TILT first): fewest degrees off the faces,
+        then the lean's place in HAND_TILTS, then the least turn from home.
 
         The sim setup: square to its faces only (hand_turns), least turn first. The real setup also
         has the half-turned hand (HAND_FLIP) and grasps up to GRASP_MISALIGN off the faces; fewest
         degrees off first, then the least turn from the home pose's hand, which is the time and the
         sweep of the turn on the way to the cube."""
         cube = np.degrees(self._cube_yaws[i])
+        rank = {t: k for k, t in enumerate(HAND_TILTS)}
         if not (HAND_FLIP or GRASP_MISALIGN):
-            return [(turn, False, 0.0) for turn in hand_turns(cube)]
+            return [(turn, False, 0.0, tilt) for tilt in HAND_TILTS for turn in hand_turns(cube)]
         y = fold_yaw(cube)
         offs = np.arange(-GRASP_MISALIGN, GRASP_MISALIGN + 1e-9, GRASP_MISALIGN_STEP) if GRASP_MISALIGN else [0.0]
         flips = (False, True) if HAND_FLIP else (False,)
-        options = {(round(float(face + off), 6), flip, round(float(off), 6))
-                   for face in (y, y + 90.0, y - 90.0) for off in offs for flip in flips}
+        options = {(round(float(face + off), 6), flip, round(float(off), 6), tilt)
+                   for face in (y, y + 90.0, y - 90.0) for off in offs for flip in flips for tilt in HAND_TILTS}
 
         def turn_from_home(option):
-            hand = PALM_DOWN @ HALF_TURN if option[1] else PALM_DOWN
+            palm = palm_down(option[3])
+            hand = palm @ HALF_TURN if option[1] else palm
             rotation = Rotation.from_euler("z", option[0], degrees=True).as_matrix() @ hand
             return float(Rotation.from_matrix(self._rest_rotation.T @ rotation).magnitude())
-        return sorted(options, key=lambda o: (abs(o[2]), round(turn_from_home(o), 9), o[0], o[1]))
+        return sorted(options, key=lambda o: (abs(o[2]), rank[o[3]], round(turn_from_home(o), 9), o[0], o[1]))
 
     def _footprint_clear(self, i, objects, targets) -> bool:
         """Does the open hand, coming down on cube i in the grasp chosen for it, stay clear of every
