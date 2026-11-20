@@ -76,7 +76,31 @@ class JaxStackEnv(JaxGraspEnv):
             spots.append(cells[apart][int(np.argmin(np.linalg.norm(cells[apart] - s, axis=1)))])
         spots = np.array(spots)
         assert np.allclose(spots[0], _snap_to_band(NOMINAL_SPOTS[0]))
-        return spots, np.repeat(spots[:1], self.n_objects, axis=0)
+        targets = np.repeat(spots[:1], self.n_objects, axis=0)
+        if HAND_FLIP or GRASP_MISALIGN:
+            return self._servable_nominal(spots, targets, cells)
+        return spots, targets
+
+    def _servable_nominal(self, spots, targets, cells):
+        """The real setup's fixed layout: the one above if the arm can serve it, else the band cells
+        nearest to it (summed over the cubes) that it can, found once per set of cube yaws. With hand_roll
+        held to its servo (env.HAND_ROLL_LIMIT) the one above was not, and the 20 of stacking seeds 0-49 that
+        fell back to it all timed out reaching (2026-11-20)."""
+        cache = self.__dict__.setdefault("_nominal_cache", {})
+        key = tuple(np.round(self._cube_yaws, 9))
+        if key in cache:
+            return cache[key]
+        if not self._servable(spots, targets):
+            pairs = sorted(((a, b) for a in range(len(cells)) for b in range(len(cells))
+                            if a != b and _far_enough([cells[a], cells[b]])),
+                           key=lambda p: (np.linalg.norm(cells[p[0]] - spots[0]) + np.linalg.norm(cells[p[1]] - spots[1]), p))
+            for a, b in pairs:
+                layout = np.array([cells[a], cells[b]])
+                if self._clear_of_home(layout) and self._servable(layout, np.repeat(layout[:1], 2, axis=0)):
+                    spots, targets = layout, np.repeat(layout[:1], 2, axis=0)
+                    break
+        cache[key] = (spots, targets)
+        return cache[key]
 
     def _target_heights_for(self, objects, targets) -> np.ndarray:
         del objects, targets
