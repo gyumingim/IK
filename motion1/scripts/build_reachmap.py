@@ -50,12 +50,21 @@ def reachable(position):
 
 
 def solve(hand_yaw_deg):
-    """grasp, place and feasible over the grid, for the hand turned hand_yaw_deg."""
+    """grasp, place and feasible over the grid, for the hand turned hand_yaw_deg: plain, or also
+    half-turned where the env may take that grasp (HAND_FLIP), a cell counting where either serves it.
+    With hand_roll held to its servo's +-88 (env.HAND_ROLL_LIMIT) the real setup's leaning hand holds its
+    plain grasp at yaw 0 over 2 cells only, plain or half-turned over 36 (2026-11-20; 60 at +-120)."""
+    maps = [solve_grasp(hand_yaw_deg, flip) for flip in ((False, True) if E.HAND_FLIP else (False,))]
+    return tuple(np.any([m[k] for m in maps], axis=0) for k in range(3))
+
+
+def solve_grasp(hand_yaw_deg, flip):
+    """solve() for one grasp: half-turned or not."""
     env._hand_yaws[env.moving] = np.radians(hand_yaw_deg)
-    # Not half-turned: env.reset(seed=0) above chose a grasp for its own layout (HAND_FLIP), which is
+    # Set every time: env.reset(seed=0) above chose a grasp for its own layout (HAND_FLIP), which is
     # drawn from the map loaded, so a half-turned one left there made the map depend on the last map
     # (2026-11-12: 60 cells, then 69 over the same band edge).
-    env._hand_flips[env.moving] = False
+    env._hand_flips[env.moving] = flip
     grasp = np.zeros((len(xs), len(ys)), dtype=bool)
     place = np.zeros((len(xs), len(ys)), dtype=bool)
     clear_z = env.clear_height(E.OBJECT_Z)

@@ -52,7 +52,7 @@ SETUPS = {
                  hand_tilt=-40.0, grasp_dz=0.0215, pad_friction=2.0, hand_turn_rate=30.0, episode_steps=1600,
                  lower_rate=0.001, travel_rate=0.002, carry_rate=0.0004, place_align=0.006,
                  hand_flip=True, grasp_misalign=30.0, hand_footprint=(0.059, 0.025, 0.077), empty_clear=0.07,
-                 reach_rescue=True, slow_lower_rate=0.0005,
+                 reach_rescue=True, slow_lower_rate=0.0005, hand_roll_limit=88.0,
                  home=(0.4727, 0.1093, 2.4948, -0.9200, -1.5708, 1.4812, 0.1006)),
 }
 SETUP = os.environ.get("JAX_SETUP", "sim")
@@ -192,7 +192,9 @@ REACH_TILT = 0.02
 # (0.160, -0.1496, table + 0.0998) (scripts/find_home.py --spot 0.16 -0.15 0.10, candidate 6, the hand
 # leaning and wrist_pitch at its -90 degree stop), on the side the open hand slides out to from a tower:
 # with home on the +y side (0.20, 0.15) the way back passed the tower and 12 of 50 stackings lost their
-# top cube (2026-11-12). It is inside HAND_HOLD_X, so the hand never turns towards home's orientation.
+# top cube (2026-11-12). It was inside HAND_HOLD_X, so the hand never turned towards home's orientation;
+# with hand_roll held to its servo (HAND_ROLL_LIMIT) the band ends at x 0.12 and HAND_HOLD_X (0.144) is
+# just short of it (2026-11-20).
 HOME_ARM_QPOS = np.array(SETUPS[SETUP]["home"])
 # The hand's orientation for grasping. Palm down is the end-effector frame aligned with the world,
 # so the finger gap runs along x; the real setup leans it HAND_TILT degrees about that axis.
@@ -238,6 +240,13 @@ REACH_STALL_STEPS = 25
 REACH_STALL_PROGRESS = 0.010
 REACH_STALL_NEAR = 0.02
 JOINT_MOVE_RATE = 30.0   # degrees per second
+# How far hand_roll may turn either way, degrees (None: the URDF's +-120). The real hand_roll is a hobby
+# servo with 0-180 degrees of travel, zero (sim 0) at 90 (team-jax/jax_ros2 arm_control/calibration.json,
+# W_X), so the robot can play +-90 only; past that arm_control cuts the command short. With the URDF's
+# +-120 the controller asked for up to -113 (2026-11-20). Applied to the model's joint range in __init__,
+# so the IK, the reach check, the layout check and the controller all see the servo's arm; 2 degrees are
+# left for the servo's zero being off.
+HAND_ROLL_LIMIT = SETUPS[SETUP].get("hand_roll_limit")
 
 # Each setup has its own reach map; the sim setup's keeps the name it always had.
 REACH_FILE = Path(__file__).with_name("reachmap.npz" if SETUP == "sim" else f"reachmap_{SETUP}.npz")
@@ -282,6 +291,7 @@ def map_signature() -> np.ndarray:
         [TABLE_SURFACE_Z, OBJECT_SIZE, GRASP_DZ, HELD_DZ, REACH_TILT],
         WORKSPACE_LOW, WORKSPACE_HIGH, HOME_ARM_QPOS,
         [] if SETUP == "sim" else [SHOULDER_Z, HAND_TILT],
+        [] if HAND_ROLL_LIMIT is None else [HAND_ROLL_LIMIT],   # the IK's joint range (2026-11-20)
     ]).astype(np.float64)
 
 
@@ -394,7 +404,14 @@ class JaxGraspEnv(gym.Env[np.ndarray, np.ndarray]):
             if ancestor == self.hand_body_id:
                 start = self.model.body_geomadr[body]
                 self._is_hand_geom[start : start + self.model.body_geomnum[body]] = True
-        self.arm_ranges = self.model.jnt_range[self.arm_joint_ids].copy()
+        # The servo's travel, before anything reads the joint ranges (HAND_ROLL_LIMIT).
+        if HAND_ROLL_LIMIT is not None:
+            roll = self._id(mujoco.mjtObj.mjOBJ_JOINT, "hand_roll")
+            limit = np.radians(HAND_ROLL_LIMIT)
+            self.model.jnt_range[roll] = np.clip(self.model.jnt_range[roll], -limit, limit)
+            servo = self._id(mujoco.mjtObj.mjOBJ_ACTUATOR, "hand_roll_act")
+            self.model.actuator_ctrlrange[servo] = np.clip(self.model.actuator_ctrlrange[servo], -limit, limit)
+        self.arm_ranges =self.model.jnt_range[self.arm_joint_ids].copy()
         self.finger_ranges = self.model.jnt_range[self.finger_joint_ids].copy()
         self.action_space = spaces.Box(-1.0, 1.0, shape=(4,), dtype=np.float32)
         # joints 13 + 13 velocities, previous action 4, grasp centre 3, and per object:
