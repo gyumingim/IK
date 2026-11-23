@@ -80,8 +80,9 @@ def run_condition(name, spec, spot_list, out_dir, model_cache):
         rows.append(s)
         ok = "DONE" if s["done"] else f"FAIL ({s['fail_reason']})"
         t_done = s["phase_t_s"]["DONE"]
+        dt_done = "-" if t_done is None else "%.2f s" % (t_done - s["phase_t_s"]["GRASP_LIFT"])   # Python 3.10 도 (중첩 f-string 따옴표)
         print(f"  {name:6s} {tag:32s} {ok:52s} close->done "
-              f"{'-' if t_done is None else f'{t_done - s['phase_t_s']['GRASP_LIFT']:.2f} s'}  "
+              f"{dt_done}  "
               f"shift {s['cube_shift_before_grasp_mm']:5.1f} mm", flush=True)
     return rows
 
