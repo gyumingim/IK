@@ -1,10 +1,31 @@
 """Jungwoo's one-arm chain (JaxIsaacLab artifacts/deploy_2026-11-05) run in MuJoCo.
 
 Hanging arm -> raise (scripted path + lookup tables, 7.1) -> wait until still (7.2) -> reach in 4.5 cm (7.3) ->
-grasp_lift_23025 policy with the scripted close force loop and lift IK (7.4-7.6) -> L return (7.7) -> done (7.8).
+grasp_lift policy with the scripted close force loop and lift IK (7.4-7.6) -> L return (7.7) -> done (7.8).
 Section numbers are deploy/README.md's. Every rule follows that README; where it was silent the Isaac code it names
 (render_front_grasp.py, v2_front_*.py) was read and is cited at the spot. Joint values use the V2 sign convention of
 deploy/robot_v3 (the scene is built from that URDF, so no sign flips anywhere).
+
+Two specs (SPECS below), picked with Chain(spec=...) / run(spec=...), default env SIM2SIM_SPEC or "25550":
+- "25550": the 2026-11-11 final spec (deploy/README.md top boxes, deploy/MUJOCO_SIM2SIM.md section 0). Policy
+  grasp_lift_25550; URDF_1109; shoulder axis -> table 47.25 cm (e = 0, dz = -0.0575, observation reference point
+  z 0.3575); servo arm: every command is the geometric pose (raise P_geo + S, no gravity term in the reach-in or
+  the policy phase, L pose (0, 0, 7.2, 90, 0, -2.6, 0) deg); pre-grasp 0.5 cm lower (F blended at
+  e_F = max(e - 0.005, -0.01)); squeeze S = 1.2 + 0.8 a; action 7 held at +1 during the return; observations
+  0-13 = the joint targets sent, 14-27 = their step change / dt x 0.2; motor torque limits and pair friction live
+  in the scene (build_scene.py). Hand-over (7.2), lift IK kinematics (7.6), fingertip midpoint in observation
+  34-36 and the done check's arm-still test (7.8) use the sent targets as the real robot will (MUJOCO_SIM2SIM.md
+  0.4); Chain(feedback="actual") uses the simulated joint positions instead (what Isaac did).
+  Servo in MuJoCo (MUJOCO_SIM2SIM.md 0.3: "must stand on the commanded pose without sag"): each of the 8 arm
+  joints is tied by a dry-friction tendon (friction = the motor's torque limit) to a reference rotor whose speed
+  is set every MuJoCo step to clip((kp / kd) (target - q), +-1 rad/s), kp 500 kd 40 = Isaac's emulation (5.3).
+  Unloaded the joint moves exactly as that overdamped PD; under load it holds the commanded angle with whatever
+  torque it takes up to the limit (no sag, no gravity feed-forward) and yields beyond it. A PD actuator with a
+  force range was tried first: MuJoCo applies a clamped actuator force explicitly, which with kd 40 on the
+  1e-4 kg m2 wrist / RotationBody joints chatters and holds nothing. Fingers stay PD actuators (kp 40 kd 2,
+  +-0.177 N m) as README 5.3.
+- "23025": the 11-08 spec (deploy/README_1108.md): URDF_1108, 47.75 cm, sagging PD arm with the chain's gravity
+  compensation, actual joint positions observed, squeeze 5 + 4 a. Kept for comparison.
 
     from chain import run
     summary, trace = run(dx=0.0, dy=0.0, yaw_deg=20.0)
@@ -19,7 +40,6 @@ import numpy as np
 import ptload
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-SCENE = os.path.join(HERE, "jax_v3_scene.xml")
 DEPLOY = os.path.join(HERE, "deploy")
 
 DT = 1.0 / 60.0                     # control
@@ -27,9 +47,6 @@ SUBSTEPS = 2                        # physics 120 Hz
 CUBE_REF = np.array([-0.285, 0.26])
 CUBE_HALF = 0.025
 TABLE_TOP = 0.735
-OBS_ORIGIN = np.array([0.0, 0.0, 0.3625])          # V2 base origin (4)
-DZ = (TABLE_TOP - OBS_ORIGIN[2]) - 0.435           # -0.0625 (7.1)
-E_TABLE = DZ + 0.0575                              # -0.005 (7.1)
 
 # Isaac joint order (5.1), arm bundle (8) and finger bundle (6) (5.2)
 ISAAC = ("shoulder_pitch_to_shoulder_roll", "shoulder_roll_to_shoulder_yaw", "shoulder_yaw_to_upper_arm",
@@ -42,19 +59,28 @@ PAD_LINKS = ("Finger_1_1", "Finger_2_1", "Finger_3_1", "Finger_1_2", "Finger_2_2
 TIP_LINKS = ("Finger_1_2", "Finger_2_2", "Finger_3_2")
 HAND = "MG996R"
 
-ARM_KP = 100.0
 S_FIX = np.radians([1.9, 0.0, 0.0, 2.1, 0.0, 0.7, -0.2, 0.0])                     # 5.4
 GOAL_BASE = np.radians([-7.3, 0.0, 2.5, 73.7, -5.6, 14.7, -6.6, -170.1])         # 7.2
-Q_L = np.radians([1.9, 0.0, 7.2, 92.1, 0.0, -1.9, -0.2])                          # 7.7
+Q_L_GEO = np.radians([0.0, 0.0, 7.2, 90.0, 0.0, -2.6, 0.0])                       # 7.7 servo
+Q_L_SPRING = np.radians([1.9, 0.0, 7.2, 92.1, 0.0, -1.9, -0.2])                   # 7.7 + s_fix (11-08 spec)
 ROT_BODY = math.radians(-170.0)                                                   # 7.4
 ROLL_IN = math.radians(12.0)                                                      # 7.3
 THUMB_OPEN = math.radians(-30.0)
 HAND_SHAPE = np.radians([0.0, 0.0, -30.0, 0.0, 0.0, 0.0])
 FIRST_MAX = np.radians([30.0, 30.0, 0.0])
 
-# 7.1 path P (deg), knots t = 0, 5.0, 5.6, ..., 8.0; s_fix is already in it
+# 7.1 path (deg), knots t = 0, 5.0, 5.6, ..., 8.0. P_GEO: geometric poses (servo). P_SPRING = P_GEO + s_fix on the
+# knots after 0 (the sagging sim motor's path of the 11-08 spec)
 P_T = np.array([0.0, 5.0, 5.6, 6.2, 6.8, 7.4, 8.0])
-P_Q = np.radians(np.array([
+P_GEO = np.radians(np.array([
+    [0, 0, 0, 0, 0, 0, 0, 0],
+    [-28.8, 0, 2.5, 89.1, -5.6, 20.8, -6.6, -170.1],
+    [-24.6, 0, 2.5, 87.0, -5.6, 18.7, -6.6, -170.1],
+    [-20.4, 0, 2.5, 84.4, -5.6, 17.0, -6.6, -170.1],
+    [-16.1, 0, 2.5, 81.4, -5.6, 15.8, -6.6, -170.1],
+    [-11.7, 0, 2.5, 77.8, -5.6, 15.0, -6.6, -170.1],
+    [-7.3, 0, 2.5, 73.7, -5.6, 14.7, -6.6, -170.1]], dtype=float))
+P_SPRING = np.radians(np.array([
     [0, 0, 0, 0, 0, 0, 0, 0],
     [-26.9, 0, 2.5, 91.2, -5.6, 21.5, -6.8, -170.1],
     [-22.7, 0, 2.5, 89.1, -5.6, 19.4, -6.8, -170.1],
@@ -63,6 +89,39 @@ P_Q = np.radians(np.array([
     [-9.8, 0, 2.5, 79.9, -5.6, 15.7, -6.8, -170.1],
     [-5.4, 0, 2.5, 75.8, -5.6, 15.4, -6.8, -170.1]], dtype=float))
 S_T = np.array([0.0, 2.0, 5.0, 5.6, 6.2, 6.8, 7.4, 8.0])
+
+# d = shoulder pitch axis -> table top (m). e = 0.4725 - d blends the lookup tables, dz = 0.415 - d corrects
+# observation 30 (7.1); the observation reference point is 0.85 below the shoulder axis (4)
+SPECS = {
+    "25550": {"policy": "grasp_lift_25550", "scene": "jax_v3_scene.xml", "base_pos": (0.0, 0.01, -0.005), "d": 0.4725,
+              "servo": True, "servo_rate": 500.0 / 40.0, "path": P_GEO, "q_l": Q_L_GEO, "squeeze": (1.2, 0.8), "return_a7": 1.0,
+              "obs_target": True, "feedback": "target", "pre_dz": -0.005, "pre_dz_min": -0.01},
+    "23025": {"policy": "grasp_lift_23025", "scene": "jax_v3_scene_23025.xml", "base_pos": (0.0, 0.01, 0.0), "d": 0.4775,
+              "servo": False, "path": P_SPRING, "q_l": Q_L_SPRING, "squeeze": (5.0, 4.0), "return_a7": None,
+              "obs_target": False, "feedback": "actual", "pre_dz": 0.0, "pre_dz_min": None},
+}
+SPEC = os.environ.get("SIM2SIM_SPEC") or "25550"
+assert SPEC in SPECS, SPEC
+
+
+def spec_of(spec=None):
+    """Spec dict + derived layout numbers: shoulder z, observation origin, dz, table blend e, scene path."""
+    name = spec or SPEC
+    sp = dict(SPECS[name], name=name)
+    sp["shoulder_z"] = TABLE_TOP + sp["d"]
+    sp["obs_origin"] = np.array([0.0, 0.0, sp["shoulder_z"] - 0.85])
+    sp["dz"] = 0.415 - sp["d"]
+    sp["e"] = round(0.4725 - sp["d"], 9)
+    sp["scene_path"] = os.path.join(HERE, sp["scene"])
+    return sp
+
+
+SCENE = spec_of()["scene_path"]            # default spec's scene, dz and e (other modules read these)
+OBS_ORIGIN = spec_of()["obs_origin"]
+DZ = spec_of()["dz"]
+E_TABLE = spec_of()["e"]
+P_Q = spec_of()["path"]
+Q_L = spec_of()["q_l"]
 
 # 6.3 RA12P
 RA12P_GF = np.array([5, 55, 100, 165, 260, 350, 470, 590, 750, 975, 1290, 1585, 1920, 2465, 3240, 4000], float)
@@ -165,8 +224,9 @@ class Tables:
 
 
 class Policy:
-    def __init__(self):
-        a = ptload.load_actor(os.path.join(DEPLOY, "grasp_lift_23025.pt"))
+    def __init__(self, spec=None):
+        self.name = spec_of(spec)["policy"]
+        a = ptload.load_actor(os.path.join(DEPLOY, self.name + ".pt"))
         self.mean, self.std, self.layers = a["mean"], a["std"], a["layers"]
 
     def __call__(self, obs):
@@ -225,19 +285,40 @@ def quat_angle_deg(a, b):
 
 
 class Chain:
-    def __init__(self, dx, dy, yaw_deg, mass=0.040, yaw_obs_err_deg=0.0, e=E_TABLE, model=None, tables=None, policy=None,
-                 velocity_limit=VELOCITY_LIMIT, physics="matched", impratio=None):
-        self.m = model or mujoco.MjModel.from_xml_path(SCENE)
+    def __init__(self, dx, dy, yaw_deg, mass=0.040, yaw_obs_err_deg=0.0, e=None, model=None, tables=None, policy=None,
+                 velocity_limit=VELOCITY_LIMIT, physics="matched", impratio=None, spec=None, feedback=None,
+                 finger_table_mu=None):
+        self.sp = sp = spec_of(spec)
+        e = sp["e"] if e is None else e
+        self.feedback = feedback or sp["feedback"]          # "target": sent targets (real robot), "actual": sim joints
+        assert self.feedback in ("target", "actual"), self.feedback
+        self.m = model or mujoco.MjModel.from_xml_path(sp["scene_path"])
         self.d = mujoco.MjData(self.m)
         self.scratch = mujoco.MjData(self.m)
+        self.kin_t = mujoco.MjData(self.m)                  # forward kinematics of the sent targets
         self.tables = tables or Tables()
-        self.policy = policy or Policy()
+        self.policy = policy or Policy(sp["name"])
+        assert self.policy.name == sp["policy"], (self.policy.name, sp["policy"])
         m = self.m
         jid = lambda n: mujoco.mj_name2id(m, mujoco.mjtObj.mjOBJ_JOINT, n)
         bid = lambda n: mujoco.mj_name2id(m, mujoco.mjtObj.mjOBJ_BODY, n)
         self.qadr = np.array([m.jnt_qposadr[jid(n)] for n in ISAAC])
         self.vadr = np.array([m.jnt_dofadr[jid(n)] for n in ISAAC])
         self.act = np.array([mujoco.mj_name2id(m, mujoco.mjtObj.mjOBJ_ACTUATOR, n) for n in ISAAC])
+        self.arm_kp = float(m.actuator_gainprm[self.act[0], 0])             # 100 (sagging PD); 0 in the servo scene
+        self.torque_limit = m.actuator_forcerange[self.act, 1].copy()
+        self.servo = bool(sp["servo"])
+        if self.servo:
+            arm_names = [ISAAC[i] for i in ARM_IDS]
+            self.ref_v = np.array([m.jnt_dofadr[jid("servo_ref_" + n)] for n in arm_names])
+            self.servo_tendon = [mujoco.mj_name2id(m, mujoco.mjtObj.mjOBJ_TENDON, "servo_" + n) for n in arm_names]
+            self.torque_limit[list(ARM_IDS)] = m.tendon_frictionloss[self.servo_tendon]
+            self.clamp_v = self.vadr[list(FINGER_IDS)]        # the 1 rad/s clamp below: fingers only (the servo's reference is limited)
+            self.clamp_q = self.qadr[list(FINGER_IDS)]
+        else:
+            self.clamp_v, self.clamp_q = self.vadr, self.qadr
+        self.limit_steps = np.zeros(14)
+        self.steps = 0
         self.lo = np.array([m.jnt_range[jid(n)][0] for n in ISAAC])
         self.hi = np.array([m.jnt_range[jid(n)][1] for n in ISAAC])
         self.obs_lo, self.obs_hi = self.lo.copy(), self.hi.copy()            # 8.1: V2 limits
@@ -263,17 +344,27 @@ class Chain:
         if physics == "plain":
             m.opt.timestep = PLAIN["timestep"]
             m.geom_solref[:] = (PLAIN["contact_tc"], 1.0)
+            if m.npair:
+                m.pair_solref[:] = (PLAIN["contact_tc"], 1.0)
             m.opt.cone = mujoco.mjtCone.mjCONE_PYRAMIDAL
             m.opt.impratio = PLAIN["impratio"]
         else:
             assert physics == "matched", physics
         if impratio is not None:
             m.opt.impratio = impratio
+        if finger_table_mu is not None:      # diagnostic: another finger-table friction than the scene's (README 10: 1.6)
+            gname = lambda g: mujoco.mj_id2name(m, mujoco.mjtObj.mjOBJ_GEOM, g)
+            for k in range(m.npair):
+                pair = {gname(m.pair_geom1[k]), gname(m.pair_geom2[k])}
+                if "table" in pair and any(n.startswith("Finger_") for n in pair):
+                    m.pair_friction[k, :2] = finger_table_mu
         self.inner = int(round((DT / SUBSTEPS) / m.opt.timestep))
         assert abs(self.inner * m.opt.timestep - DT / SUBSTEPS) < 1e-12
         self.physics = {"mode": physics, "mujoco_dt": float(m.opt.timestep), "contact_tc": float(m.geom_solref[0, 0]),
                         "cone": "elliptic" if m.opt.cone == mujoco.mjtCone.mjCONE_ELLIPTIC else "pyramidal",
-                        "impratio": float(m.opt.impratio), "velocity_limit": velocity_limit}
+                        "impratio": float(m.opt.impratio), "velocity_limit": velocity_limit,
+                        "spec": sp["name"], "policy": sp["policy"], "feedback": self.feedback,
+                        "arm": "servo constraint" if self.servo else "PD kp %g" % self.arm_kp, "contact_pairs": int(m.npair), "finger_table_mu": finger_table_mu}
         m.body_mass[self.cube_body] = mass
         m.body_inertia[self.cube_body] = mass * (2 * CUBE_HALF) ** 2 / 6.0
         mujoco.mj_setConst(m, self.d)
@@ -288,7 +379,9 @@ class Chain:
         self.S = self.tables.raise_knots(dx, dy, e)
         self.S_knots = np.vstack([np.zeros(8), self.S[0], self.S])      # (0: 0), (2.0: S0), (5.0: S0), ..., (8.0: S5)
         self.goal = GOAL_BASE + self.S[5]
-        self.F = self.tables.final_pose(dx, dy, e)
+        # 7.3: 25550 lowers the pre-grasp 0.5 cm: only F is blended at e_F = max(e - 0.005, -0.01), S_5 stays at e
+        self.e_F = e if sp["pre_dz_min"] is None else min(e, max(e + sp["pre_dz"], sp["pre_dz_min"]))
+        self.F = self.tables.final_pose(dx, dy, self.e_F)
         self.dq_in = self.F - self.S[5]
         self.dq_in[6] += ROLL_IN
         self.theta = self.tables.theta_deg(dx, dy)
@@ -296,9 +389,10 @@ class Chain:
         self.yaw_obs = np.array([math.sin(4 * psi), math.cos(4 * psi)])
 
         self.target = np.zeros(14)          # joint targets, Isaac order
+        self.tg_prev = np.zeros(14)         # 8.1: the previous control step's targets
         self.trace = {k: [] for k in ("t", "phase", "q", "qd", "target", "cube_pos", "cube_quat", "pad_normal",
                                       "pad_obs", "tip_mid", "hand_pos", "hand_quat", "cube_robot_force",
-                                      "cube_table_force")}
+                                      "cube_table_force", "robot_table_force")}
         self.t = 0.0
         self.phase = "RAISE"
         self.events = {}
@@ -320,14 +414,19 @@ class Chain:
         return np.mean([self.d.xpos[b] for b in self.tip_body], axis=0)
 
     def contacts(self):
-        """Cube-on-pad-link force vectors (world, 6.2), total robot-cube force magnitude, cube-table force."""
+        """Cube-on-pad-link force vectors (world, 6.2), total robot-cube force magnitude, cube-table force.
+        self.robot_table_n: total robot-table force magnitude (fingers pressing the table, 25550's lower pre-grasp)."""
         f_links = np.zeros((6, 3))
         robot_n, table_n = 0.0, 0.0
+        self.robot_table_n = 0.0
         f6 = np.zeros(6)
         for i in range(self.d.ncon):
             c = self.d.contact[i]
             g1, g2 = c.geom1, c.geom2
             if self.cube_geom not in (g1, g2):
+                if self.table_geom in (g1, g2):
+                    mujoco.mj_contactForce(self.m, self.d, i, f6)
+                    self.robot_table_n += float(np.linalg.norm(f6[:3]))
                 continue
             other = g2 if g1 == self.cube_geom else g1
             mujoco.mj_contactForce(self.m, self.d, i, f6)
@@ -366,6 +465,38 @@ class Chain:
         mujoco.mj_rne(self.m, s, 0, out)
         return out[self.vadr[self.arm]]
 
+    def servo_torque(self):
+        """Torque of the 8 arm servo constraints in the last MuJoCo step (tendon friction rows of the solver)."""
+        d = self.d
+        out = np.zeros(8)
+        for r in np.flatnonzero(d.efc_type[:d.nefc] == mujoco.mjtConstraint.mjCNSTR_FRICTION_TENDON):
+            if d.efc_id[r] in self.servo_tendon:
+                out[self.servo_tendon.index(d.efc_id[r])] = d.efc_force[r]
+        return out
+
+    def gravity_term(self, w=1.0):
+        """Sagging PD arm (11-08 spec, 7.1): G = w (tau_g / kp - s_fix), part of the target. Servo spec: none; the
+        servo constraint holds the commanded pose by itself."""
+        if self.servo:
+            return np.zeros(8)
+        return w * (self.gravity_torque() / self.arm_kp - S_FIX)
+
+    def kin(self):
+        """Kinematics the controller may use: the simulated state, or (feedback "target") forward kinematics of
+        the targets sent last, as the real robot without joint encoders."""
+        if self.feedback == "actual":
+            return self.d
+        k = self.kin_t
+        k.qpos[:] = self.d.qpos
+        k.qpos[self.qadr] = np.clip(self.target, self.lo, self.hi)
+        mujoco.mj_kinematics(self.m, k)
+        mujoco.mj_comPos(self.m, k)
+        return k
+
+    def arm_fb(self):
+        """Arm joint positions (8) for the hand-over and still checks: sent targets or simulated joints."""
+        return self.target[self.arm].copy() if self.feedback == "target" else self.q()[self.arm]
+
     # ------------------------------------------------------------------ stepping
     def _record(self, f_links=None, robot_n=0.0, table_n=0.0):
         if f_links is None:
@@ -386,26 +517,37 @@ class Chain:
         tr["hand_quat"].append(self.d.xquat[self.hand_body].copy())
         tr["cube_robot_force"].append(robot_n)
         tr["cube_table_force"].append(table_n)
+        tr["robot_table_force"].append(self.robot_table_n)
         return normal, obs
 
     def step(self, sent=None, blend=None):
         """One control step: two physics steps with the drive targets; `blend(k)` gives per-substep targets."""
+        arm_q, arm_v = self.qadr[self.arm], self.vadr[self.arm]
+        vmax = self.velocity_limit or 1e9
         for k in range(SUBSTEPS):
             ctrl = blend(k) if blend is not None else (self.target if sent is None else sent)
             self.d.ctrl[self.act] = ctrl
+            arm_cmd = np.asarray(ctrl, dtype=float)[self.arm]
             for _ in range(self.inner):
-                q_old = self.d.qpos[self.qadr].copy()
+                if self.servo:          # servo reference speed (module docstring): the overdamped PD's response, speed limited
+                    self.d.qvel[self.ref_v] = np.clip(self.sp["servo_rate"] * (arm_cmd - self.d.qpos[arm_q]), -vmax, vmax)
+                q_old = self.d.qpos[self.clamp_q].copy()
                 mujoco.mj_step(self.m, self.d)
                 if self.velocity_limit:
                     # PhysX max joint velocity (velocity_limit_sim=1.0 for arm and fingers in Jungwoo's robot config).
                     # MuJoCo has none: clamp the new joint velocity and redo the hinge position update
                     # q' = q + dt v' (semi-implicit Euler) with it, i.e. the clamp inside the integrator.
-                    v = self.d.qvel[self.vadr]
+                    v = self.d.qvel[self.clamp_v]
                     if (np.abs(v) > self.velocity_limit).any():
                         vc = np.clip(v, -self.velocity_limit, self.velocity_limit)
-                        self.d.qvel[self.vadr] = vc
-                        self.d.qpos[self.qadr] = q_old + self.m.opt.timestep * vc
+                        self.d.qvel[self.clamp_v] = vc
+                        self.d.qpos[self.clamp_q] = q_old + self.m.opt.timestep * vc
         self.t += DT
+        self.steps += 1
+        force = np.abs(self.d.actuator_force[self.act])
+        if self.servo:
+            force[self.arm] = np.abs(self.servo_torque())
+        self.limit_steps += force >= 0.999 * self.torque_limit
         return self._record()
 
     # ------------------------------------------------------------------ phases
@@ -419,18 +561,17 @@ class Chain:
         for k in range(round(max_s / DT)):
             t = (k + 1) * DT
             self.phase = "RAISE" if t <= 8.0 else "SETTLE"
-            q_cmd = catmull_rom(P_T, P_Q, t) + catmull_rom(S_T, self.S_knots, t)
+            q_cmd = catmull_rom(P_T, self.sp["path"], t) + catmull_rom(S_T, self.S_knots, t)
             new = 0.85 * s + 0.15 * q_cmd
             new[:7] = s[:7] + np.clip(new[:7] - s[:7], -rate, rate)
             s = new
-            w = smoothstep(t - 4.0)
-            G = w * (self.gravity_torque() / ARM_KP - S_FIX)
+            G = self.gravity_term(smoothstep(t - 4.0))
             self.target[self.arm] = np.clip(s, self.lo[self.arm], self.hi[self.arm]) + G
             fg = np.zeros(6)
             fg[2] = smoothstep((t - 1.0) / 3.0) * THUMB_OPEN
             self.target[self.fing] = fg
             self.step()
-            q = self.q()[self.arm]
+            q = self.arm_fb()
             trace_q.append(q)
             err = np.abs(q - self.goal).max()
             still = len(trace_q) > 15 and np.abs(trace_q[-1] - trace_q[-16]).max() < math.radians(0.2)
@@ -449,13 +590,14 @@ class Chain:
         fg = self.target[self.fing].copy()
         for k in range(45):
             w = smoothstep(min((k + 1) / 30.0, 1.0))
-            G = self.gravity_torque() / ARM_KP - S_FIX
+            G = self.gravity_term()
             self.target[self.arm] = np.clip(self.s_raise + w * self.dq_in, self.lo[self.arm], self.hi[self.arm]) + G
             self.target[self.fing] = fg
             self.step()
         self.events["insert_end_arm_deg"] = np.degrees(self.q()[self.arm]).round(2).tolist()
         self.events["insert_end_grav_deg"] = np.degrees(G).round(2).tolist()
         self.events["insert_end_target_deg"] = np.degrees(self.target[self.arm]).round(2).tolist()
+        self.events["insert_end_err_deg"] = np.degrees(self.q()[self.arm] - self.target[self.arm]).round(3).tolist()
 
     def grasp_lift(self, max_s=11.0, after_done_s=2.0):
         """7.4-7.8 with the policy at 60 Hz."""
@@ -464,17 +606,21 @@ class Chain:
         t0 = self.t
         self.events["close_t"] = t0
         q_h = self.target.copy()                         # 7.4 blend source (targets at the hand-over)
-        hold = self.target[self.arm[:7]].copy()          # IK base (gravity term of the last reach-in step included)
+        hold = self.target[self.arm[:7]].copy()          # IK base (11-08 spec: gravity term of the last reach-in step included)
+        sq0, sq1 = self.sp["squeeze"]
+        q_l = self.sp["q_l"]
+        self.tg_prev = self.target.copy()                # 8.1: previous step's target, reset at the hand-over
         offset = np.zeros(7)
         self.target[self.arm[7]] = ROT_BODY
         filt = np.zeros(11)
         bal_q = HAND_SHAPE.copy()
-        hand_q0 = self.d.xquat[self.hand_body].copy()
-        p_des = self.tip_mid()
+        kin = self.kin()
+        hand_q0 = kin.xquat[self.hand_body].copy()
+        p_des = np.mean([kin.xpos[b] for b in self.tip_body], axis=0)
         cube0 = self.cube_pos()
         cube_q_close = self.cube_quat()
         ret_t, ret_cnt, ret_q0, ret_frozen = -1.0, 0, None, None
-        done_cnt, q_prev, done_t = 0, self.q()[self.arm[:7]], None
+        done_cnt, q_prev, done_t = 0, self.arm_fb()[:7], None
         blend_k = 0
         use = [0, 2, 3, 4, 5, 6]                           # 7.6: no shoulder roll
         jacp, jacr = np.zeros((3, self.m.nv)), np.zeros((3, self.m.nv))
@@ -485,12 +631,17 @@ class Chain:
         n_max = round(max_s / DT)
         for k in range(n_max):
             tc = self.t - t0
-            # --- 8.1 observation (state after the last physics step)
-            obs = self.observation(pad_obs)
+            # --- 8.1 observation (state after the last physics step; kinematics per self.feedback)
+            kin = self.kin()
+            tip_now = np.mean([kin.xpos[b] for b in self.tip_body], axis=0)
+            obs = self.observation(pad_obs, tip_now)
+            self.tg_prev = self.target.copy()
             # --- policy and 8.2 post-processing; 7.7 freezes actions 7-10 during the return (as raw inputs)
             a = np.clip(self.policy(obs), -1.0, 1.0)
             if ret_frozen is not None:
                 a[7:11] = ret_frozen
+                if self.sp["return_a7"] is not None:       # 25300 on: finger-side squeeze at its maximum
+                    a[7] = self.sp["return_a7"]
             filt = 0.25 * a + 0.75 * filt
             self.act_log.append(filt.copy())
             # --- 7.5 close (pad normal forces, per digit first + distal link)
@@ -499,8 +650,8 @@ class Chain:
             for i in range(3):
                 if on[i] and first_touch[i] is None:
                     first_touch[i] = tc
-            sf = max(5.0 + 4.0 * filt[7], 0.3)
-            st = max(5.0 + 4.0 * filt[9], 0.3)
+            sf = max(sq0 + sq1 * filt[7], 0.3)
+            st = max(sq0 + sq1 * filt[9], 0.3)
             want = np.array([0.5 * sf, 0.5 * sf, st]) if on.all() else np.full(3, 0.3)
             dmax = 0.15 * DT
             stp = np.where(on, np.clip(0.0012 * (want - f), -dmax, dmax), dmax)
@@ -519,9 +670,9 @@ class Chain:
             returning = ret_t >= 0
             if returning:
                 w = smoothstep(ret_t / 2.5)
-                self.target[self.arm[:7]] = ret_q0 + w * (Q_L - ret_q0)
+                self.target[self.arm[:7]] = ret_q0 + w * (q_l - ret_q0)
                 ret_t += DT
-            q7 = self.q()[self.arm[:7]]
+            q7 = self.arm_fb()[:7]
             still = np.abs(q7 - q_prev).max() < math.radians(0.05)
             q_prev = q7
             grip = pad_obs[[0, 1, 2]] + pad_obs[[3, 4, 5]]
@@ -535,15 +686,15 @@ class Chain:
             # --- arm targets: lift IK unless returning
             if not returning:
                 v = np.array([0.005 * filt[3], 0.005 * filt[5], -0.035 * filt[0]])
-                p_now = self.tip_mid()
+                p_now = tip_now
                 p_des = p_des + v * DT
                 v = v + 2.0 * np.clip(p_des - p_now, -0.02, 0.02)
-                hq = self.d.xquat[self.hand_body]
+                hq = kin.xquat[self.hand_body]
                 hq_conj = hq * np.array([1, -1, -1, -1])
                 omega = 2.0 * axis_angle(quat_mul(hand_q0, hq_conj))
-                mujoco.mj_jacBody(self.m, self.d, jacp, jacr, self.hand_body)
+                mujoco.mj_jacBody(self.m, kin, jacp, jacr, self.hand_body)
                 Jv, Jw = jacp[:, dof], jacr[:, dof]
-                r = p_now - self.d.xpos[self.hand_body]
+                r = p_now - kin.xpos[self.hand_body]
                 skew = np.array([[0, -r[2], r[1]], [r[2], 0, -r[0]], [-r[1], r[0], 0]])
                 J = np.vstack([Jv - skew @ Jw, Jw])
                 A = J @ J.T + 0.02**2 * np.eye(6)
@@ -568,21 +719,25 @@ class Chain:
         self.events["cube_close_quat"] = cube_q_close.tolist()
         self.done_t = done_t
 
-    def observation(self, pad_obs):
-        q, qd = self.q(), self.qd()
+    def observation(self, pad_obs, tip_mid):
+        if self.sp["obs_target"]:       # 8.1 (25300 on): the targets sent last step (before the 0.5 s blend) and their change
+            q = np.clip(self.target, self.lo, self.hi)
+            qd = (self.target - self.tg_prev) / DT
+        else:
+            q, qd = self.q(), self.qd()
         nq = 2.0 * (q - self.obs_lo) / (self.obs_hi - self.obs_lo) - 1.0
         nq[9] = -0.7222                                 # 8.1: RotationBody read as -155 deg
         vel = 0.2 * qd
         vel[9] = 0.0
         R_base_inv = np.array([[0, -1, 0], [1, 0, 0], [0, 0, 1]], float)   # base x = world -y, base y = world +x
         cube = self.cube_pos()
-        cube_b = R_base_inv @ (cube - OBS_ORIGIN)
+        cube_b = R_base_inv @ (cube - self.sp["obs_origin"])
         cube_v = R_base_inv @ self.d.qvel[self.cube_v:self.cube_v + 3]
-        rel = R_base_inv @ (cube - self.tip_mid())
+        rel = R_base_inv @ (cube - tip_mid)
         obs = np.concatenate([nq, vel, cube_b, cube_v, rel, sensor_reading(pad_obs)])
         obs = np.clip(obs, -5.0, 5.0)
         obs[29] -= 0.115
-        obs[30] -= DZ
+        obs[30] -= self.sp["dz"]
         return np.concatenate([obs, self.yaw_obs])
 
     def handover_state(self, normal, pad_obs, t0, cube0):
@@ -599,7 +754,8 @@ class Chain:
             "cube_minus_fingertip_mid_m": (self.cube_pos() - self.tip_mid()).round(5).tolist(),
             "pad_N": pad_obs.round(3).tolist(), "pad_normal_N": normal.round(3).tolist(),
             "cube_tilt_deg": round(quat_tilt_deg(cq), 2),
-            "robot_base_pos_m": [0.0, 0.01, 0.0],
+            "robot_base_pos_m": list(self.sp["base_pos"]),
+            "hand_below_shoulder_m": round(float(self.sp["shoulder_z"] - self.d.xpos[self.hand_body][2]), 4),
         }
 
 
@@ -624,12 +780,18 @@ def summarize(c):
     s = {
         "spot_cm": [round(c.dx * 100, 2), round(c.dy * 100, 2)], "cube_yaw_deg": c.yaw_deg,
         "cube_mass_kg": float(c.m.body_mass[c.cube_body]), "theta_deg": round(c.theta, 2),
-        "table_e_m": c.e, "valid_spot": c.tables.valid(c.dx, c.dy),
+        "spec": c.sp["name"], "policy": c.sp["policy"],
+        "table_e_m": c.e, "table_e_pregrasp_m": c.e_F, "valid_spot": c.tables.valid(c.dx, c.dy),
         "phase_t_s": {"RAISE": 0.0, "SETTLE": 8.0 if ev["handover_t"] > 8.0 else None, "INSERT": round(ev["insert_t"], 3),
                       "GRASP_LIFT": round(ev["close_t"], 3), "RETURN": round(ev["return_t"], 3) if "return_t" in ev else None,
                       "DONE": round(ev["done_t"], 3) if "done_t" in ev else None},
         "handover_by": ev["handover_by"], "handover_err_deg": round(ev["handover_err_deg"], 2),
         "insert_end_arm_deg": ev["insert_end_arm_deg"], "insert_end_grav_deg": ev["insert_end_grav_deg"],
+        "insert_end_err_deg": ev["insert_end_err_deg"],
+        "robot_table_force_insert_max_n": round(float(tr["robot_table_force"][raise_i:close_i + 1].max()), 3),
+        "robot_table_force_close_05s_mean_n": round(float(tr["robot_table_force"][close_i:close_i + 31].mean()), 3),
+        "robot_table_force_close_05s_max_n": round(float(tr["robot_table_force"][close_i:close_i + 31].max()), 3),
+        "torque_limit_time_frac": dict(zip(ISAAC, (c.limit_steps / max(c.steps, 1)).round(3).tolist())),
         "first_touch_after_close_s": [None if v is None else round(v, 3) for v in ev["first_touch_s"]],
         "all_touch_after_close_s": None if ev["all_touch_s"] is None else round(ev["all_touch_s"], 3),
         "max_rise_m": round(float(rise[close_i:].max()), 4),

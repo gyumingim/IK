@@ -1,7 +1,8 @@
 """MuJoCo sim-to-sim check of Jungwoo's chain, as deploy/MUJOCO_SIM2SIM.md section 3 asks.
 
-    venv/bin/python sim2sim/run_eval.py                 # all conditions, writes sim2sim/results/
+    venv/bin/python sim2sim/run_eval.py                 # all conditions of the default spec (25550), writes sim2sim/results_25550/
     venv/bin/python sim2sim/run_eval.py --cond base     # one condition
+    venv/bin/python sim2sim/run_eval.py --spec 23025    # the 11-08 spec, writes sim2sim/results/ (as before)
 
 Spots: the seven required cube positions paired with the seven required cube angles (3.5), then RANDOM_N spots drawn
 (seed SEED) uniformly in the training box x -14..+2, y -28..+28 cm, kept only inside reach_mask_v65 (10), angle
@@ -10,7 +11,10 @@ U(-45, 45) deg. The same spot list runs under every condition:
   m30/m50  30 g / 50 g cube
   yawerr   base + a camera error U(-3, +3) deg on the cube angle input (43-44), drawn once per spot
   plain    base on MuJoCo's default contact / friction settings (the "before" of the physics change)
-  diag_*   diagnostics: base without the 1 rad/s joint velocity limit; base with impratio 100 instead of 10
+  diag_*   diagnostics: base without the 1 rad/s joint velocity limit; base with impratio 100 instead of 10;
+           25550 only: diag_actual = hand-over, lift IK and still checks on the simulated joint positions instead of
+           the sent targets (MUJOCO_SIM2SIM.md 0.4 asks for both); diag_ftkin = finger-table friction at PhysX's
+           kinetic average 1.475 instead of the static 1.6 (sim2sim/README.md, 25550 compatibility)
 Each spot writes results/<cond>/<nn>_x.._y.._yaw../summary.json and trace.npz; results/<cond>/summary.json and
 results/summary.json collect them.
 """
@@ -39,7 +43,10 @@ CONDITIONS = {
     # diagnostics, not adopted: each compatibility setting's own effect
     "diag_novlim": {"velocity_limit": None},
     "diag_imp100": {"impratio": 100.0},
+    "diag_actual": {"feedback": "actual"},
+    "diag_ftkin": {"finger_table_mu": 1.475},
 }
+ONLY_25550 = ("diag_actual", "diag_ftkin")
 
 
 def spots():
@@ -55,13 +62,16 @@ def spots():
     return out
 
 
-def run_condition(name, spec, spot_list, out_dir, model_cache):
+def run_condition(name, spec, spot_list, out_dir, model_cache, chain_spec):
     rng = np.random.default_rng(SEED + 1)
     errs = rng.uniform(-3.0, 3.0, len(spot_list))
     rows = []
     for k, (x, y, yaw) in enumerate(spot_list):
         kw = {"mass": spec.get("mass", 0.040), "physics": spec.get("physics", "matched"),
-              "tables": model_cache["tables"], "policy": model_cache["policy"]}
+              "tables": model_cache["tables"], "policy": model_cache["policy"], "spec": chain_spec}
+        for key in ("feedback", "finger_table_mu"):
+            if key in spec:
+                kw[key] = spec[key]
         if "velocity_limit" in spec:
             kw["velocity_limit"] = spec["velocity_limit"]
         if "impratio" in spec:
@@ -98,7 +108,21 @@ def aggregate(rows):
         if not r["done"]:
             fails.setdefault(r["fail_reason"], []).append(r["spot_cm"] + [r["cube_yaw_deg"]])
     return {
-        "runs": len(rows), "done": len(done),
+        "runs": len(rows), "done": len(done), "spec": rows[0].get("spec") if rows else None,
+        "policy": rows[0].get("policy") if rows else None,
+        # MUJOCO_SIM2SIM.md 0.9 / 3.1: finger 1 (first + distal pad) under 0.1 N at the hand-over; fingers on the
+        # table at the end of the reach-in and in the first 0.5 s of the grasp; servo error at the pre-grasp pose
+        "finger1_under_0p1N_at_done": sum((r["done_state"]["pad_N"][0] + r["done_state"]["pad_N"][3]) < 0.1 for r in done),
+        "three_digits_0p3N_at_done": sum(all(r["done_state"]["pad_N"][i] + r["done_state"]["pad_N"][i + 3] >= 0.3 for i in range(3)) for r in done),
+        "robot_table_force_insert_max_n": q([r["robot_table_force_insert_max_n"] for r in rows], 100),
+        "robot_table_force_close_05s_mean_n": {"median": q([r["robot_table_force_close_05s_mean_n"] for r in rows], 50),
+                                               "mean": round(float(np.mean([r["robot_table_force_close_05s_mean_n"] for r in rows])), 3),
+                                               "max": q([r["robot_table_force_close_05s_mean_n"] for r in rows], 100)},
+        "robot_table_force_close_05s_max_n": q([r["robot_table_force_close_05s_max_n"] for r in rows], 100),
+        "insert_end_err_deg_max": q([float(np.abs(r["insert_end_err_deg"]).max()) for r in rows], 100),
+        "insert_end_err_over_1deg": sum(float(np.abs(r["insert_end_err_deg"]).max()) > 1.0 for r in rows),
+        "hand_below_shoulder_at_done_m": q([r["done_state"]["hand_below_shoulder_m"] for r in done], 50),
+        "torque_limit_time_frac_mean": {k: round(float(np.mean([r["torque_limit_time_frac"][k] for r in rows])), 3) for k in C.ISAAC},
         "handover_t_s": [min(r["phase_t_s"]["INSERT"] for r in rows), max(r["phase_t_s"]["INSERT"] for r in rows)],
         "handover_timeouts": sum(r["handover_by"] != "converged" for r in rows),
         "close_to_done_s": {"min": q(t, 0), "median": q(t, 50), "max": q(t, 100)},
@@ -119,11 +143,16 @@ def aggregate(rows):
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--cond", nargs="*", default=list(CONDITIONS))
-    ap.add_argument("--out", default=os.path.join(HERE, "results"))
+    ap.add_argument("--cond", nargs="*", default=None)
+    ap.add_argument("--spec", default=C.SPEC, choices=sorted(C.SPECS))
+    ap.add_argument("--out", default=None)
     args = ap.parse_args()
+    if args.out is None:
+        args.out = os.path.join(HERE, "results" if args.spec == "23025" else "results_" + args.spec)
+    if args.cond is None:
+        args.cond = [c for c in CONDITIONS if args.spec == "25550" or c not in ONLY_25550]
     spot_list = spots()
-    cache = {"tables": C.Tables(), "policy": C.Policy()}
+    cache = {"tables": C.Tables(), "policy": C.Policy(args.spec)}
     os.makedirs(args.out, exist_ok=True)
     with open(os.path.join(args.out, "spots.json"), "w") as f:
         json.dump([{"dx_m": x, "dy_m": y, "cube_yaw_deg": yaw} for x, y, yaw in spot_list], f, indent=1)
@@ -133,7 +162,7 @@ def main():
         allsum = json.load(open(path))
     for name in args.cond:
         print(f"[{name}] {len(spot_list)} spots", flush=True)
-        rows = run_condition(name, CONDITIONS[name], spot_list, args.out, cache)
+        rows = run_condition(name, CONDITIONS[name], spot_list, args.out, cache, args.spec)
         agg = aggregate(rows)
         agg["physics"] = rows[0].get("physics") if rows else None
         with open(os.path.join(args.out, name, "summary.json"), "w") as f:
@@ -141,6 +170,10 @@ def main():
         allsum[name] = agg
         print(f"[{name}] done {agg['done']}/{agg['runs']}, close->done {agg['close_to_done_s']}, "
               f"tilt {agg['cube_tilt_at_done_deg']}, failures {list(agg['failures'])}", flush=True)
+        print(f"[{name}] finger 1 under 0.1 N at done {agg['finger1_under_0p1N_at_done']}/{agg['done']}, robot-table force: "
+              f"reach-in max {agg['robot_table_force_insert_max_n']} N, first 0.5 s of the grasp mean "
+              f"{agg['robot_table_force_close_05s_mean_n']}, pre-grasp servo error max {agg['insert_end_err_deg_max']} deg "
+              f"({agg['insert_end_err_over_1deg']} spots over 1 deg)", flush=True)
     with open(path, "w") as f:
         json.dump(allsum, f, indent=1)
 

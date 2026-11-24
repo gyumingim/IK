@@ -1,0 +1,5066 @@
+{
+ "aggregate": {
+  "runs": 27,
+  "done": 26,
+  "spec": "25550",
+  "policy": "grasp_lift_25550",
+  "finger1_under_0p1N_at_done": 2,
+  "three_digits_0p3N_at_done": 24,
+  "robot_table_force_insert_max_n": 134.057,
+  "robot_table_force_close_05s_mean_n": {
+   "median": 8.222,
+   "mean": 7.581,
+   "max": 17.384
+  },
+  "robot_table_force_close_05s_max_n": 29.768,
+  "insert_end_err_deg_max": 2.062,
+  "insert_end_err_over_1deg": 5,
+  "hand_below_shoulder_at_done_m": 0.262,
+  "torque_limit_time_frac_mean": {
+   "shoulder_pitch_to_shoulder_roll": 0.008,
+   "shoulder_roll_to_shoulder_yaw": 0.001,
+   "shoulder_yaw_to_upper_arm": 0.0,
+   "upper_arm_to_under_arm": 0.0,
+   "under_arm_to_wrist_pitch": 0.0,
+   "wrist_pitch_to_wrist_yaw": 0.011,
+   "wrist_yaw_to_hand_base": 0.0,
+   "hand_base_to_finger_1_1": 0.004,
+   "hand_base_to_finger_2_1": 0.049,
+   "hand_base_to_rotation_base": 0.002,
+   "finger_1_1_to_finger_1_2": 0.006,
+   "finger_1_2_to_finger_2_2": 0.01,
+   "rotation_base_to_finger_3_1": 0.371,
+   "finger_3_1_to_finger_3_2": 0.048
+  },
+  "handover_t_s": [
+   8.65,
+   8.667
+  ],
+  "handover_timeouts": 0,
+  "close_to_done_s": {
+   "min": 4.967,
+   "median": 5.133,
+   "max": 5.617
+  },
+  "cube_shift_before_grasp_mm": {
+   "median": 0.0,
+   "max": 22.36
+  },
+  "raise_insert_cube_robot_force_max_n": 37.098,
+  "cube_tilt_at_done_deg": {
+   "median": 8.315,
+   "p90": 14.51,
+   "max": 17.94
+  },
+  "cube_turn_in_hand_after_lift_deg": {
+   "median": 7.2,
+   "max": 22.84
+  },
+  "cube_rise_at_done_m": {
+   "min": 0.146,
+   "median": 0.157
+  },
+  "pad_N_at_done_median": [
+   0.0,
+   0.0,
+   0.0,
+   0.96,
+   0.92,
+   2.15
+  ],
+  "still_up_2s_after_done": 26,
+  "max_joint_speed_rad_s": 1.49,
+  "failures": {
+   "not all three digits touched the cube": [
+    [
+     2.0,
+     28.0,
+     20.0
+    ]
+   ]
+  },
+  "physics": {
+   "mode": "matched",
+   "mujoco_dt": 0.000833333333333,
+   "contact_tc": 0.002,
+   "cone": "elliptic",
+   "impratio": 10.0,
+   "velocity_limit": 1.0,
+   "spec": "25550",
+   "policy": "grasp_lift_25550",
+   "feedback": "actual",
+   "arm": "servo constraint",
+   "contact_pairs": 33,
+   "finger_table_mu": null
+  }
+ },
+ "runs": [
+  {
+   "spot_cm": [
+    0.0,
+    0.0
+   ],
+   "cube_yaw_deg": 0.0,
+   "cube_mass_kg": 0.04,
+   "theta_deg": -0.0,
+   "spec": "25550",
+   "policy": "grasp_lift_25550",
+   "table_e_m": 0.0,
+   "table_e_pregrasp_m": -0.005,
+   "valid_spot": true,
+   "phase_t_s": {
+    "RAISE": 0.0,
+    "SETTLE": 8.0,
+    "INSERT": 8.65,
+    "GRASP_LIFT": 9.4,
+    "RETURN": 11.55,
+    "DONE": 14.533
+   },
+   "handover_by": "converged",
+   "handover_err_deg": 0.43,
+   "insert_end_arm_deg": [
+    -15.88,
+    -0.0,
+    1.69,
+    55.56,
+    -5.45,
+    41.54,
+    4.08,
+    -170.46
+   ],
+   "insert_end_grav_deg": [
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0
+   ],
+   "insert_end_err_deg": [
+    -0.108,
+    -0.001,
+    0.166,
+    -0.127,
+    -0.213,
+    0.336,
+    0.566,
+    -0.358
+   ],
+   "robot_table_force_insert_max_n": 76.147,
+   "robot_table_force_close_05s_mean_n": 10.182,
+   "robot_table_force_close_05s_max_n": 18.996,
+   "torque_limit_time_frac": {
+    "shoulder_pitch_to_shoulder_roll": 0.007,
+    "shoulder_roll_to_shoulder_yaw": 0.0,
+    "shoulder_yaw_to_upper_arm": 0.0,
+    "upper_arm_to_under_arm": 0.0,
+    "under_arm_to_wrist_pitch": 0.0,
+    "wrist_pitch_to_wrist_yaw": 0.006,
+    "wrist_yaw_to_hand_base": 0.0,
+    "hand_base_to_finger_1_1": 0.0,
+    "hand_base_to_finger_2_1": 0.01,
+    "hand_base_to_rotation_base": 0.0,
+    "finger_1_1_to_finger_1_2": 0.0,
+    "finger_1_2_to_finger_2_2": 0.003,
+    "rotation_base_to_finger_3_1": 0.399,
+    "finger_3_1_to_finger_3_2": 0.05
+   },
+   "first_touch_after_close_s": [
+    0.65,
+    0.683,
+    0.483
+   ],
+   "all_touch_after_close_s": 0.683,
+   "max_rise_m": 0.1574,
+   "raise_cube_robot_force_max_n": 0.0,
+   "insert_cube_robot_force_max_n": 0.0,
+   "lift_cube_robot_force_max_n": 6.319,
+   "cube_shift_before_grasp_mm": 0.0,
+   "cube_shift_during_grasp_mm": 5.51,
+   "cube_turn_during_grasp_deg": 8.27,
+   "max_joint_speed_rad_s": 1.0,
+   "done": true,
+   "physics": {
+    "mode": "matched",
+    "mujoco_dt": 0.000833333333333,
+    "contact_tc": 0.002,
+    "cone": "elliptic",
+    "impratio": 10.0,
+    "velocity_limit": 1.0,
+    "spec": "25550",
+    "policy": "grasp_lift_25550",
+    "feedback": "actual",
+    "arm": "servo constraint",
+    "contact_pairs": 33,
+    "finger_table_mu": null
+   },
+   "cube_turn_after_lift_deg": 6.55,
+   "cube_turn_in_hand_after_lift_deg": 1.04,
+   "cube_turn_in_hand_during_grasp_deg": 7.85,
+   "done_state": {
+    "t_after_handover_s": 5.133,
+    "episode_t_s": 14.533,
+    "arm_q_deg": [
+     -0.027,
+     -0.001,
+     7.2,
+     89.746,
+     0.01,
+     -2.759,
+     0.057,
+     -169.682
+    ],
+    "finger_q_deg": [
+     3.927,
+     3.327,
+     -35.265,
+     -0.013,
+     -0.0,
+     45.673
+    ],
+    "hand_pos_m": [
+     -0.26445,
+     0.29555,
+     0.94569
+    ],
+    "hand_quat_wxyz": [
+     0.48018,
+     -0.45473,
+     0.51644,
+     -0.544
+    ],
+    "fingertip_mid_pos_m": [
+     -0.39467,
+     0.29994,
+     0.94491
+    ],
+    "cube_pos_m": [
+     -0.42477,
+     0.29359,
+     0.91737
+    ],
+    "cube_quat_wxyz": [
+     0.99642,
+     -0.02888,
+     0.0603,
+     0.05181
+    ],
+    "cube_rise_m": 0.1574,
+    "cube_minus_fingertip_mid_m": [
+     -0.0301,
+     -0.00636,
+     -0.02755
+    ],
+    "pad_N": [
+     -0.0,
+     0.972,
+     0.0,
+     0.962,
+     -0.0,
+     2.229
+    ],
+    "pad_normal_N": [
+     -0.0,
+     0.972,
+     -0.0,
+     0.962,
+     -0.0,
+     2.138
+    ],
+    "cube_tilt_deg": 7.67,
+    "robot_base_pos_m": [
+     0.0,
+     0.01,
+     -0.005
+    ],
+    "hand_below_shoulder_m": 0.2618
+   },
+   "still_up_at_end": true,
+   "fail_reason": null,
+   "condition": "diag_actual",
+   "yaw_obs_err_deg": 0.0
+  },
+  {
+   "spot_cm": [
+    2.0,
+    28.0
+   ],
+   "cube_yaw_deg": 20.0,
+   "cube_mass_kg": 0.04,
+   "theta_deg": -54.56,
+   "spec": "25550",
+   "policy": "grasp_lift_25550",
+   "table_e_m": 0.0,
+   "table_e_pregrasp_m": -0.005,
+   "valid_spot": true,
+   "phase_t_s": {
+    "RAISE": 0.0,
+    "SETTLE": 8.0,
+    "INSERT": 8.65,
+    "GRASP_LIFT": 9.4,
+    "RETURN": null,
+    "DONE": null
+   },
+   "handover_by": "converged",
+   "handover_err_deg": 0.38,
+   "insert_end_arm_deg": [
+    7.55,
+    -0.02,
+    52.48,
+    37.38,
+    -18.56,
+    41.39,
+    19.54,
+    -168.04
+   ],
+   "insert_end_grav_deg": [
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0
+   ],
+   "insert_end_err_deg": [
+    -0.526,
+    -0.024,
+    0.8,
+    -0.466,
+    -1.743,
+    0.388,
+    0.682,
+    2.062
+   ],
+   "robot_table_force_insert_max_n": 134.057,
+   "robot_table_force_close_05s_mean_n": 17.384,
+   "robot_table_force_close_05s_max_n": 25.545,
+   "torque_limit_time_frac": {
+    "shoulder_pitch_to_shoulder_roll": 0.029,
+    "shoulder_roll_to_shoulder_yaw": 0.019,
+    "shoulder_yaw_to_upper_arm": 0.0,
+    "upper_arm_to_under_arm": 0.0,
+    "under_arm_to_wrist_pitch": 0.0,
+    "wrist_pitch_to_wrist_yaw": 0.109,
+    "wrist_yaw_to_hand_base": 0.001,
+    "hand_base_to_finger_1_1": 0.0,
+    "hand_base_to_finger_2_1": 0.141,
+    "hand_base_to_rotation_base": 0.044,
+    "finger_1_1_to_finger_1_2": 0.128,
+    "finger_1_2_to_finger_2_2": 0.214,
+    "rotation_base_to_finger_3_1": 0.119,
+    "finger_3_1_to_finger_3_2": 0.088
+   },
+   "first_touch_after_close_s": [
+    null,
+    1.433,
+    0.0
+   ],
+   "all_touch_after_close_s": null,
+   "max_rise_m": 0.018,
+   "raise_cube_robot_force_max_n": 0.0,
+   "insert_cube_robot_force_max_n": 5.698,
+   "lift_cube_robot_force_max_n": 5.615,
+   "cube_shift_before_grasp_mm": 22.36,
+   "cube_shift_during_grasp_mm": 3.4,
+   "cube_turn_during_grasp_deg": 16.71,
+   "max_joint_speed_rad_s": 1.49,
+   "done": false,
+   "physics": {
+    "mode": "matched",
+    "mujoco_dt": 0.000833333333333,
+    "contact_tc": 0.002,
+    "cone": "elliptic",
+    "impratio": 10.0,
+    "velocity_limit": 1.0,
+    "spec": "25550",
+    "policy": "grasp_lift_25550",
+    "feedback": "actual",
+    "arm": "servo constraint",
+    "contact_pairs": 33,
+    "finger_table_mu": null
+   },
+   "fail_reason": "not all three digits touched the cube",
+   "condition": "diag_actual",
+   "yaw_obs_err_deg": 0.0
+  },
+  {
+   "spot_cm": [
+    2.0,
+    -28.0
+   ],
+   "cube_yaw_deg": -20.0,
+   "cube_mass_kg": 0.04,
+   "theta_deg": 57.63,
+   "spec": "25550",
+   "policy": "grasp_lift_25550",
+   "table_e_m": 0.0,
+   "table_e_pregrasp_m": -0.005,
+   "valid_spot": true,
+   "phase_t_s": {
+    "RAISE": 0.0,
+    "SETTLE": 8.0,
+    "INSERT": 8.65,
+    "GRASP_LIFT": 9.4,
+    "RETURN": 11.5,
+    "DONE": 14.533
+   },
+   "handover_by": "converged",
+   "handover_err_deg": 0.39,
+   "insert_end_arm_deg": [
+    12.15,
+    0.0,
+    -53.2,
+    33.5,
+    5.58,
+    41.8,
+    -14.06,
+    -170.46
+   ],
+   "insert_end_grav_deg": [
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0
+   ],
+   "insert_end_err_deg": [
+    -0.095,
+    0.002,
+    -0.017,
+    -0.094,
+    0.131,
+    -0.149,
+    -0.004,
+    -0.364
+   ],
+   "robot_table_force_insert_max_n": 12.45,
+   "robot_table_force_close_05s_mean_n": 0.0,
+   "robot_table_force_close_05s_max_n": 0.0,
+   "torque_limit_time_frac": {
+    "shoulder_pitch_to_shoulder_roll": 0.0,
+    "shoulder_roll_to_shoulder_yaw": 0.0,
+    "shoulder_yaw_to_upper_arm": 0.0,
+    "upper_arm_to_under_arm": 0.0,
+    "under_arm_to_wrist_pitch": 0.0,
+    "wrist_pitch_to_wrist_yaw": 0.0,
+    "wrist_yaw_to_hand_base": 0.0,
+    "hand_base_to_finger_1_1": 0.0,
+    "hand_base_to_finger_2_1": 0.0,
+    "hand_base_to_rotation_base": 0.0,
+    "finger_1_1_to_finger_1_2": 0.0,
+    "finger_1_2_to_finger_2_2": 0.0,
+    "rotation_base_to_finger_3_1": 0.406,
+    "finger_3_1_to_finger_3_2": 0.051
+   },
+   "first_touch_after_close_s": [
+    0.45,
+    0.383,
+    0.433
+   ],
+   "all_touch_after_close_s": 0.45,
+   "max_rise_m": 0.1567,
+   "raise_cube_robot_force_max_n": 0.0,
+   "insert_cube_robot_force_max_n": 12.118,
+   "lift_cube_robot_force_max_n": 5.527,
+   "cube_shift_before_grasp_mm": 6.41,
+   "cube_shift_during_grasp_mm": 3.0,
+   "cube_turn_during_grasp_deg": 2.51,
+   "max_joint_speed_rad_s": 1.0,
+   "done": true,
+   "physics": {
+    "mode": "matched",
+    "mujoco_dt": 0.000833333333333,
+    "contact_tc": 0.002,
+    "cone": "elliptic",
+    "impratio": 10.0,
+    "velocity_limit": 1.0,
+    "spec": "25550",
+    "policy": "grasp_lift_25550",
+    "feedback": "actual",
+    "arm": "servo constraint",
+    "contact_pairs": 33,
+    "finger_table_mu": null
+   },
+   "cube_turn_after_lift_deg": 52.2,
+   "cube_turn_in_hand_after_lift_deg": 10.1,
+   "cube_turn_in_hand_during_grasp_deg": 2.67,
+   "done_state": {
+    "t_after_handover_s": 5.133,
+    "episode_t_s": 14.533,
+    "arm_q_deg": [
+     -0.026,
+     -0.001,
+     7.2,
+     89.746,
+     0.009,
+     -2.758,
+     0.051,
+     -169.639
+    ],
+    "finger_q_deg": [
+     -0.122,
+     -0.12,
+     -44.233,
+     -0.018,
+     -0.018,
+     57.898
+    ],
+    "hand_pos_m": [
+     -0.26445,
+     0.29555,
+     0.9457
+    ],
+    "hand_quat_wxyz": [
+     0.48014,
+     -0.45478,
+     0.51641,
+     -0.54402
+    ],
+    "fingertip_mid_pos_m": [
+     -0.39261,
+     0.29995,
+     0.94552
+    ],
+    "cube_pos_m": [
+     -0.41951,
+     0.29364,
+     0.9167
+    ],
+    "cube_quat_wxyz": [
+     0.86559,
+     -0.01524,
+     0.03766,
+     -0.4991
+    ],
+    "cube_rise_m": 0.1567,
+    "cube_minus_fingertip_mid_m": [
+     -0.0269,
+     -0.00631,
+     -0.02882
+    ],
+    "pad_N": [
+     -0.0,
+     -0.0,
+     0.0,
+     1.095,
+     1.082,
+     2.195
+    ],
+    "pad_normal_N": [
+     -0.0,
+     -0.0,
+     -0.0,
+     1.095,
+     1.082,
+     2.147
+    ],
+    "cube_tilt_deg": 4.66,
+    "robot_base_pos_m": [
+     0.0,
+     0.01,
+     -0.005
+    ],
+    "hand_below_shoulder_m": 0.2618
+   },
+   "still_up_at_end": true,
+   "fail_reason": null,
+   "condition": "diag_actual",
+   "yaw_obs_err_deg": 0.0
+  },
+  {
+   "spot_cm": [
+    -8.0,
+    18.0
+   ],
+   "cube_yaw_deg": 35.0,
+   "cube_mass_kg": 0.04,
+   "theta_deg": -31.86,
+   "spec": "25550",
+   "policy": "grasp_lift_25550",
+   "table_e_m": 0.0,
+   "table_e_pregrasp_m": -0.005,
+   "valid_spot": true,
+   "phase_t_s": {
+    "RAISE": 0.0,
+    "SETTLE": 8.0,
+    "INSERT": 8.65,
+    "GRASP_LIFT": 9.4,
+    "RETURN": 11.5,
+    "DONE": 14.533
+   },
+   "handover_by": "converged",
+   "handover_err_deg": 0.55,
+   "insert_end_arm_deg": [
+    12.11,
+    -0.0,
+    35.83,
+    31.28,
+    -6.25,
+    40.71,
+    12.06,
+    -168.34
+   ],
+   "insert_end_grav_deg": [
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0
+   ],
+   "insert_end_err_deg": [
+    -0.089,
+    -0.004,
+    -0.249,
+    -0.033,
+    0.234,
+    0.07,
+    -0.486,
+    1.762
+   ],
+   "robot_table_force_insert_max_n": 75.952,
+   "robot_table_force_close_05s_mean_n": 1.057,
+   "robot_table_force_close_05s_max_n": 4.099,
+   "torque_limit_time_frac": {
+    "shoulder_pitch_to_shoulder_roll": 0.002,
+    "shoulder_roll_to_shoulder_yaw": 0.0,
+    "shoulder_yaw_to_upper_arm": 0.0,
+    "upper_arm_to_under_arm": 0.0,
+    "under_arm_to_wrist_pitch": 0.0,
+    "wrist_pitch_to_wrist_yaw": 0.002,
+    "wrist_yaw_to_hand_base": 0.0,
+    "hand_base_to_finger_1_1": 0.001,
+    "hand_base_to_finger_2_1": 0.007,
+    "hand_base_to_rotation_base": 0.0,
+    "finger_1_1_to_finger_1_2": 0.0,
+    "finger_1_2_to_finger_2_2": 0.0,
+    "rotation_base_to_finger_3_1": 0.45,
+    "finger_3_1_to_finger_3_2": 0.028
+   },
+   "first_touch_after_close_s": [
+    0.583,
+    0.6,
+    0.0
+   ],
+   "all_touch_after_close_s": 0.6,
+   "max_rise_m": 0.154,
+   "raise_cube_robot_force_max_n": 0.0,
+   "insert_cube_robot_force_max_n": 3.392,
+   "lift_cube_robot_force_max_n": 5.237,
+   "cube_shift_before_grasp_mm": 5.96,
+   "cube_shift_during_grasp_mm": 6.85,
+   "cube_turn_during_grasp_deg": 6.18,
+   "max_joint_speed_rad_s": 1.0,
+   "done": true,
+   "physics": {
+    "mode": "matched",
+    "mujoco_dt": 0.000833333333333,
+    "contact_tc": 0.002,
+    "cone": "elliptic",
+    "impratio": 10.0,
+    "velocity_limit": 1.0,
+    "spec": "25550",
+    "policy": "grasp_lift_25550",
+    "feedback": "actual",
+    "arm": "servo constraint",
+    "contact_pairs": 33,
+    "finger_table_mu": null
+   },
+   "cube_turn_after_lift_deg": 35.48,
+   "cube_turn_in_hand_after_lift_deg": 5.89,
+   "cube_turn_in_hand_during_grasp_deg": 6.04,
+   "done_state": {
+    "t_after_handover_s": 5.133,
+    "episode_t_s": 14.533,
+    "arm_q_deg": [
+     -0.026,
+     -0.0,
+     7.2,
+     89.746,
+     0.01,
+     -2.759,
+     0.057,
+     -169.568
+    ],
+    "finger_q_deg": [
+     2.49,
+     2.715,
+     -32.575,
+     -0.05,
+     -0.05,
+     39.233
+    ],
+    "hand_pos_m": [
+     -0.26445,
+     0.29555,
+     0.94569
+    ],
+    "hand_quat_wxyz": [
+     0.48018,
+     -0.45474,
+     0.51644,
+     -0.544
+    ],
+    "fingertip_mid_pos_m": [
+     -0.39507,
+     0.30159,
+     0.94478
+    ],
+    "cube_pos_m": [
+     -0.42106,
+     0.29079,
+     0.91488
+    ],
+    "cube_quat_wxyz": [
+     0.85185,
+     -0.01469,
+     0.03271,
+     0.52256
+    ],
+    "cube_rise_m": 0.1539,
+    "cube_minus_fingertip_mid_m": [
+     -0.02599,
+     -0.0108,
+     -0.0299
+    ],
+    "pad_N": [
+     -0.0,
+     -0.0,
+     0.0,
+     1.119,
+     1.131,
+     2.442
+    ],
+    "pad_normal_N": [
+     -0.0,
+     -0.0,
+     -0.0,
+     1.119,
+     1.131,
+     2.025
+    ],
+    "cube_tilt_deg": 4.11,
+    "robot_base_pos_m": [
+     0.0,
+     0.01,
+     -0.005
+    ],
+    "hand_below_shoulder_m": 0.2618
+   },
+   "still_up_at_end": true,
+   "fail_reason": null,
+   "condition": "diag_actual",
+   "yaw_obs_err_deg": 0.0
+  },
+  {
+   "spot_cm": [
+    -8.0,
+    -18.0
+   ],
+   "cube_yaw_deg": -35.0,
+   "cube_mass_kg": 0.04,
+   "theta_deg": 32.48,
+   "spec": "25550",
+   "policy": "grasp_lift_25550",
+   "table_e_m": 0.0,
+   "table_e_pregrasp_m": -0.005,
+   "valid_spot": true,
+   "phase_t_s": {
+    "RAISE": 0.0,
+    "SETTLE": 8.0,
+    "INSERT": 8.65,
+    "GRASP_LIFT": 9.4,
+    "RETURN": 11.45,
+    "DONE": 14.433
+   },
+   "handover_by": "converged",
+   "handover_err_deg": 0.43,
+   "insert_end_arm_deg": [
+    13.33,
+    0.01,
+    -30.73,
+    28.99,
+    -0.02,
+    40.78,
+    -6.32,
+    -170.46
+   ],
+   "insert_end_grav_deg": [
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0
+   ],
+   "insert_end_err_deg": [
+    -0.129,
+    0.007,
+    0.198,
+    -0.063,
+    -0.238,
+    0.305,
+    0.481,
+    -0.363
+   ],
+   "robot_table_force_insert_max_n": 83.714,
+   "robot_table_force_close_05s_mean_n": 7.48,
+   "robot_table_force_close_05s_max_n": 19.372,
+   "torque_limit_time_frac": {
+    "shoulder_pitch_to_shoulder_roll": 0.008,
+    "shoulder_roll_to_shoulder_yaw": 0.0,
+    "shoulder_yaw_to_upper_arm": 0.0,
+    "upper_arm_to_under_arm": 0.0,
+    "under_arm_to_wrist_pitch": 0.0,
+    "wrist_pitch_to_wrist_yaw": 0.007,
+    "wrist_yaw_to_hand_base": 0.0,
+    "hand_base_to_finger_1_1": 0.001,
+    "hand_base_to_finger_2_1": 0.012,
+    "hand_base_to_rotation_base": 0.0,
+    "finger_1_1_to_finger_1_2": 0.0,
+    "finger_1_2_to_finger_2_2": 0.0,
+    "rotation_base_to_finger_3_1": 0.405,
+    "finger_3_1_to_finger_3_2": 0.061
+   },
+   "first_touch_after_close_s": [
+    0.433,
+    0.433,
+    0.417
+   ],
+   "all_touch_after_close_s": 0.433,
+   "max_rise_m": 0.1589,
+   "raise_cube_robot_force_max_n": 0.0,
+   "insert_cube_robot_force_max_n": 0.0,
+   "lift_cube_robot_force_max_n": 5.469,
+   "cube_shift_before_grasp_mm": 0.0,
+   "cube_shift_during_grasp_mm": 4.17,
+   "cube_turn_during_grasp_deg": 3.9,
+   "max_joint_speed_rad_s": 1.0,
+   "done": true,
+   "physics": {
+    "mode": "matched",
+    "mujoco_dt": 0.000833333333333,
+    "contact_tc": 0.002,
+    "cone": "elliptic",
+    "impratio": 10.0,
+    "velocity_limit": 1.0,
+    "spec": "25550",
+    "policy": "grasp_lift_25550",
+    "feedback": "actual",
+    "arm": "servo constraint",
+    "contact_pairs": 33,
+    "finger_table_mu": null
+   },
+   "cube_turn_after_lift_deg": 29.45,
+   "cube_turn_in_hand_after_lift_deg": 7.65,
+   "cube_turn_in_hand_during_grasp_deg": 3.81,
+   "done_state": {
+    "t_after_handover_s": 5.033,
+    "episode_t_s": 14.433,
+    "arm_q_deg": [
+     -0.026,
+     -0.001,
+     7.2,
+     89.746,
+     0.008,
+     -2.758,
+     0.05,
+     -169.7
+    ],
+    "finger_q_deg": [
+     -0.132,
+     -0.085,
+     -42.299,
+     -0.018,
+     -0.016,
+     53.964
+    ],
+    "hand_pos_m": [
+     -0.26445,
+     0.29555,
+     0.94569
+    ],
+    "hand_quat_wxyz": [
+     0.48014,
+     -0.45478,
+     0.5164,
+     -0.54403
+    ],
+    "fingertip_mid_pos_m": [
+     -0.39303,
+     0.30053,
+     0.94537
+    ],
+    "cube_pos_m": [
+     -0.41971,
+     0.2935,
+     0.91889
+    ],
+    "cube_quat_wxyz": [
+     0.86504,
+     -0.02501,
+     0.05186,
+     -0.49839
+    ],
+    "cube_rise_m": 0.1589,
+    "cube_minus_fingertip_mid_m": [
+     -0.02668,
+     -0.00703,
+     -0.02649
+    ],
+    "pad_N": [
+     -0.0,
+     -0.0,
+     0.0,
+     1.192,
+     1.002,
+     2.212
+    ],
+    "pad_normal_N": [
+     -0.0,
+     -0.0,
+     -0.0,
+     1.192,
+     1.002,
+     2.172
+    ],
+    "cube_tilt_deg": 6.6,
+    "robot_base_pos_m": [
+     0.0,
+     0.01,
+     -0.005
+    ],
+    "hand_below_shoulder_m": 0.2618
+   },
+   "still_up_at_end": true,
+   "fail_reason": null,
+   "condition": "diag_actual",
+   "yaw_obs_err_deg": 0.0
+  },
+  {
+   "spot_cm": [
+    -14.0,
+    -8.0
+   ],
+   "cube_yaw_deg": 45.0,
+   "cube_mass_kg": 0.04,
+   "theta_deg": 14.34,
+   "spec": "25550",
+   "policy": "grasp_lift_25550",
+   "table_e_m": 0.0,
+   "table_e_pregrasp_m": -0.005,
+   "valid_spot": true,
+   "phase_t_s": {
+    "RAISE": 0.0,
+    "SETTLE": 8.0,
+    "INSERT": 8.667,
+    "GRASP_LIFT": 9.417,
+    "RETURN": 11.483,
+    "DONE": 14.467
+   },
+   "handover_by": "converged",
+   "handover_err_deg": 0.55,
+   "insert_end_arm_deg": [
+    19.89,
+    0.0,
+    -23.23,
+    17.98,
+    -13.74,
+    44.35,
+    -0.15,
+    -170.46
+   ],
+   "insert_end_grav_deg": [
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0
+   ],
+   "insert_end_err_deg": [
+    -0.15,
+    0.002,
+    0.082,
+    0.022,
+    -0.1,
+    0.562,
+    0.752,
+    -0.359
+   ],
+   "robot_table_force_insert_max_n": 84.721,
+   "robot_table_force_close_05s_mean_n": 9.243,
+   "robot_table_force_close_05s_max_n": 23.182,
+   "torque_limit_time_frac": {
+    "shoulder_pitch_to_shoulder_roll": 0.01,
+    "shoulder_roll_to_shoulder_yaw": 0.0,
+    "shoulder_yaw_to_upper_arm": 0.0,
+    "upper_arm_to_under_arm": 0.0,
+    "under_arm_to_wrist_pitch": 0.0,
+    "wrist_pitch_to_wrist_yaw": 0.014,
+    "wrist_yaw_to_hand_base": 0.0,
+    "hand_base_to_finger_1_1": 0.003,
+    "hand_base_to_finger_2_1": 0.01,
+    "hand_base_to_rotation_base": 0.0,
+    "finger_1_1_to_finger_1_2": 0.001,
+    "finger_1_2_to_finger_2_2": 0.0,
+    "rotation_base_to_finger_3_1": 0.401,
+    "finger_3_1_to_finger_3_2": 0.035
+   },
+   "first_touch_after_close_s": [
+    0.083,
+    0.0,
+    0.467
+   ],
+   "all_touch_after_close_s": 0.467,
+   "max_rise_m": 0.1581,
+   "raise_cube_robot_force_max_n": 0.0,
+   "insert_cube_robot_force_max_n": 34.517,
+   "lift_cube_robot_force_max_n": 6.08,
+   "cube_shift_before_grasp_mm": 9.58,
+   "cube_shift_during_grasp_mm": 6.85,
+   "cube_turn_during_grasp_deg": 6.31,
+   "max_joint_speed_rad_s": 1.023,
+   "done": true,
+   "physics": {
+    "mode": "matched",
+    "mujoco_dt": 0.000833333333333,
+    "contact_tc": 0.002,
+    "cone": "elliptic",
+    "impratio": 10.0,
+    "velocity_limit": 1.0,
+    "spec": "25550",
+    "policy": "grasp_lift_25550",
+    "feedback": "actual",
+    "arm": "servo constraint",
+    "contact_pairs": 33,
+    "finger_table_mu": null
+   },
+   "cube_turn_after_lift_deg": 15.55,
+   "cube_turn_in_hand_after_lift_deg": 4.4,
+   "cube_turn_in_hand_during_grasp_deg": 6.59,
+   "done_state": {
+    "t_after_handover_s": 5.05,
+    "episode_t_s": 14.467,
+    "arm_q_deg": [
+     -0.026,
+     -0.0,
+     7.2,
+     89.745,
+     0.009,
+     -2.76,
+     0.052,
+     -169.756
+    ],
+    "finger_q_deg": [
+     2.952,
+     2.956,
+     -33.673,
+     -0.046,
+     -0.051,
+     46.499
+    ],
+    "hand_pos_m": [
+     -0.26445,
+     0.29555,
+     0.94569
+    ],
+    "hand_quat_wxyz": [
+     0.48016,
+     -0.45476,
+     0.5164,
+     -0.54403
+    ],
+    "fingertip_mid_pos_m": [
+     -0.39491,
+     0.30099,
+     0.94478
+    ],
+    "cube_pos_m": [
+     -0.42904,
+     0.29392,
+     0.91896
+    ],
+    "cube_quat_wxyz": [
+     0.81754,
+     0.03669,
+     0.04615,
+     0.57285
+    ],
+    "cube_rise_m": 0.1581,
+    "cube_minus_fingertip_mid_m": [
+     -0.03413,
+     -0.00707,
+     -0.02582
+    ],
+    "pad_N": [
+     -0.0,
+     -0.0,
+     0.0,
+     0.866,
+     0.864,
+     1.753
+    ],
+    "pad_normal_N": [
+     -0.0,
+     -0.0,
+     -0.0,
+     0.866,
+     0.864,
+     1.595
+    ],
+    "cube_tilt_deg": 6.76,
+    "robot_base_pos_m": [
+     0.0,
+     0.01,
+     -0.005
+    ],
+    "hand_below_shoulder_m": 0.2618
+   },
+   "still_up_at_end": true,
+   "fail_reason": null,
+   "condition": "diag_actual",
+   "yaw_obs_err_deg": 0.0
+  },
+  {
+   "spot_cm": [
+    -14.0,
+    6.0
+   ],
+   "cube_yaw_deg": -45.0,
+   "cube_mass_kg": 0.04,
+   "theta_deg": -10.44,
+   "spec": "25550",
+   "policy": "grasp_lift_25550",
+   "table_e_m": 0.0,
+   "table_e_pregrasp_m": -0.005,
+   "valid_spot": true,
+   "phase_t_s": {
+    "RAISE": 0.0,
+    "SETTLE": 8.0,
+    "INSERT": 8.667,
+    "GRASP_LIFT": 9.417,
+    "RETURN": 11.583,
+    "DONE": 14.567
+   },
+   "handover_by": "converged",
+   "handover_err_deg": 0.58,
+   "insert_end_arm_deg": [
+    17.68,
+    -0.0,
+    18.99,
+    21.57,
+    0.89,
+    42.79,
+    6.71,
+    -168.62
+   ],
+   "insert_end_grav_deg": [
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0
+   ],
+   "insert_end_err_deg": [
+    -0.113,
+    -0.003,
+    -0.122,
+    -0.021,
+    0.128,
+    0.191,
+    -0.097,
+    1.479
+   ],
+   "robot_table_force_insert_max_n": 79.309,
+   "robot_table_force_close_05s_mean_n": 2.87,
+   "robot_table_force_close_05s_max_n": 10.217,
+   "torque_limit_time_frac": {
+    "shoulder_pitch_to_shoulder_roll": 0.009,
+    "shoulder_roll_to_shoulder_yaw": 0.0,
+    "shoulder_yaw_to_upper_arm": 0.0,
+    "upper_arm_to_under_arm": 0.0,
+    "under_arm_to_wrist_pitch": 0.0,
+    "wrist_pitch_to_wrist_yaw": 0.008,
+    "wrist_yaw_to_hand_base": 0.0,
+    "hand_base_to_finger_1_1": 0.001,
+    "hand_base_to_finger_2_1": 0.41,
+    "hand_base_to_rotation_base": 0.0,
+    "finger_1_1_to_finger_1_2": 0.0,
+    "finger_1_2_to_finger_2_2": 0.0,
+    "rotation_base_to_finger_3_1": 0.099,
+    "finger_3_1_to_finger_3_2": 0.037
+   },
+   "first_touch_after_close_s": [
+    0.967,
+    0.683,
+    0.0
+   ],
+   "all_touch_after_close_s": 0.967,
+   "max_rise_m": 0.1514,
+   "raise_cube_robot_force_max_n": 0.0,
+   "insert_cube_robot_force_max_n": 2.736,
+   "lift_cube_robot_force_max_n": 6.589,
+   "cube_shift_before_grasp_mm": 7.81,
+   "cube_shift_during_grasp_mm": 6.3,
+   "cube_turn_during_grasp_deg": 8.2,
+   "max_joint_speed_rad_s": 1.003,
+   "done": true,
+   "physics": {
+    "mode": "matched",
+    "mujoco_dt": 0.000833333333333,
+    "contact_tc": 0.002,
+    "cone": "elliptic",
+    "impratio": 10.0,
+    "velocity_limit": 1.0,
+    "spec": "25550",
+    "policy": "grasp_lift_25550",
+    "feedback": "actual",
+    "arm": "servo constraint",
+    "contact_pairs": 33,
+    "finger_table_mu": null
+   },
+   "cube_turn_after_lift_deg": 19.25,
+   "cube_turn_in_hand_after_lift_deg": 14.62,
+   "cube_turn_in_hand_during_grasp_deg": 7.9,
+   "done_state": {
+    "t_after_handover_s": 5.15,
+    "episode_t_s": 14.567,
+    "arm_q_deg": [
+     -0.026,
+     -0.0,
+     7.2,
+     89.746,
+     0.005,
+     -2.757,
+     0.044,
+     -169.569
+    ],
+    "finger_q_deg": [
+     30.004,
+     -7.628,
+     -30.211,
+     0.002,
+     -0.063,
+     59.131
+    ],
+    "hand_pos_m": [
+     -0.26445,
+     0.29555,
+     0.9457
+    ],
+    "hand_quat_wxyz": [
+     0.48009,
+     -0.45483,
+     0.51637,
+     -0.54406
+    ],
+    "fingertip_mid_pos_m": [
+     -0.39316,
+     0.29607,
+     0.94479
+    ],
+    "cube_pos_m": [
+     -0.41592,
+     0.30494,
+     0.91164
+    ],
+    "cube_quat_wxyz": [
+     0.94318,
+     -0.02177,
+     -0.02366,
+     -0.33073
+    ],
+    "cube_rise_m": 0.1514,
+    "cube_minus_fingertip_mid_m": [
+     -0.02276,
+     0.00888,
+     -0.03315
+    ],
+    "pad_N": [
+     -0.0,
+     -0.0,
+     0.0,
+     0.0,
+     1.871,
+     1.999
+    ],
+    "pad_normal_N": [
+     -0.0,
+     -0.0,
+     -0.0,
+     0.0,
+     1.871,
+     1.486
+    ],
+    "cube_tilt_deg": 3.69,
+    "robot_base_pos_m": [
+     0.0,
+     0.01,
+     -0.005
+    ],
+    "hand_below_shoulder_m": 0.2618
+   },
+   "still_up_at_end": true,
+   "fail_reason": null,
+   "condition": "diag_actual",
+   "yaw_obs_err_deg": 0.0
+  },
+  {
+   "spot_cm": [
+    -3.81,
+    -12.89
+   ],
+   "cube_yaw_deg": -41.31,
+   "cube_mass_kg": 0.04,
+   "theta_deg": 21.06,
+   "spec": "25550",
+   "policy": "grasp_lift_25550",
+   "table_e_m": 0.0,
+   "table_e_pregrasp_m": -0.005,
+   "valid_spot": true,
+   "phase_t_s": {
+    "RAISE": 0.0,
+    "SETTLE": 8.0,
+    "INSERT": 8.65,
+    "GRASP_LIFT": 9.4,
+    "RETURN": 11.417,
+    "DONE": 14.4
+   },
+   "handover_by": "converged",
+   "handover_err_deg": 0.5,
+   "insert_end_arm_deg": [
+    -3.92,
+    0.0,
+    -16.22,
+    47.59,
+    -0.41,
+    37.39,
+    2.29,
+    -170.46
+   ],
+   "insert_end_grav_deg": [
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0
+   ],
+   "insert_end_err_deg": [
+    -0.115,
+    0.004,
+    0.23,
+    -0.077,
+    -0.194,
+    0.339,
+    0.585,
+    -0.359
+   ],
+   "robot_table_force_insert_max_n": 79.059,
+   "robot_table_force_close_05s_mean_n": 7.842,
+   "robot_table_force_close_05s_max_n": 19.574,
+   "torque_limit_time_frac": {
+    "shoulder_pitch_to_shoulder_roll": 0.006,
+    "shoulder_roll_to_shoulder_yaw": 0.0,
+    "shoulder_yaw_to_upper_arm": 0.0,
+    "upper_arm_to_under_arm": 0.0,
+    "under_arm_to_wrist_pitch": 0.0,
+    "wrist_pitch_to_wrist_yaw": 0.001,
+    "wrist_yaw_to_hand_base": 0.0,
+    "hand_base_to_finger_1_1": 0.0,
+    "hand_base_to_finger_2_1": 0.008,
+    "hand_base_to_rotation_base": 0.0,
+    "finger_1_1_to_finger_1_2": 0.0,
+    "finger_1_2_to_finger_2_2": 0.0,
+    "rotation_base_to_finger_3_1": 0.41,
+    "finger_3_1_to_finger_3_2": 0.044
+   },
+   "first_touch_after_close_s": [
+    0.417,
+    0.45,
+    0.317
+   ],
+   "all_touch_after_close_s": 0.45,
+   "max_rise_m": 0.1589,
+   "raise_cube_robot_force_max_n": 0.0,
+   "insert_cube_robot_force_max_n": 0.0,
+   "lift_cube_robot_force_max_n": 5.565,
+   "cube_shift_before_grasp_mm": 0.0,
+   "cube_shift_during_grasp_mm": 4.21,
+   "cube_turn_during_grasp_deg": 4.48,
+   "max_joint_speed_rad_s": 1.0,
+   "done": true,
+   "physics": {
+    "mode": "matched",
+    "mujoco_dt": 0.000833333333333,
+    "contact_tc": 0.002,
+    "cone": "elliptic",
+    "impratio": 10.0,
+    "velocity_limit": 1.0,
+    "spec": "25550",
+    "policy": "grasp_lift_25550",
+    "feedback": "actual",
+    "arm": "servo constraint",
+    "contact_pairs": 33,
+    "finger_table_mu": null
+   },
+   "cube_turn_after_lift_deg": 16.98,
+   "cube_turn_in_hand_after_lift_deg": 7.6,
+   "cube_turn_in_hand_during_grasp_deg": 4.64,
+   "done_state": {
+    "t_after_handover_s": 5.0,
+    "episode_t_s": 14.4,
+    "arm_q_deg": [
+     -0.026,
+     -0.0,
+     7.2,
+     89.746,
+     0.012,
+     -2.758,
+     0.059,
+     -169.683
+    ],
+    "finger_q_deg": [
+     1.053,
+     1.121,
+     -42.473,
+     -0.023,
+     -0.024,
+     52.302
+    ],
+    "hand_pos_m": [
+     -0.26445,
+     0.29555,
+     0.94569
+    ],
+    "hand_quat_wxyz": [
+     0.4802,
+     -0.45472,
+     0.51646,
+     -0.54397
+    ],
+    "fingertip_mid_pos_m": [
+     -0.3931,
+     0.29958,
+     0.94539
+    ],
+    "cube_pos_m": [
+     -0.42047,
+     0.29146,
+     0.91892
+    ],
+    "cube_quat_wxyz": [
+     0.88898,
+     -0.03066,
+     0.06697,
+     -0.45198
+    ],
+    "cube_rise_m": 0.1589,
+    "cube_minus_fingertip_mid_m": [
+     -0.02737,
+     -0.00812,
+     -0.02647
+    ],
+    "pad_N": [
+     -0.0,
+     -0.0,
+     0.0,
+     1.106,
+     1.109,
+     2.217
+    ],
+    "pad_normal_N": [
+     -0.0,
+     -0.0,
+     -0.0,
+     1.106,
+     1.109,
+     2.157
+    ],
+    "cube_tilt_deg": 8.45,
+    "robot_base_pos_m": [
+     0.0,
+     0.01,
+     -0.005
+    ],
+    "hand_below_shoulder_m": 0.2618
+   },
+   "still_up_at_end": true,
+   "fail_reason": null,
+   "condition": "diag_actual",
+   "yaw_obs_err_deg": 0.0
+  },
+  {
+   "spot_cm": [
+    0.6,
+    5.97
+   ],
+   "cube_yaw_deg": 20.65,
+   "cube_mass_kg": 0.04,
+   "theta_deg": -9.3,
+   "spec": "25550",
+   "policy": "grasp_lift_25550",
+   "table_e_m": 0.0,
+   "table_e_pregrasp_m": -0.005,
+   "valid_spot": true,
+   "phase_t_s": {
+    "RAISE": 0.0,
+    "SETTLE": 8.0,
+    "INSERT": 8.65,
+    "GRASP_LIFT": 9.4,
+    "RETURN": 11.5,
+    "DONE": 14.483
+   },
+   "handover_by": "converged",
+   "handover_err_deg": 0.49,
+   "insert_end_arm_deg": [
+    -16.06,
+    -0.0,
+    9.46,
+    55.34,
+    -7.85,
+    41.65,
+    3.46,
+    -170.46
+   ],
+   "insert_end_grav_deg": [
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0
+   ],
+   "insert_end_err_deg": [
+    -0.107,
+    -0.003,
+    0.137,
+    -0.13,
+    -0.222,
+    0.342,
+    0.566,
+    -0.358
+   ],
+   "robot_table_force_insert_max_n": 74.659,
+   "robot_table_force_close_05s_mean_n": 8.927,
+   "robot_table_force_close_05s_max_n": 19.22,
+   "torque_limit_time_frac": {
+    "shoulder_pitch_to_shoulder_roll": 0.008,
+    "shoulder_roll_to_shoulder_yaw": 0.0,
+    "shoulder_yaw_to_upper_arm": 0.0,
+    "upper_arm_to_under_arm": 0.0,
+    "under_arm_to_wrist_pitch": 0.0,
+    "wrist_pitch_to_wrist_yaw": 0.008,
+    "wrist_yaw_to_hand_base": 0.0,
+    "hand_base_to_finger_1_1": 0.003,
+    "hand_base_to_finger_2_1": 0.015,
+    "hand_base_to_rotation_base": 0.0,
+    "finger_1_1_to_finger_1_2": 0.0,
+    "finger_1_2_to_finger_2_2": 0.001,
+    "rotation_base_to_finger_3_1": 0.411,
+    "finger_3_1_to_finger_3_2": 0.038
+   },
+   "first_touch_after_close_s": [
+    0.433,
+    0.517,
+    0.317
+   ],
+   "all_touch_after_close_s": 0.517,
+   "max_rise_m": 0.1599,
+   "raise_cube_robot_force_max_n": 0.0,
+   "insert_cube_robot_force_max_n": 0.0,
+   "lift_cube_robot_force_max_n": 8.159,
+   "cube_shift_before_grasp_mm": 0.0,
+   "cube_shift_during_grasp_mm": 5.14,
+   "cube_turn_during_grasp_deg": 7.21,
+   "max_joint_speed_rad_s": 1.0,
+   "done": true,
+   "physics": {
+    "mode": "matched",
+    "mujoco_dt": 0.000833333333333,
+    "contact_tc": 0.002,
+    "cone": "elliptic",
+    "impratio": 10.0,
+    "velocity_limit": 1.0,
+    "spec": "25550",
+    "policy": "grasp_lift_25550",
+    "feedback": "actual",
+    "arm": "servo constraint",
+    "contact_pairs": 33,
+    "finger_table_mu": null
+   },
+   "cube_turn_after_lift_deg": 10.88,
+   "cube_turn_in_hand_after_lift_deg": 2.54,
+   "cube_turn_in_hand_during_grasp_deg": 7.43,
+   "done_state": {
+    "t_after_handover_s": 5.083,
+    "episode_t_s": 14.483,
+    "arm_q_deg": [
+     -0.027,
+     -0.0,
+     7.2,
+     89.746,
+     0.013,
+     -2.758,
+     0.064,
+     -169.717
+    ],
+    "finger_q_deg": [
+     2.049,
+     2.068,
+     -38.429,
+     -0.024,
+     -0.025,
+     40.305
+    ],
+    "hand_pos_m": [
+     -0.26445,
+     0.29555,
+     0.94569
+    ],
+    "hand_quat_wxyz": [
+     0.48023,
+     -0.45469,
+     0.51648,
+     -0.54396
+    ],
+    "fingertip_mid_pos_m": [
+     -0.394,
+     0.30011,
+     0.94511
+    ],
+    "cube_pos_m": [
+     -0.42446,
+     0.29061,
+     0.91982
+    ],
+    "cube_quat_wxyz": [
+     0.95176,
+     0.03619,
+     0.09396,
+     0.28984
+    ],
+    "cube_rise_m": 0.1598,
+    "cube_minus_fingertip_mid_m": [
+     -0.03046,
+     -0.0095,
+     -0.02528
+    ],
+    "pad_N": [
+     -0.0,
+     -0.0,
+     0.0,
+     1.068,
+     1.077,
+     2.146
+    ],
+    "pad_normal_N": [
+     -0.0,
+     -0.0,
+     -0.0,
+     1.068,
+     1.077,
+     2.117
+    ],
+    "cube_tilt_deg": 11.56,
+    "robot_base_pos_m": [
+     0.0,
+     0.01,
+     -0.005
+    ],
+    "hand_below_shoulder_m": 0.2618
+   },
+   "still_up_at_end": true,
+   "fail_reason": null,
+   "condition": "diag_actual",
+   "yaw_obs_err_deg": 0.0
+  },
+  {
+   "spot_cm": [
+    -2.33,
+    -18.16
+   ],
+   "cube_yaw_deg": 32.69,
+   "cube_mass_kg": 0.04,
+   "theta_deg": 30.98,
+   "spec": "25550",
+   "policy": "grasp_lift_25550",
+   "table_e_m": 0.0,
+   "table_e_pregrasp_m": -0.005,
+   "valid_spot": true,
+   "phase_t_s": {
+    "RAISE": 0.0,
+    "SETTLE": 8.0,
+    "INSERT": 8.65,
+    "GRASP_LIFT": 9.4,
+    "RETURN": 11.5,
+    "DONE": 14.5
+   },
+   "handover_by": "converged",
+   "handover_err_deg": 0.43,
+   "insert_end_arm_deg": [
+    -1.62,
+    0.01,
+    -24.04,
+    45.55,
+    3.51,
+    37.16,
+    -1.02,
+    -170.46
+   ],
+   "insert_end_grav_deg": [
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0
+   ],
+   "insert_end_err_deg": [
+    -0.109,
+    0.006,
+    0.262,
+    -0.075,
+    -0.22,
+    0.296,
+    0.53,
+    -0.359
+   ],
+   "robot_table_force_insert_max_n": 81.723,
+   "robot_table_force_close_05s_mean_n": 7.889,
+   "robot_table_force_close_05s_max_n": 18.164,
+   "torque_limit_time_frac": {
+    "shoulder_pitch_to_shoulder_roll": 0.001,
+    "shoulder_roll_to_shoulder_yaw": 0.0,
+    "shoulder_yaw_to_upper_arm": 0.0,
+    "upper_arm_to_under_arm": 0.0,
+    "under_arm_to_wrist_pitch": 0.0,
+    "wrist_pitch_to_wrist_yaw": 0.001,
+    "wrist_yaw_to_hand_base": 0.0,
+    "hand_base_to_finger_1_1": 0.0,
+    "hand_base_to_finger_2_1": 0.008,
+    "hand_base_to_rotation_base": 0.0,
+    "finger_1_1_to_finger_1_2": 0.0,
+    "finger_1_2_to_finger_2_2": 0.0,
+    "rotation_base_to_finger_3_1": 0.401,
+    "finger_3_1_to_finger_3_2": 0.059
+   },
+   "first_touch_after_close_s": [
+    0.667,
+    0.6,
+    0.467
+   ],
+   "all_touch_after_close_s": 0.667,
+   "max_rise_m": 0.1562,
+   "raise_cube_robot_force_max_n": 0.0,
+   "insert_cube_robot_force_max_n": 0.0,
+   "lift_cube_robot_force_max_n": 5.939,
+   "cube_shift_before_grasp_mm": 0.0,
+   "cube_shift_during_grasp_mm": 4.75,
+   "cube_turn_during_grasp_deg": 8.16,
+   "max_joint_speed_rad_s": 1.0,
+   "done": true,
+   "physics": {
+    "mode": "matched",
+    "mujoco_dt": 0.000833333333333,
+    "contact_tc": 0.002,
+    "cone": "elliptic",
+    "impratio": 10.0,
+    "velocity_limit": 1.0,
+    "spec": "25550",
+    "policy": "grasp_lift_25550",
+    "feedback": "actual",
+    "arm": "servo constraint",
+    "contact_pairs": 33,
+    "finger_table_mu": null
+   },
+   "cube_turn_after_lift_deg": 22.01,
+   "cube_turn_in_hand_after_lift_deg": 14.75,
+   "cube_turn_in_hand_during_grasp_deg": 7.94,
+   "done_state": {
+    "t_after_handover_s": 5.1,
+    "episode_t_s": 14.5,
+    "arm_q_deg": [
+     -0.026,
+     -0.0,
+     7.2,
+     89.747,
+     0.016,
+     -2.757,
+     0.068,
+     -169.627
+    ],
+    "finger_q_deg": [
+     10.775,
+     -0.117,
+     -42.238,
+     -0.013,
+     0.0,
+     59.849
+    ],
+    "hand_pos_m": [
+     -0.26445,
+     0.29555,
+     0.9457
+    ],
+    "hand_quat_wxyz": [
+     0.48025,
+     -0.45467,
+     0.51651,
+     -0.54392
+    ],
+    "fingertip_mid_pos_m": [
+     -0.39318,
+     0.29643,
+     0.94541
+    ],
+    "cube_pos_m": [
+     -0.41659,
+     0.29214,
+     0.9162
+    ],
+    "cube_quat_wxyz": [
+     0.98594,
+     -0.09108,
+     -0.01886,
+     0.13885
+    ],
+    "cube_rise_m": 0.1562,
+    "cube_minus_fingertip_mid_m": [
+     -0.02341,
+     -0.00429,
+     -0.02922
+    ],
+    "pad_N": [
+     -0.0,
+     1.289,
+     0.0,
+     0.82,
+     -0.0,
+     2.226
+    ],
+    "pad_normal_N": [
+     -0.0,
+     1.289,
+     -0.0,
+     0.82,
+     -0.0,
+     2.123
+    ],
+    "cube_tilt_deg": 10.67,
+    "robot_base_pos_m": [
+     0.0,
+     0.01,
+     -0.005
+    ],
+    "hand_below_shoulder_m": 0.2618
+   },
+   "still_up_at_end": true,
+   "fail_reason": null,
+   "condition": "diag_actual",
+   "yaw_obs_err_deg": 0.0
+  },
+  {
+   "spot_cm": [
+    -5.34,
+    -11.22
+   ],
+   "cube_yaw_deg": -6.96,
+   "cube_mass_kg": 0.04,
+   "theta_deg": 18.24,
+   "spec": "25550",
+   "policy": "grasp_lift_25550",
+   "table_e_m": 0.0,
+   "table_e_pregrasp_m": -0.005,
+   "valid_spot": true,
+   "phase_t_s": {
+    "RAISE": 0.0,
+    "SETTLE": 8.0,
+    "INSERT": 8.65,
+    "GRASP_LIFT": 9.4,
+    "RETURN": 11.383,
+    "DONE": 14.367
+   },
+   "handover_by": "converged",
+   "handover_err_deg": 0.53,
+   "insert_end_arm_deg": [
+    -1.93,
+    0.0,
+    -14.2,
+    45.86,
+    -1.66,
+    37.27,
+    2.58,
+    -170.46
+   ],
+   "insert_end_grav_deg": [
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0
+   ],
+   "insert_end_err_deg": [
+    -0.121,
+    0.004,
+    0.219,
+    -0.069,
+    -0.19,
+    0.368,
+    0.617,
+    -0.359
+   ],
+   "robot_table_force_insert_max_n": 81.124,
+   "robot_table_force_close_05s_mean_n": 8.014,
+   "robot_table_force_close_05s_max_n": 20.769,
+   "torque_limit_time_frac": {
+    "shoulder_pitch_to_shoulder_roll": 0.01,
+    "shoulder_roll_to_shoulder_yaw": 0.0,
+    "shoulder_yaw_to_upper_arm": 0.0,
+    "upper_arm_to_under_arm": 0.0,
+    "under_arm_to_wrist_pitch": 0.0,
+    "wrist_pitch_to_wrist_yaw": 0.007,
+    "wrist_yaw_to_hand_base": 0.0,
+    "hand_base_to_finger_1_1": 0.002,
+    "hand_base_to_finger_2_1": 0.009,
+    "hand_base_to_rotation_base": 0.0,
+    "finger_1_1_to_finger_1_2": 0.0,
+    "finger_1_2_to_finger_2_2": 0.003,
+    "rotation_base_to_finger_3_1": 0.401,
+    "finger_3_1_to_finger_3_2": 0.046
+   },
+   "first_touch_after_close_s": [
+    0.45,
+    0.467,
+    0.183
+   ],
+   "all_touch_after_close_s": 0.467,
+   "max_rise_m": 0.1571,
+   "raise_cube_robot_force_max_n": 0.0,
+   "insert_cube_robot_force_max_n": 0.0,
+   "lift_cube_robot_force_max_n": 5.839,
+   "cube_shift_before_grasp_mm": 0.0,
+   "cube_shift_during_grasp_mm": 3.51,
+   "cube_turn_during_grasp_deg": 4.9,
+   "max_joint_speed_rad_s": 1.0,
+   "done": true,
+   "physics": {
+    "mode": "matched",
+    "mujoco_dt": 0.000833333333333,
+    "contact_tc": 0.002,
+    "cone": "elliptic",
+    "impratio": 10.0,
+    "velocity_limit": 1.0,
+    "spec": "25550",
+    "policy": "grasp_lift_25550",
+    "feedback": "actual",
+    "arm": "servo constraint",
+    "contact_pairs": 33,
+    "finger_table_mu": null
+   },
+   "cube_turn_after_lift_deg": 14.92,
+   "cube_turn_in_hand_after_lift_deg": 12.84,
+   "cube_turn_in_hand_during_grasp_deg": 4.81,
+   "done_state": {
+    "t_after_handover_s": 4.967,
+    "episode_t_s": 14.367,
+    "arm_q_deg": [
+     -0.026,
+     -0.001,
+     7.2,
+     89.746,
+     0.012,
+     -2.758,
+     0.059,
+     -169.83
+    ],
+    "finger_q_deg": [
+     3.688,
+     4.193,
+     -37.839,
+     -0.04,
+     -0.049,
+     56.974
+    ],
+    "hand_pos_m": [
+     -0.26445,
+     0.29555,
+     0.94569
+    ],
+    "hand_quat_wxyz": [
+     0.4802,
+     -0.45472,
+     0.51645,
+     -0.54398
+    ],
+    "fingertip_mid_pos_m": [
+     -0.39421,
+     0.2989,
+     0.94503
+    ],
+    "cube_pos_m": [
+     -0.42161,
+     0.29263,
+     0.91707
+    ],
+    "cube_quat_wxyz": [
+     0.98736,
+     -0.04302,
+     0.11027,
+     -0.10545
+    ],
+    "cube_rise_m": 0.1571,
+    "cube_minus_fingertip_mid_m": [
+     -0.0274,
+     -0.00627,
+     -0.02796
+    ],
+    "pad_N": [
+     -0.0,
+     -0.0,
+     0.0,
+     0.922,
+     0.919,
+     1.85
+    ],
+    "pad_normal_N": [
+     -0.0,
+     -0.0,
+     -0.0,
+     0.922,
+     0.919,
+     1.598
+    ],
+    "cube_tilt_deg": 13.59,
+    "robot_base_pos_m": [
+     0.0,
+     0.01,
+     -0.005
+    ],
+    "hand_below_shoulder_m": 0.2618
+   },
+   "still_up_at_end": true,
+   "fail_reason": null,
+   "condition": "diag_actual",
+   "yaw_obs_err_deg": 0.0
+  },
+  {
+   "spot_cm": [
+    -3.27,
+    8.24
+   ],
+   "cube_yaw_deg": 10.38,
+   "cube_mass_kg": 0.04,
+   "theta_deg": -12.84,
+   "spec": "25550",
+   "policy": "grasp_lift_25550",
+   "table_e_m": 0.0,
+   "table_e_pregrasp_m": -0.005,
+   "valid_spot": true,
+   "phase_t_s": {
+    "RAISE": 0.0,
+    "SETTLE": 8.0,
+    "INSERT": 8.65,
+    "GRASP_LIFT": 9.4,
+    "RETURN": 11.567,
+    "DONE": 14.55
+   },
+   "handover_by": "converged",
+   "handover_err_deg": 0.54,
+   "insert_end_arm_deg": [
+    -8.17,
+    -0.0,
+    13.29,
+    50.88,
+    -7.92,
+    38.32,
+    4.63,
+    -170.46
+   ],
+   "insert_end_grav_deg": [
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0
+   ],
+   "insert_end_err_deg": [
+    -0.111,
+    -0.003,
+    0.151,
+    -0.096,
+    -0.19,
+    0.329,
+    0.576,
+    -0.358
+   ],
+   "robot_table_force_insert_max_n": 74.689,
+   "robot_table_force_close_05s_mean_n": 9.046,
+   "robot_table_force_close_05s_max_n": 18.845,
+   "torque_limit_time_frac": {
+    "shoulder_pitch_to_shoulder_roll": 0.006,
+    "shoulder_roll_to_shoulder_yaw": 0.0,
+    "shoulder_yaw_to_upper_arm": 0.0,
+    "upper_arm_to_under_arm": 0.0,
+    "under_arm_to_wrist_pitch": 0.0,
+    "wrist_pitch_to_wrist_yaw": 0.005,
+    "wrist_yaw_to_hand_base": 0.0,
+    "hand_base_to_finger_1_1": 0.0,
+    "hand_base_to_finger_2_1": 0.02,
+    "hand_base_to_rotation_base": 0.0,
+    "finger_1_1_to_finger_1_2": 0.003,
+    "finger_1_2_to_finger_2_2": 0.004,
+    "rotation_base_to_finger_3_1": 0.407,
+    "finger_3_1_to_finger_3_2": 0.039
+   },
+   "first_touch_after_close_s": [
+    0.483,
+    0.567,
+    0.4
+   ],
+   "all_touch_after_close_s": 0.567,
+   "max_rise_m": 0.1601,
+   "raise_cube_robot_force_max_n": 0.0,
+   "insert_cube_robot_force_max_n": 0.0,
+   "lift_cube_robot_force_max_n": 6.771,
+   "cube_shift_before_grasp_mm": 0.0,
+   "cube_shift_during_grasp_mm": 5.03,
+   "cube_turn_during_grasp_deg": 6.9,
+   "max_joint_speed_rad_s": 1.0,
+   "done": true,
+   "physics": {
+    "mode": "matched",
+    "mujoco_dt": 0.000833333333333,
+    "contact_tc": 0.002,
+    "cone": "elliptic",
+    "impratio": 10.0,
+    "velocity_limit": 1.0,
+    "spec": "25550",
+    "policy": "grasp_lift_25550",
+    "feedback": "actual",
+    "arm": "servo constraint",
+    "contact_pairs": 33,
+    "finger_table_mu": null
+   },
+   "cube_turn_after_lift_deg": 14.53,
+   "cube_turn_in_hand_after_lift_deg": 2.65,
+   "cube_turn_in_hand_during_grasp_deg": 7.13,
+   "done_state": {
+    "t_after_handover_s": 5.15,
+    "episode_t_s": 14.55,
+    "arm_q_deg": [
+     -0.027,
+     -0.0,
+     7.2,
+     89.746,
+     0.014,
+     -2.758,
+     0.067,
+     -169.718
+    ],
+    "finger_q_deg": [
+     2.672,
+     2.694,
+     -39.282,
+     -0.018,
+     -0.019,
+     42.055
+    ],
+    "hand_pos_m": [
+     -0.26445,
+     0.29555,
+     0.94569
+    ],
+    "hand_quat_wxyz": [
+     0.48025,
+     -0.45467,
+     0.5165,
+     -0.54394
+    ],
+    "fingertip_mid_pos_m": [
+     -0.39387,
+     0.29937,
+     0.94516
+    ],
+    "cube_pos_m": [
+     -0.42459,
+     0.29033,
+     0.92011
+    ],
+    "cube_quat_wxyz": [
+     0.96652,
+     0.02947,
+     0.09676,
+     0.23581
+    ],
+    "cube_rise_m": 0.1601,
+    "cube_minus_fingertip_mid_m": [
+     -0.03072,
+     -0.00904,
+     -0.02505
+    ],
+    "pad_N": [
+     -0.0,
+     -0.0,
+     0.0,
+     1.056,
+     1.055,
+     2.158
+    ],
+    "pad_normal_N": [
+     -0.0,
+     -0.0,
+     -0.0,
+     1.056,
+     1.055,
+     2.125
+    ],
+    "cube_tilt_deg": 11.61,
+    "robot_base_pos_m": [
+     0.0,
+     0.01,
+     -0.005
+    ],
+    "hand_below_shoulder_m": 0.2618
+   },
+   "still_up_at_end": true,
+   "fail_reason": null,
+   "condition": "diag_actual",
+   "yaw_obs_err_deg": 0.0
+  },
+  {
+   "spot_cm": [
+    1.69,
+    10.39
+   ],
+   "cube_yaw_deg": 13.54,
+   "cube_mass_kg": 0.04,
+   "theta_deg": -16.46,
+   "spec": "25550",
+   "policy": "grasp_lift_25550",
+   "table_e_m": 0.0,
+   "table_e_pregrasp_m": -0.005,
+   "valid_spot": true,
+   "phase_t_s": {
+    "RAISE": 0.0,
+    "SETTLE": 8.0,
+    "INSERT": 8.65,
+    "GRASP_LIFT": 9.4,
+    "RETURN": 12.033,
+    "DONE": 15.017
+   },
+   "handover_by": "converged",
+   "handover_err_deg": 0.62,
+   "insert_end_arm_deg": [
+    -16.16,
+    -0.0,
+    15.16,
+    54.98,
+    -10.09,
+    41.65,
+    3.3,
+    -170.46
+   ],
+   "insert_end_grav_deg": [
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0
+   ],
+   "insert_end_err_deg": [
+    -0.101,
+    -0.004,
+    0.099,
+    -0.133,
+    -0.213,
+    0.312,
+    0.524,
+    -0.358
+   ],
+   "robot_table_force_insert_max_n": 77.97,
+   "robot_table_force_close_05s_mean_n": 10.494,
+   "robot_table_force_close_05s_max_n": 18.041,
+   "torque_limit_time_frac": {
+    "shoulder_pitch_to_shoulder_roll": 0.037,
+    "shoulder_roll_to_shoulder_yaw": 0.0,
+    "shoulder_yaw_to_upper_arm": 0.0,
+    "upper_arm_to_under_arm": 0.0,
+    "under_arm_to_wrist_pitch": 0.0,
+    "wrist_pitch_to_wrist_yaw": 0.039,
+    "wrist_yaw_to_hand_base": 0.0,
+    "hand_base_to_finger_1_1": 0.012,
+    "hand_base_to_finger_2_1": 0.114,
+    "hand_base_to_rotation_base": 0.01,
+    "finger_1_1_to_finger_1_2": 0.013,
+    "finger_1_2_to_finger_2_2": 0.008,
+    "rotation_base_to_finger_3_1": 0.411,
+    "finger_3_1_to_finger_3_2": 0.058
+   },
+   "first_touch_after_close_s": [
+    0.517,
+    1.1,
+    0.55
+   ],
+   "all_touch_after_close_s": 1.1,
+   "max_rise_m": 0.1622,
+   "raise_cube_robot_force_max_n": 0.0,
+   "insert_cube_robot_force_max_n": 0.0,
+   "lift_cube_robot_force_max_n": 13.409,
+   "cube_shift_before_grasp_mm": 0.0,
+   "cube_shift_during_grasp_mm": 4.97,
+   "cube_turn_during_grasp_deg": 11.23,
+   "max_joint_speed_rad_s": 1.0,
+   "done": true,
+   "physics": {
+    "mode": "matched",
+    "mujoco_dt": 0.000833333333333,
+    "contact_tc": 0.002,
+    "cone": "elliptic",
+    "impratio": 10.0,
+    "velocity_limit": 1.0,
+    "spec": "25550",
+    "policy": "grasp_lift_25550",
+    "feedback": "actual",
+    "arm": "servo constraint",
+    "contact_pairs": 33,
+    "finger_table_mu": null
+   },
+   "cube_turn_after_lift_deg": 27.74,
+   "cube_turn_in_hand_after_lift_deg": 22.84,
+   "cube_turn_in_hand_during_grasp_deg": 11.7,
+   "done_state": {
+    "t_after_handover_s": 5.617,
+    "episode_t_s": 15.017,
+    "arm_q_deg": [
+     -0.027,
+     -0.0,
+     7.2,
+     89.746,
+     0.021,
+     -2.758,
+     0.082,
+     -169.806
+    ],
+    "finger_q_deg": [
+     3.783,
+     4.299,
+     -41.399,
+     -0.03,
+     -0.03,
+     41.574
+    ],
+    "hand_pos_m": [
+     -0.26445,
+     0.29555,
+     0.94569
+    ],
+    "hand_quat_wxyz": [
+     0.48035,
+     -0.45458,
+     0.51659,
+     -0.54384
+    ],
+    "fingertip_mid_pos_m": [
+     -0.3935,
+     0.2977,
+     0.94526
+    ],
+    "cube_pos_m": [
+     -0.42113,
+     0.28598,
+     0.92219
+    ],
+    "cube_quat_wxyz": [
+     0.93886,
+     -0.0468,
+     -0.02496,
+     0.34019
+    ],
+    "cube_rise_m": 0.1622,
+    "cube_minus_fingertip_mid_m": [
+     -0.02763,
+     -0.01172,
+     -0.02307
+    ],
+    "pad_N": [
+     -0.0,
+     -0.0,
+     0.0,
+     1.034,
+     1.037,
+     2.075
+    ],
+    "pad_normal_N": [
+     -0.0,
+     -0.0,
+     -0.0,
+     1.034,
+     1.037,
+     2.058
+    ],
+    "cube_tilt_deg": 6.08,
+    "robot_base_pos_m": [
+     0.0,
+     0.01,
+     -0.005
+    ],
+    "hand_below_shoulder_m": 0.2618
+   },
+   "still_up_at_end": true,
+   "fail_reason": null,
+   "condition": "diag_actual",
+   "yaw_obs_err_deg": 0.0
+  },
+  {
+   "spot_cm": [
+    -2.98,
+    -6.22
+   ],
+   "cube_yaw_deg": -32.84,
+   "cube_mass_kg": 0.04,
+   "theta_deg": 9.79,
+   "spec": "25550",
+   "policy": "grasp_lift_25550",
+   "table_e_m": 0.0,
+   "table_e_pregrasp_m": -0.005,
+   "valid_spot": true,
+   "phase_t_s": {
+    "RAISE": 0.0,
+    "SETTLE": 8.0,
+    "INSERT": 8.65,
+    "GRASP_LIFT": 9.4,
+    "RETURN": 11.383,
+    "DONE": 14.367
+   },
+   "handover_by": "converged",
+   "handover_err_deg": 0.54,
+   "insert_end_arm_deg": [
+    -9.35,
+    0.0,
+    -6.59,
+    51.82,
+    -3.3,
+    38.76,
+    4.38,
+    -170.46
+   ],
+   "insert_end_grav_deg": [
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0
+   ],
+   "insert_end_err_deg": [
+    -0.119,
+    0.002,
+    0.21,
+    -0.092,
+    -0.195,
+    0.382,
+    0.637,
+    -0.359
+   ],
+   "robot_table_force_insert_max_n": 62.297,
+   "robot_table_force_close_05s_mean_n": 8.533,
+   "robot_table_force_close_05s_max_n": 20.925,
+   "torque_limit_time_frac": {
+    "shoulder_pitch_to_shoulder_roll": 0.004,
+    "shoulder_roll_to_shoulder_yaw": 0.0,
+    "shoulder_yaw_to_upper_arm": 0.0,
+    "upper_arm_to_under_arm": 0.0,
+    "under_arm_to_wrist_pitch": 0.0,
+    "wrist_pitch_to_wrist_yaw": 0.003,
+    "wrist_yaw_to_hand_base": 0.0,
+    "hand_base_to_finger_1_1": 0.001,
+    "hand_base_to_finger_2_1": 0.01,
+    "hand_base_to_rotation_base": 0.0,
+    "finger_1_1_to_finger_1_2": 0.0,
+    "finger_1_2_to_finger_2_2": 0.002,
+    "rotation_base_to_finger_3_1": 0.409,
+    "finger_3_1_to_finger_3_2": 0.038
+   },
+   "first_touch_after_close_s": [
+    0.367,
+    0.417,
+    0.217
+   ],
+   "all_touch_after_close_s": 0.417,
+   "max_rise_m": 0.1588,
+   "raise_cube_robot_force_max_n": 0.0,
+   "insert_cube_robot_force_max_n": 0.0,
+   "lift_cube_robot_force_max_n": 5.322,
+   "cube_shift_before_grasp_mm": 0.0,
+   "cube_shift_during_grasp_mm": 4.12,
+   "cube_turn_during_grasp_deg": 4.01,
+   "max_joint_speed_rad_s": 1.0,
+   "done": true,
+   "physics": {
+    "mode": "matched",
+    "mujoco_dt": 0.000833333333333,
+    "contact_tc": 0.002,
+    "cone": "elliptic",
+    "impratio": 10.0,
+    "velocity_limit": 1.0,
+    "spec": "25550",
+    "policy": "grasp_lift_25550",
+    "feedback": "actual",
+    "arm": "servo constraint",
+    "contact_pairs": 33,
+    "finger_table_mu": null
+   },
+   "cube_turn_after_lift_deg": 8.1,
+   "cube_turn_in_hand_after_lift_deg": 6.16,
+   "cube_turn_in_hand_during_grasp_deg": 4.01,
+   "done_state": {
+    "t_after_handover_s": 4.967,
+    "episode_t_s": 14.367,
+    "arm_q_deg": [
+     -0.027,
+     -0.0,
+     7.2,
+     89.746,
+     0.007,
+     -2.758,
+     0.049,
+     -169.666
+    ],
+    "finger_q_deg": [
+     0.918,
+     0.958,
+     -36.143,
+     -0.04,
+     -0.042,
+     45.716
+    ],
+    "hand_pos_m": [
+     -0.26445,
+     0.29555,
+     0.94569
+    ],
+    "hand_quat_wxyz": [
+     0.48013,
+     -0.45479,
+     0.5164,
+     -0.54404
+    ],
+    "fingertip_mid_pos_m": [
+     -0.39434,
+     0.30168,
+     0.94498
+    ],
+    "cube_pos_m": [
+     -0.42151,
+     0.29312,
+     0.91875
+    ],
+    "cube_quat_wxyz": [
+     0.94958,
+     -0.01491,
+     0.05826,
+     -0.30771
+    ],
+    "cube_rise_m": 0.1587,
+    "cube_minus_fingertip_mid_m": [
+     -0.02716,
+     -0.00856,
+     -0.02624
+    ],
+    "pad_N": [
+     -0.0,
+     -0.0,
+     0.0,
+     1.114,
+     1.123,
+     2.326
+    ],
+    "pad_normal_N": [
+     -0.0,
+     -0.0,
+     -0.0,
+     1.114,
+     1.123,
+     2.034
+    ],
+    "cube_tilt_deg": 6.89,
+    "robot_base_pos_m": [
+     0.0,
+     0.01,
+     -0.005
+    ],
+    "hand_below_shoulder_m": 0.2618
+   },
+   "still_up_at_end": true,
+   "fail_reason": null,
+   "condition": "diag_actual",
+   "yaw_obs_err_deg": 0.0
+  },
+  {
+   "spot_cm": [
+    -2.46,
+    1.42
+   ],
+   "cube_yaw_deg": -17.08,
+   "cube_mass_kg": 0.04,
+   "theta_deg": -2.14,
+   "spec": "25550",
+   "policy": "grasp_lift_25550",
+   "table_e_m": 0.0,
+   "table_e_pregrasp_m": -0.005,
+   "valid_spot": true,
+   "phase_t_s": {
+    "RAISE": 0.0,
+    "SETTLE": 8.0,
+    "INSERT": 8.65,
+    "GRASP_LIFT": 9.4,
+    "RETURN": 11.65,
+    "DONE": 14.633
+   },
+   "handover_by": "converged",
+   "handover_err_deg": 0.51,
+   "insert_end_arm_deg": [
+    -11.39,
+    -0.0,
+    3.73,
+    53.2,
+    -5.88,
+    39.43,
+    4.28,
+    -170.46
+   ],
+   "insert_end_grav_deg": [
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0
+   ],
+   "insert_end_err_deg": [
+    -0.114,
+    -0.001,
+    0.182,
+    -0.105,
+    -0.208,
+    0.355,
+    0.606,
+    -0.358
+   ],
+   "robot_table_force_insert_max_n": 77.393,
+   "robot_table_force_close_05s_mean_n": 8.69,
+   "robot_table_force_close_05s_max_n": 19.844,
+   "torque_limit_time_frac": {
+    "shoulder_pitch_to_shoulder_roll": 0.008,
+    "shoulder_roll_to_shoulder_yaw": 0.0,
+    "shoulder_yaw_to_upper_arm": 0.0,
+    "upper_arm_to_under_arm": 0.0,
+    "under_arm_to_wrist_pitch": 0.0,
+    "wrist_pitch_to_wrist_yaw": 0.008,
+    "wrist_yaw_to_hand_base": 0.0,
+    "hand_base_to_finger_1_1": 0.021,
+    "hand_base_to_finger_2_1": 0.012,
+    "hand_base_to_rotation_base": 0.0,
+    "finger_1_1_to_finger_1_2": 0.001,
+    "finger_1_2_to_finger_2_2": 0.001,
+    "rotation_base_to_finger_3_1": 0.394,
+    "finger_3_1_to_finger_3_2": 0.059
+   },
+   "first_touch_after_close_s": [
+    0.683,
+    0.717,
+    0.233
+   ],
+   "all_touch_after_close_s": 0.717,
+   "max_rise_m": 0.1523,
+   "raise_cube_robot_force_max_n": 0.0,
+   "insert_cube_robot_force_max_n": 0.0,
+   "lift_cube_robot_force_max_n": 6.406,
+   "cube_shift_before_grasp_mm": 0.0,
+   "cube_shift_during_grasp_mm": 3.17,
+   "cube_turn_during_grasp_deg": 10.25,
+   "max_joint_speed_rad_s": 1.0,
+   "done": true,
+   "physics": {
+    "mode": "matched",
+    "mujoco_dt": 0.000833333333333,
+    "contact_tc": 0.002,
+    "cone": "elliptic",
+    "impratio": 10.0,
+    "velocity_limit": 1.0,
+    "spec": "25550",
+    "policy": "grasp_lift_25550",
+    "feedback": "actual",
+    "arm": "servo constraint",
+    "contact_pairs": 33,
+    "finger_table_mu": null
+   },
+   "cube_turn_after_lift_deg": 12.63,
+   "cube_turn_in_hand_after_lift_deg": 8.9,
+   "cube_turn_in_hand_during_grasp_deg": 10.08,
+   "done_state": {
+    "t_after_handover_s": 5.233,
+    "episode_t_s": 14.633,
+    "arm_q_deg": [
+     -0.027,
+     -0.001,
+     7.2,
+     89.746,
+     0.017,
+     -2.759,
+     0.072,
+     -169.735
+    ],
+    "finger_q_deg": [
+     6.271,
+     6.37,
+     -36.724,
+     -0.051,
+     -0.025,
+     51.225
+    ],
+    "hand_pos_m": [
+     -0.26445,
+     0.29555,
+     0.94569
+    ],
+    "hand_quat_wxyz": [
+     0.48029,
+     -0.45463,
+     0.51653,
+     -0.54391
+    ],
+    "fingertip_mid_pos_m": [
+     -0.39449,
+     0.29744,
+     0.94499
+    ],
+    "cube_pos_m": [
+     -0.4246,
+     0.29048,
+     0.91229
+    ],
+    "cube_quat_wxyz": [
+     0.99174,
+     -0.07292,
+     0.1054,
+     -0.00428
+    ],
+    "cube_rise_m": 0.1523,
+    "cube_minus_fingertip_mid_m": [
+     -0.03011,
+     -0.00697,
+     -0.0327
+    ],
+    "pad_N": [
+     -0.0,
+     -0.0,
+     0.0,
+     0.927,
+     0.893,
+     1.829
+    ],
+    "pad_normal_N": [
+     -0.0,
+     -0.0,
+     -0.0,
+     0.927,
+     0.893,
+     1.748
+    ],
+    "cube_tilt_deg": 14.73,
+    "robot_base_pos_m": [
+     0.0,
+     0.01,
+     -0.005
+    ],
+    "hand_below_shoulder_m": 0.2618
+   },
+   "still_up_at_end": true,
+   "fail_reason": null,
+   "condition": "diag_actual",
+   "yaw_obs_err_deg": 0.0
+  },
+  {
+   "spot_cm": [
+    -6.23,
+    21.81
+   ],
+   "cube_yaw_deg": 39.06,
+   "cube_mass_kg": 0.04,
+   "theta_deg": -40.69,
+   "spec": "25550",
+   "policy": "grasp_lift_25550",
+   "table_e_m": 0.0,
+   "table_e_pregrasp_m": -0.005,
+   "valid_spot": true,
+   "phase_t_s": {
+    "RAISE": 0.0,
+    "SETTLE": 8.0,
+    "INSERT": 8.65,
+    "GRASP_LIFT": 9.4,
+    "RETURN": 11.9,
+    "DONE": 14.933
+   },
+   "handover_by": "converged",
+   "handover_err_deg": 0.56,
+   "insert_end_arm_deg": [
+    15.1,
+    -0.0,
+    48.37,
+    28.85,
+    -2.62,
+    42.76,
+    14.05,
+    -168.21
+   ],
+   "insert_end_grav_deg": [
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0
+   ],
+   "insert_end_err_deg": [
+    -0.088,
+    -0.003,
+    -0.282,
+    -0.045,
+    0.249,
+    -0.063,
+    -0.69,
+    1.894
+   ],
+   "robot_table_force_insert_max_n": 37.196,
+   "robot_table_force_close_05s_mean_n": 0.0,
+   "robot_table_force_close_05s_max_n": 0.0,
+   "torque_limit_time_frac": {
+    "shoulder_pitch_to_shoulder_roll": 0.0,
+    "shoulder_roll_to_shoulder_yaw": 0.0,
+    "shoulder_yaw_to_upper_arm": 0.0,
+    "upper_arm_to_under_arm": 0.0,
+    "under_arm_to_wrist_pitch": 0.0,
+    "wrist_pitch_to_wrist_yaw": 0.0,
+    "wrist_yaw_to_hand_base": 0.0,
+    "hand_base_to_finger_1_1": 0.0,
+    "hand_base_to_finger_2_1": 0.383,
+    "hand_base_to_rotation_base": 0.004,
+    "finger_1_1_to_finger_1_2": 0.007,
+    "finger_1_2_to_finger_2_2": 0.007,
+    "rotation_base_to_finger_3_1": 0.096,
+    "finger_3_1_to_finger_3_2": 0.033
+   },
+   "first_touch_after_close_s": [
+    null,
+    1.067,
+    0.0
+   ],
+   "all_touch_after_close_s": null,
+   "max_rise_m": 0.146,
+   "raise_cube_robot_force_max_n": 0.0,
+   "insert_cube_robot_force_max_n": 4.588,
+   "lift_cube_robot_force_max_n": 6.563,
+   "cube_shift_before_grasp_mm": 17.44,
+   "cube_shift_during_grasp_mm": 5.76,
+   "cube_turn_during_grasp_deg": 11.12,
+   "max_joint_speed_rad_s": 1.0,
+   "done": true,
+   "physics": {
+    "mode": "matched",
+    "mujoco_dt": 0.000833333333333,
+    "contact_tc": 0.002,
+    "cone": "elliptic",
+    "impratio": 10.0,
+    "velocity_limit": 1.0,
+    "spec": "25550",
+    "policy": "grasp_lift_25550",
+    "feedback": "actual",
+    "arm": "servo constraint",
+    "contact_pairs": 33,
+    "finger_table_mu": null
+   },
+   "cube_turn_after_lift_deg": 43.69,
+   "cube_turn_in_hand_after_lift_deg": 9.16,
+   "cube_turn_in_hand_during_grasp_deg": 11.75,
+   "done_state": {
+    "t_after_handover_s": 5.533,
+    "episode_t_s": 14.933,
+    "arm_q_deg": [
+     -0.026,
+     -0.001,
+     7.2,
+     89.747,
+     0.009,
+     -2.757,
+     0.055,
+     -169.348
+    ],
+    "finger_q_deg": [
+     29.999,
+     -6.256,
+     -30.207,
+     -0.0,
+     -0.062,
+     59.965
+    ],
+    "hand_pos_m": [
+     -0.26445,
+     0.29555,
+     0.9457
+    ],
+    "hand_quat_wxyz": [
+     0.48016,
+     -0.45476,
+     0.51644,
+     -0.544
+    ],
+    "fingertip_mid_pos_m": [
+     -0.3933,
+     0.29552,
+     0.94486
+    ],
+    "cube_pos_m": [
+     -0.41584,
+     0.3006,
+     0.90684
+    ],
+    "cube_quat_wxyz": [
+     0.89516,
+     -0.05677,
+     0.04624,
+     0.4397
+    ],
+    "cube_rise_m": 0.146,
+    "cube_minus_fingertip_mid_m": [
+     -0.02254,
+     0.00508,
+     -0.03802
+    ],
+    "pad_N": [
+     -0.0,
+     -0.0,
+     0.0,
+     -0.0,
+     1.891,
+     2.027
+    ],
+    "pad_normal_N": [
+     -0.0,
+     -0.0,
+     -0.0,
+     -0.0,
+     1.891,
+     1.404
+    ],
+    "cube_tilt_deg": 8.4,
+    "robot_base_pos_m": [
+     0.0,
+     0.01,
+     -0.005
+    ],
+    "hand_below_shoulder_m": 0.2618
+   },
+   "still_up_at_end": true,
+   "fail_reason": null,
+   "condition": "diag_actual",
+   "yaw_obs_err_deg": 0.0
+  },
+  {
+   "spot_cm": [
+    -8.28,
+    4.01
+   ],
+   "cube_yaw_deg": -16.03,
+   "cube_mass_kg": 0.04,
+   "theta_deg": -6.2,
+   "spec": "25550",
+   "policy": "grasp_lift_25550",
+   "table_e_m": 0.0,
+   "table_e_pregrasp_m": -0.005,
+   "valid_spot": true,
+   "phase_t_s": {
+    "RAISE": 0.0,
+    "SETTLE": 8.0,
+    "INSERT": 8.65,
+    "GRASP_LIFT": 9.4,
+    "RETURN": 11.6,
+    "DONE": 14.583
+   },
+   "handover_by": "converged",
+   "handover_err_deg": 0.55,
+   "insert_end_arm_deg": [
+    0.84,
+    -0.0,
+    8.3,
+    43.27,
+    -5.62,
+    37.23,
+    5.16,
+    -170.46
+   ],
+   "insert_end_grav_deg": [
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0
+   ],
+   "insert_end_err_deg": [
+    -0.122,
+    -0.002,
+    0.176,
+    -0.066,
+    -0.185,
+    0.354,
+    0.632,
+    -0.358
+   ],
+   "robot_table_force_insert_max_n": 65.487,
+   "robot_table_force_close_05s_mean_n": 8.027,
+   "robot_table_force_close_05s_max_n": 20.097,
+   "torque_limit_time_frac": {
+    "shoulder_pitch_to_shoulder_roll": 0.007,
+    "shoulder_roll_to_shoulder_yaw": 0.0,
+    "shoulder_yaw_to_upper_arm": 0.0,
+    "upper_arm_to_under_arm": 0.0,
+    "under_arm_to_wrist_pitch": 0.0,
+    "wrist_pitch_to_wrist_yaw": 0.004,
+    "wrist_yaw_to_hand_base": 0.0,
+    "hand_base_to_finger_1_1": 0.001,
+    "hand_base_to_finger_2_1": 0.012,
+    "hand_base_to_rotation_base": 0.0,
+    "finger_1_1_to_finger_1_2": 0.0,
+    "finger_1_2_to_finger_2_2": 0.0,
+    "rotation_base_to_finger_3_1": 0.395,
+    "finger_3_1_to_finger_3_2": 0.06
+   },
+   "first_touch_after_close_s": [
+    0.65,
+    0.683,
+    0.267
+   ],
+   "all_touch_after_close_s": 0.683,
+   "max_rise_m": 0.1532,
+   "raise_cube_robot_force_max_n": 0.0,
+   "insert_cube_robot_force_max_n": 0.0,
+   "lift_cube_robot_force_max_n": 6.144,
+   "cube_shift_before_grasp_mm": 0.0,
+   "cube_shift_during_grasp_mm": 3.66,
+   "cube_turn_during_grasp_deg": 7.87,
+   "max_joint_speed_rad_s": 1.0,
+   "done": true,
+   "physics": {
+    "mode": "matched",
+    "mujoco_dt": 0.000833333333333,
+    "contact_tc": 0.002,
+    "cone": "elliptic",
+    "impratio": 10.0,
+    "velocity_limit": 1.0,
+    "spec": "25550",
+    "policy": "grasp_lift_25550",
+    "feedback": "actual",
+    "arm": "servo constraint",
+    "contact_pairs": 33,
+    "finger_table_mu": null
+   },
+   "cube_turn_after_lift_deg": 11.43,
+   "cube_turn_in_hand_after_lift_deg": 6.38,
+   "cube_turn_in_hand_during_grasp_deg": 7.59,
+   "done_state": {
+    "t_after_handover_s": 5.183,
+    "episode_t_s": 14.583,
+    "arm_q_deg": [
+     -0.026,
+     -0.001,
+     7.2,
+     89.746,
+     0.012,
+     -2.759,
+     0.062,
+     -169.66
+    ],
+    "finger_q_deg": [
+     5.822,
+     4.607,
+     -35.199,
+     -0.04,
+     -0.0,
+     48.605
+    ],
+    "hand_pos_m": [
+     -0.26445,
+     0.29555,
+     0.94569
+    ],
+    "hand_quat_wxyz": [
+     0.48022,
+     -0.4547,
+     0.51647,
+     -0.54397
+    ],
+    "fingertip_mid_pos_m": [
+     -0.39474,
+     0.29876,
+     0.94492
+    ],
+    "cube_pos_m": [
+     -0.42471,
+     0.29316,
+     0.9132
+    ],
+    "cube_quat_wxyz": [
+     0.99728,
+     -0.04116,
+     0.06032,
+     0.01014
+    ],
+    "cube_rise_m": 0.1532,
+    "cube_minus_fingertip_mid_m": [
+     -0.02997,
+     -0.0056,
+     -0.03172
+    ],
+    "pad_N": [
+     -0.0,
+     0.497,
+     0.0,
+     0.971,
+     0.396,
+     2.003
+    ],
+    "pad_normal_N": [
+     -0.0,
+     0.497,
+     -0.0,
+     0.971,
+     0.396,
+     1.982
+    ],
+    "cube_tilt_deg": 8.38,
+    "robot_base_pos_m": [
+     0.0,
+     0.01,
+     -0.005
+    ],
+    "hand_below_shoulder_m": 0.2618
+   },
+   "still_up_at_end": true,
+   "fail_reason": null,
+   "condition": "diag_actual",
+   "yaw_obs_err_deg": 0.0
+  },
+  {
+   "spot_cm": [
+    -4.49,
+    -9.08
+   ],
+   "cube_yaw_deg": -9.75,
+   "cube_mass_kg": 0.04,
+   "theta_deg": 14.52,
+   "spec": "25550",
+   "policy": "grasp_lift_25550",
+   "table_e_m": 0.0,
+   "table_e_pregrasp_m": -0.005,
+   "valid_spot": true,
+   "phase_t_s": {
+    "RAISE": 0.0,
+    "SETTLE": 8.0,
+    "INSERT": 8.65,
+    "GRASP_LIFT": 9.4,
+    "RETURN": 11.4,
+    "DONE": 14.383
+   },
+   "handover_by": "converged",
+   "handover_err_deg": 0.53,
+   "insert_end_arm_deg": [
+    -5.08,
+    0.0,
+    -10.8,
+    48.6,
+    -2.4,
+    37.66,
+    3.63,
+    -170.46
+   ],
+   "insert_end_grav_deg": [
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0
+   ],
+   "insert_end_err_deg": [
+    -0.12,
+    0.003,
+    0.22,
+    -0.077,
+    -0.192,
+    0.371,
+    0.63,
+    -0.359
+   ],
+   "robot_table_force_insert_max_n": 50.57,
+   "robot_table_force_close_05s_mean_n": 8.37,
+   "robot_table_force_close_05s_max_n": 20.693,
+   "torque_limit_time_frac": {
+    "shoulder_pitch_to_shoulder_roll": 0.005,
+    "shoulder_roll_to_shoulder_yaw": 0.0,
+    "shoulder_yaw_to_upper_arm": 0.0,
+    "upper_arm_to_under_arm": 0.0,
+    "under_arm_to_wrist_pitch": 0.0,
+    "wrist_pitch_to_wrist_yaw": 0.001,
+    "wrist_yaw_to_hand_base": 0.0,
+    "hand_base_to_finger_1_1": 0.003,
+    "hand_base_to_finger_2_1": 0.009,
+    "hand_base_to_rotation_base": 0.0,
+    "finger_1_1_to_finger_1_2": 0.0,
+    "finger_1_2_to_finger_2_2": 0.0,
+    "rotation_base_to_finger_3_1": 0.399,
+    "finger_3_1_to_finger_3_2": 0.047
+   },
+   "first_touch_after_close_s": [
+    0.467,
+    0.5,
+    0.2
+   ],
+   "all_touch_after_close_s": 0.5,
+   "max_rise_m": 0.1569,
+   "raise_cube_robot_force_max_n": 0.0,
+   "insert_cube_robot_force_max_n": 0.0,
+   "lift_cube_robot_force_max_n": 5.92,
+   "cube_shift_before_grasp_mm": 0.0,
+   "cube_shift_during_grasp_mm": 3.52,
+   "cube_turn_during_grasp_deg": 5.71,
+   "max_joint_speed_rad_s": 1.0,
+   "done": true,
+   "physics": {
+    "mode": "matched",
+    "mujoco_dt": 0.000833333333333,
+    "contact_tc": 0.002,
+    "cone": "elliptic",
+    "impratio": 10.0,
+    "velocity_limit": 1.0,
+    "spec": "25550",
+    "policy": "grasp_lift_25550",
+    "feedback": "actual",
+    "arm": "servo constraint",
+    "contact_pairs": 33,
+    "finger_table_mu": null
+   },
+   "cube_turn_after_lift_deg": 13.4,
+   "cube_turn_in_hand_after_lift_deg": 12.84,
+   "cube_turn_in_hand_during_grasp_deg": 5.57,
+   "done_state": {
+    "t_after_handover_s": 4.983,
+    "episode_t_s": 14.383,
+    "arm_q_deg": [
+     -0.026,
+     -0.001,
+     7.2,
+     89.746,
+     0.013,
+     -2.758,
+     0.062,
+     -169.834
+    ],
+    "finger_q_deg": [
+     4.157,
+     4.711,
+     -37.625,
+     -0.041,
+     -0.05,
+     55.677
+    ],
+    "hand_pos_m": [
+     -0.26445,
+     0.29555,
+     0.94569
+    ],
+    "hand_quat_wxyz": [
+     0.48022,
+     -0.4547,
+     0.51647,
+     -0.54396
+    ],
+    "fingertip_mid_pos_m": [
+     -0.39427,
+     0.2986,
+     0.94501
+    ],
+    "cube_pos_m": [
+     -0.42205,
+     0.29203,
+     0.91689
+    ],
+    "cube_quat_wxyz": [
+     0.98783,
+     -0.0472,
+     0.11507,
+     -0.09342
+    ],
+    "cube_rise_m": 0.1569,
+    "cube_minus_fingertip_mid_m": [
+     -0.02778,
+     -0.00657,
+     -0.02812
+    ],
+    "pad_N": [
+     -0.0,
+     -0.0,
+     0.0,
+     0.915,
+     0.912,
+     1.835
+    ],
+    "pad_normal_N": [
+     -0.0,
+     -0.0,
+     -0.0,
+     0.915,
+     0.912,
+     1.597
+    ],
+    "cube_tilt_deg": 14.29,
+    "robot_base_pos_m": [
+     0.0,
+     0.01,
+     -0.005
+    ],
+    "hand_below_shoulder_m": 0.2618
+   },
+   "still_up_at_end": true,
+   "fail_reason": null,
+   "condition": "diag_actual",
+   "yaw_obs_err_deg": 0.0
+  },
+  {
+   "spot_cm": [
+    0.24,
+    -15.28
+   ],
+   "cube_yaw_deg": 11.09,
+   "cube_mass_kg": 0.04,
+   "theta_deg": 25.19,
+   "spec": "25550",
+   "policy": "grasp_lift_25550",
+   "table_e_m": 0.0,
+   "table_e_pregrasp_m": -0.005,
+   "valid_spot": true,
+   "phase_t_s": {
+    "RAISE": 0.0,
+    "SETTLE": 8.0,
+    "INSERT": 8.65,
+    "GRASP_LIFT": 9.4,
+    "RETURN": 11.633,
+    "DONE": 14.617
+   },
+   "handover_by": "converged",
+   "handover_err_deg": 0.46,
+   "insert_end_arm_deg": [
+    -9.9,
+    0.01,
+    -18.57,
+    51.71,
+    2.29,
+    38.81,
+    2.53,
+    -170.46
+   ],
+   "insert_end_grav_deg": [
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0
+   ],
+   "insert_end_err_deg": [
+    -0.109,
+    0.005,
+    0.243,
+    -0.095,
+    -0.193,
+    0.341,
+    0.569,
+    -0.359
+   ],
+   "robot_table_force_insert_max_n": 80.08,
+   "robot_table_force_close_05s_mean_n": 8.222,
+   "robot_table_force_close_05s_max_n": 19.427,
+   "torque_limit_time_frac": {
+    "shoulder_pitch_to_shoulder_roll": 0.007,
+    "shoulder_roll_to_shoulder_yaw": 0.0,
+    "shoulder_yaw_to_upper_arm": 0.0,
+    "upper_arm_to_under_arm": 0.0,
+    "under_arm_to_wrist_pitch": 0.0,
+    "wrist_pitch_to_wrist_yaw": 0.007,
+    "wrist_yaw_to_hand_base": 0.0,
+    "hand_base_to_finger_1_1": 0.013,
+    "hand_base_to_finger_2_1": 0.012,
+    "hand_base_to_rotation_base": 0.0,
+    "finger_1_1_to_finger_1_2": 0.0,
+    "finger_1_2_to_finger_2_2": 0.001,
+    "rotation_base_to_finger_3_1": 0.395,
+    "finger_3_1_to_finger_3_2": 0.058
+   },
+   "first_touch_after_close_s": [
+    0.667,
+    0.733,
+    0.2
+   ],
+   "all_touch_after_close_s": 0.733,
+   "max_rise_m": 0.1507,
+   "raise_cube_robot_force_max_n": 0.0,
+   "insert_cube_robot_force_max_n": 0.0,
+   "lift_cube_robot_force_max_n": 8.646,
+   "cube_shift_before_grasp_mm": 0.0,
+   "cube_shift_during_grasp_mm": 5.49,
+   "cube_turn_during_grasp_deg": 13.53,
+   "max_joint_speed_rad_s": 1.0,
+   "done": true,
+   "physics": {
+    "mode": "matched",
+    "mujoco_dt": 0.000833333333333,
+    "contact_tc": 0.002,
+    "cone": "elliptic",
+    "impratio": 10.0,
+    "velocity_limit": 1.0,
+    "spec": "25550",
+    "policy": "grasp_lift_25550",
+    "feedback": "actual",
+    "arm": "servo constraint",
+    "contact_pairs": 33,
+    "finger_table_mu": null
+   },
+   "cube_turn_after_lift_deg": 17.92,
+   "cube_turn_in_hand_after_lift_deg": 11.15,
+   "cube_turn_in_hand_during_grasp_deg": 13.45,
+   "done_state": {
+    "t_after_handover_s": 5.217,
+    "episode_t_s": 14.617,
+    "arm_q_deg": [
+     -0.027,
+     -0.0,
+     7.2,
+     89.746,
+     0.013,
+     -2.758,
+     0.062,
+     -169.44
+    ],
+    "finger_q_deg": [
+     12.811,
+     -0.099,
+     -37.452,
+     -0.055,
+     0.002,
+     59.871
+    ],
+    "hand_pos_m": [
+     -0.26445,
+     0.29555,
+     0.94569
+    ],
+    "hand_quat_wxyz": [
+     0.48022,
+     -0.4547,
+     0.51647,
+     -0.54396
+    ],
+    "fingertip_mid_pos_m": [
+     -0.39409,
+     0.29712,
+     0.94518
+    ],
+    "cube_pos_m": [
+     -0.42067,
+     0.29462,
+     0.9107
+    ],
+    "cube_quat_wxyz": [
+     0.99082,
+     -0.11288,
+     0.06809,
+     0.03012
+    ],
+    "cube_rise_m": 0.1507,
+    "cube_minus_fingertip_mid_m": [
+     -0.02658,
+     -0.0025,
+     -0.03448
+    ],
+    "pad_N": [
+     -0.0,
+     0.62,
+     0.0,
+     0.979,
+     0.493,
+     2.159
+    ],
+    "pad_normal_N": [
+     -0.0,
+     0.62,
+     -0.0,
+     0.979,
+     0.493,
+     1.872
+    ],
+    "cube_tilt_deg": 15.15,
+    "robot_base_pos_m": [
+     0.0,
+     0.01,
+     -0.005
+    ],
+    "hand_below_shoulder_m": 0.2618
+   },
+   "still_up_at_end": true,
+   "fail_reason": null,
+   "condition": "diag_actual",
+   "yaw_obs_err_deg": 0.0
+  },
+  {
+   "spot_cm": [
+    -1.41,
+    -14.6
+   ],
+   "cube_yaw_deg": 33.88,
+   "cube_mass_kg": 0.04,
+   "theta_deg": 24.01,
+   "spec": "25550",
+   "policy": "grasp_lift_25550",
+   "table_e_m": 0.0,
+   "table_e_pregrasp_m": -0.005,
+   "valid_spot": true,
+   "phase_t_s": {
+    "RAISE": 0.0,
+    "SETTLE": 8.0,
+    "INSERT": 8.65,
+    "GRASP_LIFT": 9.4,
+    "RETURN": 11.517,
+    "DONE": 14.5
+   },
+   "handover_by": "converged",
+   "handover_err_deg": 0.49,
+   "insert_end_arm_deg": [
+    -7.32,
+    0.01,
+    -18.03,
+    50.07,
+    1.33,
+    38.08,
+    2.28,
+    -170.46
+   ],
+   "insert_end_grav_deg": [
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0
+   ],
+   "insert_end_err_deg": [
+    -0.112,
+    0.005,
+    0.242,
+    -0.085,
+    -0.197,
+    0.349,
+    0.588,
+    -0.359
+   ],
+   "robot_table_force_insert_max_n": 78.163,
+   "robot_table_force_close_05s_mean_n": 9.215,
+   "robot_table_force_close_05s_max_n": 19.86,
+   "torque_limit_time_frac": {
+    "shoulder_pitch_to_shoulder_roll": 0.004,
+    "shoulder_roll_to_shoulder_yaw": 0.0,
+    "shoulder_yaw_to_upper_arm": 0.0,
+    "upper_arm_to_under_arm": 0.0,
+    "under_arm_to_wrist_pitch": 0.0,
+    "wrist_pitch_to_wrist_yaw": 0.004,
+    "wrist_yaw_to_hand_base": 0.0,
+    "hand_base_to_finger_1_1": 0.0,
+    "hand_base_to_finger_2_1": 0.012,
+    "hand_base_to_rotation_base": 0.0,
+    "finger_1_1_to_finger_1_2": 0.0,
+    "finger_1_2_to_finger_2_2": 0.001,
+    "rotation_base_to_finger_3_1": 0.405,
+    "finger_3_1_to_finger_3_2": 0.056
+   },
+   "first_touch_after_close_s": [
+    0.7,
+    0.617,
+    0.4
+   ],
+   "all_touch_after_close_s": 0.7,
+   "max_rise_m": 0.1565,
+   "raise_cube_robot_force_max_n": 0.0,
+   "insert_cube_robot_force_max_n": 0.0,
+   "lift_cube_robot_force_max_n": 6.75,
+   "cube_shift_before_grasp_mm": 0.0,
+   "cube_shift_during_grasp_mm": 5.88,
+   "cube_turn_during_grasp_deg": 4.81,
+   "max_joint_speed_rad_s": 1.0,
+   "done": true,
+   "physics": {
+    "mode": "matched",
+    "mujoco_dt": 0.000833333333333,
+    "contact_tc": 0.002,
+    "cone": "elliptic",
+    "impratio": 10.0,
+    "velocity_limit": 1.0,
+    "spec": "25550",
+    "policy": "grasp_lift_25550",
+    "feedback": "actual",
+    "arm": "servo constraint",
+    "contact_pairs": 33,
+    "finger_table_mu": null
+   },
+   "cube_turn_after_lift_deg": 16.34,
+   "cube_turn_in_hand_after_lift_deg": 17.83,
+   "cube_turn_in_hand_during_grasp_deg": 4.78,
+   "done_state": {
+    "t_after_handover_s": 5.1,
+    "episode_t_s": 14.5,
+    "arm_q_deg": [
+     -0.026,
+     -0.0,
+     7.2,
+     89.747,
+     0.018,
+     -2.756,
+     0.074,
+     -169.71
+    ],
+    "finger_q_deg": [
+     11.607,
+     -0.13,
+     -43.952,
+     -0.007,
+     0.0,
+     59.829
+    ],
+    "hand_pos_m": [
+     -0.26445,
+     0.29555,
+     0.9457
+    ],
+    "hand_quat_wxyz": [
+     0.48029,
+     -0.45464,
+     0.51655,
+     -0.54388
+    ],
+    "fingertip_mid_pos_m": [
+     -0.39278,
+     0.29562,
+     0.94549
+    ],
+    "cube_pos_m": [
+     -0.41325,
+     0.29065,
+     0.91652
+    ],
+    "cube_quat_wxyz": [
+     0.97869,
+     -0.09368,
+     -0.01585,
+     0.18206
+    ],
+    "cube_rise_m": 0.1565,
+    "cube_minus_fingertip_mid_m": [
+     -0.02047,
+     -0.00497,
+     -0.02897
+    ],
+    "pad_N": [
+     -0.0,
+     1.354,
+     0.0,
+     0.817,
+     -0.0,
+     2.228
+    ],
+    "pad_normal_N": [
+     -0.0,
+     1.354,
+     -0.0,
+     0.817,
+     -0.0,
+     2.206
+    ],
+    "cube_tilt_deg": 10.9,
+    "robot_base_pos_m": [
+     0.0,
+     0.01,
+     -0.005
+    ],
+    "hand_below_shoulder_m": 0.2618
+   },
+   "still_up_at_end": true,
+   "fail_reason": null,
+   "condition": "diag_actual",
+   "yaw_obs_err_deg": 0.0
+  },
+  {
+   "spot_cm": [
+    -13.06,
+    -9.18
+   ],
+   "cube_yaw_deg": -31.47,
+   "cube_mass_kg": 0.04,
+   "theta_deg": 16.39,
+   "spec": "25550",
+   "policy": "grasp_lift_25550",
+   "table_e_m": 0.0,
+   "table_e_pregrasp_m": -0.005,
+   "valid_spot": true,
+   "phase_t_s": {
+    "RAISE": 0.0,
+    "SETTLE": 8.0,
+    "INSERT": 8.667,
+    "GRASP_LIFT": 9.417,
+    "RETURN": 11.583,
+    "DONE": 14.567
+   },
+   "handover_by": "converged",
+   "handover_err_deg": 0.6,
+   "insert_end_arm_deg": [
+    17.81,
+    0.01,
+    -22.47,
+    21.32,
+    -11.79,
+    43.24,
+    -1.05,
+    -170.47
+   ],
+   "insert_end_grav_deg": [
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0
+   ],
+   "insert_end_err_deg": [
+    -0.12,
+    0.005,
+    0.555,
+    0.082,
+    -0.915,
+    0.618,
+    0.617,
+    -0.369
+   ],
+   "robot_table_force_insert_max_n": 89.342,
+   "robot_table_force_close_05s_mean_n": 8.583,
+   "robot_table_force_close_05s_max_n": 19.574,
+   "torque_limit_time_frac": {
+    "shoulder_pitch_to_shoulder_roll": 0.016,
+    "shoulder_roll_to_shoulder_yaw": 0.0,
+    "shoulder_yaw_to_upper_arm": 0.0,
+    "upper_arm_to_under_arm": 0.0,
+    "under_arm_to_wrist_pitch": 0.0,
+    "wrist_pitch_to_wrist_yaw": 0.022,
+    "wrist_yaw_to_hand_base": 0.0,
+    "hand_base_to_finger_1_1": 0.038,
+    "hand_base_to_finger_2_1": 0.032,
+    "hand_base_to_rotation_base": 0.0,
+    "finger_1_1_to_finger_1_2": 0.001,
+    "finger_1_2_to_finger_2_2": 0.004,
+    "rotation_base_to_finger_3_1": 0.396,
+    "finger_3_1_to_finger_3_2": 0.041
+   },
+   "first_touch_after_close_s": [
+    0.0,
+    0.0,
+    0.6
+   ],
+   "all_touch_after_close_s": 0.6,
+   "max_rise_m": 0.1567,
+   "raise_cube_robot_force_max_n": 0.0,
+   "insert_cube_robot_force_max_n": 37.098,
+   "lift_cube_robot_force_max_n": 5.356,
+   "cube_shift_before_grasp_mm": 10.31,
+   "cube_shift_during_grasp_mm": 8.28,
+   "cube_turn_during_grasp_deg": 6.4,
+   "max_joint_speed_rad_s": 1.017,
+   "done": true,
+   "physics": {
+    "mode": "matched",
+    "mujoco_dt": 0.000833333333333,
+    "contact_tc": 0.002,
+    "cone": "elliptic",
+    "impratio": 10.0,
+    "velocity_limit": 1.0,
+    "spec": "25550",
+    "policy": "grasp_lift_25550",
+    "feedback": "actual",
+    "arm": "servo constraint",
+    "contact_pairs": 33,
+    "finger_table_mu": null
+   },
+   "cube_turn_after_lift_deg": 16.17,
+   "cube_turn_in_hand_after_lift_deg": 6.17,
+   "cube_turn_in_hand_during_grasp_deg": 5.94,
+   "done_state": {
+    "t_after_handover_s": 5.15,
+    "episode_t_s": 14.567,
+    "arm_q_deg": [
+     -0.026,
+     -0.0,
+     7.2,
+     89.745,
+     0.005,
+     -2.76,
+     0.043,
+     -169.874
+    ],
+    "finger_q_deg": [
+     2.064,
+     2.19,
+     -33.398,
+     -0.05,
+     -0.053,
+     47.295
+    ],
+    "hand_pos_m": [
+     -0.26445,
+     0.29555,
+     0.94569
+    ],
+    "hand_quat_wxyz": [
+     0.4801,
+     -0.45482,
+     0.51635,
+     -0.54409
+    ],
+    "fingertip_mid_pos_m": [
+     -0.3949,
+     0.30173,
+     0.94471
+    ],
+    "cube_pos_m": [
+     -0.43175,
+     0.29696,
+     0.92027
+    ],
+    "cube_quat_wxyz": [
+     0.98757,
+     -2e-05,
+     0.01792,
+     -0.15613
+    ],
+    "cube_rise_m": 0.1567,
+    "cube_minus_fingertip_mid_m": [
+     -0.03685,
+     -0.00477,
+     -0.02444
+    ],
+    "pad_N": [
+     -0.0,
+     -0.0,
+     0.0,
+     0.881,
+     0.865,
+     1.785
+    ],
+    "pad_normal_N": [
+     -0.0,
+     -0.0,
+     -0.0,
+     0.881,
+     0.865,
+     1.546
+    ],
+    "cube_tilt_deg": 2.05,
+    "robot_base_pos_m": [
+     0.0,
+     0.01,
+     -0.005
+    ],
+    "hand_below_shoulder_m": 0.2618
+   },
+   "still_up_at_end": true,
+   "fail_reason": null,
+   "condition": "diag_actual",
+   "yaw_obs_err_deg": 0.0
+  },
+  {
+   "spot_cm": [
+    -6.79,
+    16.59
+   ],
+   "cube_yaw_deg": -24.24,
+   "cube_mass_kg": 0.04,
+   "theta_deg": -28.22,
+   "spec": "25550",
+   "policy": "grasp_lift_25550",
+   "table_e_m": 0.0,
+   "table_e_pregrasp_m": -0.005,
+   "valid_spot": true,
+   "phase_t_s": {
+    "RAISE": 0.0,
+    "SETTLE": 8.0,
+    "INSERT": 8.65,
+    "GRASP_LIFT": 9.4,
+    "RETURN": 11.8,
+    "DONE": 14.817
+   },
+   "handover_by": "converged",
+   "handover_err_deg": 0.56,
+   "insert_end_arm_deg": [
+    6.36,
+    -0.0,
+    29.49,
+    37.72,
+    -9.03,
+    38.61,
+    10.69,
+    -170.46
+   ],
+   "insert_end_grav_deg": [
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0
+   ],
+   "insert_end_err_deg": [
+    -0.113,
+    -0.005,
+    0.081,
+    -0.069,
+    -0.13,
+    0.269,
+    0.539,
+    -0.357
+   ],
+   "robot_table_force_insert_max_n": 44.354,
+   "robot_table_force_close_05s_mean_n": 7.722,
+   "robot_table_force_close_05s_max_n": 16.604,
+   "torque_limit_time_frac": {
+    "shoulder_pitch_to_shoulder_roll": 0.002,
+    "shoulder_roll_to_shoulder_yaw": 0.0,
+    "shoulder_yaw_to_upper_arm": 0.0,
+    "upper_arm_to_under_arm": 0.0,
+    "under_arm_to_wrist_pitch": 0.0,
+    "wrist_pitch_to_wrist_yaw": 0.003,
+    "wrist_yaw_to_hand_base": 0.0,
+    "hand_base_to_finger_1_1": 0.0,
+    "hand_base_to_finger_2_1": 0.029,
+    "hand_base_to_rotation_base": 0.0,
+    "finger_1_1_to_finger_1_2": 0.01,
+    "finger_1_2_to_finger_2_2": 0.006,
+    "rotation_base_to_finger_3_1": 0.401,
+    "finger_3_1_to_finger_3_2": 0.053
+   },
+   "first_touch_after_close_s": [
+    0.867,
+    0.9,
+    0.583
+   ],
+   "all_touch_after_close_s": 0.9,
+   "max_rise_m": 0.1584,
+   "raise_cube_robot_force_max_n": 0.0,
+   "insert_cube_robot_force_max_n": 0.0,
+   "lift_cube_robot_force_max_n": 6.56,
+   "cube_shift_before_grasp_mm": 0.0,
+   "cube_shift_during_grasp_mm": 6.27,
+   "cube_turn_during_grasp_deg": 7.18,
+   "max_joint_speed_rad_s": 1.0,
+   "done": true,
+   "physics": {
+    "mode": "matched",
+    "mujoco_dt": 0.000833333333333,
+    "contact_tc": 0.002,
+    "cone": "elliptic",
+    "impratio": 10.0,
+    "velocity_limit": 1.0,
+    "spec": "25550",
+    "policy": "grasp_lift_25550",
+    "feedback": "actual",
+    "arm": "servo constraint",
+    "contact_pairs": 33,
+    "finger_table_mu": null
+   },
+   "cube_turn_after_lift_deg": 29.84,
+   "cube_turn_in_hand_after_lift_deg": 2.68,
+   "cube_turn_in_hand_during_grasp_deg": 6.96,
+   "done_state": {
+    "t_after_handover_s": 5.417,
+    "episode_t_s": 14.817,
+    "arm_q_deg": [
+     -0.026,
+     -0.001,
+     7.2,
+     89.746,
+     0.011,
+     -2.759,
+     0.058,
+     -169.703
+    ],
+    "finger_q_deg": [
+     2.813,
+     2.975,
+     -36.582,
+     -0.003,
+     0.0,
+     43.772
+    ],
+    "hand_pos_m": [
+     -0.26445,
+     0.29555,
+     0.94569
+    ],
+    "hand_quat_wxyz": [
+     0.48019,
+     -0.45473,
+     0.51644,
+     -0.54399
+    ],
+    "fingertip_mid_pos_m": [
+     -0.3944,
+     0.30007,
+     0.94499
+    ],
+    "cube_pos_m": [
+     -0.42551,
+     0.29294,
+     0.91834
+    ],
+    "cube_quat_wxyz": [
+     0.99274,
+     -0.0053,
+     0.06061,
+     0.1038
+    ],
+    "cube_rise_m": 0.1583,
+    "cube_minus_fingertip_mid_m": [
+     -0.03111,
+     -0.00713,
+     -0.02666
+    ],
+    "pad_N": [
+     0.555,
+     0.986,
+     0.0,
+     0.431,
+     -0.0,
+     2.216
+    ],
+    "pad_normal_N": [
+     0.555,
+     0.986,
+     -0.0,
+     0.431,
+     -0.0,
+     2.11
+    ],
+    "cube_tilt_deg": 6.98,
+    "robot_base_pos_m": [
+     0.0,
+     0.01,
+     -0.005
+    ],
+    "hand_below_shoulder_m": 0.2618
+   },
+   "still_up_at_end": true,
+   "fail_reason": null,
+   "condition": "diag_actual",
+   "yaw_obs_err_deg": 0.0
+  },
+  {
+   "spot_cm": [
+    -13.17,
+    -5.35
+   ],
+   "cube_yaw_deg": -27.13,
+   "cube_mass_kg": 0.04,
+   "theta_deg": 9.12,
+   "spec": "25550",
+   "policy": "grasp_lift_25550",
+   "table_e_m": 0.0,
+   "table_e_pregrasp_m": -0.005,
+   "valid_spot": true,
+   "phase_t_s": {
+    "RAISE": 0.0,
+    "SETTLE": 8.0,
+    "INSERT": 8.667,
+    "GRASP_LIFT": 9.417,
+    "RETURN": 11.467,
+    "DONE": 14.45
+   },
+   "handover_by": "converged",
+   "handover_err_deg": 0.59,
+   "insert_end_arm_deg": [
+    15.13,
+    0.0,
+    -8.82,
+    24.57,
+    -5.56,
+    41.97,
+    2.0,
+    -170.46
+   ],
+   "insert_end_grav_deg": [
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0
+   ],
+   "insert_end_err_deg": [
+    -0.17,
+    0.003,
+    0.274,
+    -0.034,
+    -0.392,
+    0.699,
+    0.994,
+    -0.361
+   ],
+   "robot_table_force_insert_max_n": 85.87,
+   "robot_table_force_close_05s_mean_n": 14.115,
+   "robot_table_force_close_05s_max_n": 29.768,
+   "torque_limit_time_frac": {
+    "shoulder_pitch_to_shoulder_roll": 0.018,
+    "shoulder_roll_to_shoulder_yaw": 0.0,
+    "shoulder_yaw_to_upper_arm": 0.0,
+    "upper_arm_to_under_arm": 0.0,
+    "under_arm_to_wrist_pitch": 0.0,
+    "wrist_pitch_to_wrist_yaw": 0.023,
+    "wrist_yaw_to_hand_base": 0.0,
+    "hand_base_to_finger_1_1": 0.008,
+    "hand_base_to_finger_2_1": 0.014,
+    "hand_base_to_rotation_base": 0.0,
+    "finger_1_1_to_finger_1_2": 0.001,
+    "finger_1_2_to_finger_2_2": 0.02,
+    "rotation_base_to_finger_3_1": 0.405,
+    "finger_3_1_to_finger_3_2": 0.037
+   },
+   "first_touch_after_close_s": [
+    0.367,
+    0.417,
+    0.35
+   ],
+   "all_touch_after_close_s": 0.417,
+   "max_rise_m": 0.1587,
+   "raise_cube_robot_force_max_n": 0.0,
+   "insert_cube_robot_force_max_n": 0.0,
+   "lift_cube_robot_force_max_n": 11.397,
+   "cube_shift_before_grasp_mm": 0.0,
+   "cube_shift_during_grasp_mm": 6.82,
+   "cube_turn_during_grasp_deg": 4.84,
+   "max_joint_speed_rad_s": 1.0,
+   "done": true,
+   "physics": {
+    "mode": "matched",
+    "mujoco_dt": 0.000833333333333,
+    "contact_tc": 0.002,
+    "cone": "elliptic",
+    "impratio": 10.0,
+    "velocity_limit": 1.0,
+    "spec": "25550",
+    "policy": "grasp_lift_25550",
+    "feedback": "actual",
+    "arm": "servo constraint",
+    "contact_pairs": 33,
+    "finger_table_mu": null
+   },
+   "cube_turn_after_lift_deg": 8.95,
+   "cube_turn_in_hand_after_lift_deg": 5.03,
+   "cube_turn_in_hand_during_grasp_deg": 4.76,
+   "done_state": {
+    "t_after_handover_s": 5.033,
+    "episode_t_s": 14.45,
+    "arm_q_deg": [
+     -0.026,
+     -0.0,
+     7.2,
+     89.746,
+     0.003,
+     -2.759,
+     0.038,
+     -169.401
+    ],
+    "finger_q_deg": [
+     0.484,
+     0.487,
+     -32.386,
+     -0.046,
+     -0.05,
+     44.661
+    ],
+    "hand_pos_m": [
+     -0.26445,
+     0.29555,
+     0.94569
+    ],
+    "hand_quat_wxyz": [
+     0.48006,
+     -0.45485,
+     0.51633,
+     -0.5441
+    ],
+    "fingertip_mid_pos_m": [
+     -0.39495,
+     0.30322,
+     0.94483
+    ],
+    "cube_pos_m": [
+     -0.42098,
+     0.29514,
+     0.91871
+    ],
+    "cube_quat_wxyz": [
+     0.96454,
+     -0.00797,
+     0.05629,
+     -0.25773
+    ],
+    "cube_rise_m": 0.1587,
+    "cube_minus_fingertip_mid_m": [
+     -0.02603,
+     -0.00807,
+     -0.02612
+    ],
+    "pad_N": [
+     -0.0,
+     -0.0,
+     0.0,
+     1.11,
+     1.11,
+     2.426
+    ],
+    "pad_normal_N": [
+     -0.0,
+     -0.0,
+     -0.0,
+     1.11,
+     1.11,
+     1.953
+    ],
+    "cube_tilt_deg": 6.52,
+    "robot_base_pos_m": [
+     0.0,
+     0.01,
+     -0.005
+    ],
+    "hand_below_shoulder_m": 0.2618
+   },
+   "still_up_at_end": true,
+   "fail_reason": null,
+   "condition": "diag_actual",
+   "yaw_obs_err_deg": 0.0
+  },
+  {
+   "spot_cm": [
+    -12.55,
+    4.5
+   ],
+   "cube_yaw_deg": -18.12,
+   "cube_mass_kg": 0.04,
+   "theta_deg": -7.43,
+   "spec": "25550",
+   "policy": "grasp_lift_25550",
+   "table_e_m": 0.0,
+   "table_e_pregrasp_m": -0.005,
+   "valid_spot": true,
+   "phase_t_s": {
+    "RAISE": 0.0,
+    "SETTLE": 8.0,
+    "INSERT": 8.65,
+    "GRASP_LIFT": 9.4,
+    "RETURN": 11.75,
+    "DONE": 14.733
+   },
+   "handover_by": "converged",
+   "handover_err_deg": 0.6,
+   "insert_end_arm_deg": [
+    12.15,
+    -0.0,
+    12.13,
+    29.55,
+    -3.0,
+    40.0,
+    5.43,
+    -168.7
+   ],
+   "insert_end_grav_deg": [
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0
+   ],
+   "insert_end_err_deg": [
+    -0.119,
+    -0.001,
+    0.117,
+    -0.01,
+    -0.23,
+    0.351,
+    -0.01,
+    1.401
+   ],
+   "robot_table_force_insert_max_n": 78.988,
+   "robot_table_force_close_05s_mean_n": 5.625,
+   "robot_table_force_close_05s_max_n": 14.178,
+   "torque_limit_time_frac": {
+    "shoulder_pitch_to_shoulder_roll": 0.011,
+    "shoulder_roll_to_shoulder_yaw": 0.0,
+    "shoulder_yaw_to_upper_arm": 0.0,
+    "upper_arm_to_under_arm": 0.0,
+    "under_arm_to_wrist_pitch": 0.0,
+    "wrist_pitch_to_wrist_yaw": 0.011,
+    "wrist_yaw_to_hand_base": 0.0,
+    "hand_base_to_finger_1_1": 0.0,
+    "hand_base_to_finger_2_1": 0.014,
+    "hand_base_to_rotation_base": 0.0,
+    "finger_1_1_to_finger_1_2": 0.0,
+    "finger_1_2_to_finger_2_2": 0.0,
+    "rotation_base_to_finger_3_1": 0.392,
+    "finger_3_1_to_finger_3_2": 0.036
+   },
+   "first_touch_after_close_s": [
+    0.767,
+    0.817,
+    0.0
+   ],
+   "all_touch_after_close_s": 0.817,
+   "max_rise_m": 0.149,
+   "raise_cube_robot_force_max_n": 0.0,
+   "insert_cube_robot_force_max_n": 4.27,
+   "lift_cube_robot_force_max_n": 7.361,
+   "cube_shift_before_grasp_mm": 0.87,
+   "cube_shift_during_grasp_mm": 5.51,
+   "cube_turn_during_grasp_deg": 14.22,
+   "max_joint_speed_rad_s": 1.0,
+   "done": true,
+   "physics": {
+    "mode": "matched",
+    "mujoco_dt": 0.000833333333333,
+    "contact_tc": 0.002,
+    "cone": "elliptic",
+    "impratio": 10.0,
+    "velocity_limit": 1.0,
+    "spec": "25550",
+    "policy": "grasp_lift_25550",
+    "feedback": "actual",
+    "arm": "servo constraint",
+    "contact_pairs": 33,
+    "finger_table_mu": null
+   },
+   "cube_turn_after_lift_deg": 13.12,
+   "cube_turn_in_hand_after_lift_deg": 4.82,
+   "cube_turn_in_hand_during_grasp_deg": 14.18,
+   "done_state": {
+    "t_after_handover_s": 5.333,
+    "episode_t_s": 14.733,
+    "arm_q_deg": [
+     -0.026,
+     -0.001,
+     7.2,
+     89.745,
+     0.015,
+     -2.76,
+     0.069,
+     -169.73
+    ],
+    "finger_q_deg": [
+     5.727,
+     6.015,
+     -34.612,
+     -0.051,
+     -0.035,
+     47.857
+    ],
+    "hand_pos_m": [
+     -0.26445,
+     0.29555,
+     0.94569
+    ],
+    "hand_quat_wxyz": [
+     0.48026,
+     -0.45466,
+     0.5165,
+     -0.54393
+    ],
+    "fingertip_mid_pos_m": [
+     -0.39486,
+     0.29847,
+     0.94485
+    ],
+    "cube_pos_m": [
+     -0.4291,
+     0.29131,
+     0.91005
+    ],
+    "cube_quat_wxyz": [
+     0.98762,
+     -0.06607,
+     0.14124,
+     -0.01703
+    ],
+    "cube_rise_m": 0.149,
+    "cube_minus_fingertip_mid_m": [
+     -0.03424,
+     -0.00716,
+     -0.0348
+    ],
+    "pad_N": [
+     -0.0,
+     -0.0,
+     0.0,
+     0.905,
+     0.884,
+     1.788
+    ],
+    "pad_normal_N": [
+     -0.0,
+     -0.0,
+     -0.0,
+     0.905,
+     0.884,
+     1.676
+    ],
+    "cube_tilt_deg": 17.94,
+    "robot_base_pos_m": [
+     0.0,
+     0.01,
+     -0.005
+    ],
+    "hand_below_shoulder_m": 0.2618
+   },
+   "still_up_at_end": true,
+   "fail_reason": null,
+   "condition": "diag_actual",
+   "yaw_obs_err_deg": 0.0
+  },
+  {
+   "spot_cm": [
+    -3.25,
+    -16.83
+   ],
+   "cube_yaw_deg": 39.79,
+   "cube_mass_kg": 0.04,
+   "theta_deg": 28.45,
+   "spec": "25550",
+   "policy": "grasp_lift_25550",
+   "table_e_m": 0.0,
+   "table_e_pregrasp_m": -0.005,
+   "valid_spot": true,
+   "phase_t_s": {
+    "RAISE": 0.0,
+    "SETTLE": 8.0,
+    "INSERT": 8.65,
+    "GRASP_LIFT": 9.4,
+    "RETURN": 11.467,
+    "DONE": 14.45
+   },
+   "handover_by": "converged",
+   "handover_err_deg": 0.47,
+   "insert_end_arm_deg": [
+    -1.19,
+    0.01,
+    -22.29,
+    45.16,
+    2.2,
+    37.19,
+    -0.3,
+    -170.46
+   ],
+   "insert_end_grav_deg": [
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0
+   ],
+   "insert_end_err_deg": [
+    -0.112,
+    0.006,
+    0.252,
+    -0.072,
+    -0.216,
+    0.318,
+    0.554,
+    -0.359
+   ],
+   "robot_table_force_insert_max_n": 81.268,
+   "robot_table_force_close_05s_mean_n": 7.899,
+   "robot_table_force_close_05s_max_n": 19.011,
+   "torque_limit_time_frac": {
+    "shoulder_pitch_to_shoulder_roll": 0.008,
+    "shoulder_roll_to_shoulder_yaw": 0.0,
+    "shoulder_yaw_to_upper_arm": 0.0,
+    "upper_arm_to_under_arm": 0.0,
+    "under_arm_to_wrist_pitch": 0.0,
+    "wrist_pitch_to_wrist_yaw": 0.003,
+    "wrist_yaw_to_hand_base": 0.0,
+    "hand_base_to_finger_1_1": 0.0,
+    "hand_base_to_finger_2_1": 0.008,
+    "hand_base_to_rotation_base": 0.0,
+    "finger_1_1_to_finger_1_2": 0.0,
+    "finger_1_2_to_finger_2_2": 0.0,
+    "rotation_base_to_finger_3_1": 0.404,
+    "finger_3_1_to_finger_3_2": 0.056
+   },
+   "first_touch_after_close_s": [
+    0.55,
+    0.567,
+    0.4
+   ],
+   "all_touch_after_close_s": 0.567,
+   "max_rise_m": 0.1575,
+   "raise_cube_robot_force_max_n": 0.0,
+   "insert_cube_robot_force_max_n": 0.0,
+   "lift_cube_robot_force_max_n": 6.362,
+   "cube_shift_before_grasp_mm": 0.0,
+   "cube_shift_during_grasp_mm": 4.43,
+   "cube_turn_during_grasp_deg": 4.04,
+   "max_joint_speed_rad_s": 1.0,
+   "done": true,
+   "physics": {
+    "mode": "matched",
+    "mujoco_dt": 0.000833333333333,
+    "contact_tc": 0.002,
+    "cone": "elliptic",
+    "impratio": 10.0,
+    "velocity_limit": 1.0,
+    "spec": "25550",
+    "policy": "grasp_lift_25550",
+    "feedback": "actual",
+    "arm": "servo constraint",
+    "contact_pairs": 33,
+    "finger_table_mu": null
+   },
+   "cube_turn_after_lift_deg": 23.76,
+   "cube_turn_in_hand_after_lift_deg": 8.01,
+   "cube_turn_in_hand_during_grasp_deg": 4.27,
+   "done_state": {
+    "t_after_handover_s": 5.05,
+    "episode_t_s": 14.45,
+    "arm_q_deg": [
+     -0.026,
+     -0.001,
+     7.2,
+     89.746,
+     0.007,
+     -2.758,
+     0.047,
+     -169.671
+    ],
+    "finger_q_deg": [
+     -0.113,
+     0.101,
+     -40.514,
+     -0.003,
+     0.0,
+     52.633
+    ],
+    "hand_pos_m": [
+     -0.26445,
+     0.29555,
+     0.94569
+    ],
+    "hand_quat_wxyz": [
+     0.48012,
+     -0.4548,
+     0.51639,
+     -0.54405
+    ],
+    "fingertip_mid_pos_m": [
+     -0.39342,
+     0.301,
+     0.94527
+    ],
+    "cube_pos_m": [
+     -0.42073,
+     0.2943,
+     0.91751
+    ],
+    "cube_quat_wxyz": [
+     0.98432,
+     -0.00294,
+     0.07184,
+     0.1611
+    ],
+    "cube_rise_m": 0.1575,
+    "cube_minus_fingertip_mid_m": [
+     -0.02731,
+     -0.0067,
+     -0.02776
+    ],
+    "pad_N": [
+     0.627,
+     0.999,
+     0.0,
+     0.492,
+     -0.0,
+     2.238
+    ],
+    "pad_normal_N": [
+     0.627,
+     0.999,
+     -0.0,
+     0.492,
+     -0.0,
+     2.208
+    ],
+    "cube_tilt_deg": 8.25,
+    "robot_base_pos_m": [
+     0.0,
+     0.01,
+     -0.005
+    ],
+    "hand_below_shoulder_m": 0.2618
+   },
+   "still_up_at_end": true,
+   "fail_reason": null,
+   "condition": "diag_actual",
+   "yaw_obs_err_deg": 0.0
+  },
+  {
+   "spot_cm": [
+    -3.93,
+    23.92
+   ],
+   "cube_yaw_deg": -5.37,
+   "cube_mass_kg": 0.04,
+   "theta_deg": -45.19,
+   "spec": "25550",
+   "policy": "grasp_lift_25550",
+   "table_e_m": 0.0,
+   "table_e_pregrasp_m": -0.005,
+   "valid_spot": true,
+   "phase_t_s": {
+    "RAISE": 0.0,
+    "SETTLE": 8.0,
+    "INSERT": 8.65,
+    "GRASP_LIFT": 9.4,
+    "RETURN": 11.717,
+    "DONE": 14.767
+   },
+   "handover_by": "converged",
+   "handover_err_deg": 0.53,
+   "insert_end_arm_deg": [
+    13.06,
+    -0.0,
+    49.36,
+    31.61,
+    -7.19,
+    41.99,
+    15.84,
+    -169.4
+   ],
+   "insert_end_grav_deg": [
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0
+   ],
+   "insert_end_err_deg": [
+    -0.088,
+    -0.002,
+    -0.169,
+    -0.065,
+    0.103,
+    -0.103,
+    -0.346,
+    0.703
+   ],
+   "robot_table_force_insert_max_n": 37.661,
+   "robot_table_force_close_05s_mean_n": 0.233,
+   "robot_table_force_close_05s_max_n": 2.149,
+   "torque_limit_time_frac": {
+    "shoulder_pitch_to_shoulder_roll": 0.0,
+    "shoulder_roll_to_shoulder_yaw": 0.0,
+    "shoulder_yaw_to_upper_arm": 0.0,
+    "upper_arm_to_under_arm": 0.0,
+    "under_arm_to_wrist_pitch": 0.0,
+    "wrist_pitch_to_wrist_yaw": 0.0,
+    "wrist_yaw_to_hand_base": 0.0,
+    "hand_base_to_finger_1_1": 0.001,
+    "hand_base_to_finger_2_1": 0.004,
+    "hand_base_to_rotation_base": 0.0,
+    "finger_1_1_to_finger_1_2": 0.004,
+    "finger_1_2_to_finger_2_2": 0.005,
+    "rotation_base_to_finger_3_1": 0.406,
+    "finger_3_1_to_finger_3_2": 0.022
+   },
+   "first_touch_after_close_s": [
+    0.717,
+    0.75,
+    0.0
+   ],
+   "all_touch_after_close_s": 0.75,
+   "max_rise_m": 0.1535,
+   "raise_cube_robot_force_max_n": 0.0,
+   "insert_cube_robot_force_max_n": 1.431,
+   "lift_cube_robot_force_max_n": 5.32,
+   "cube_shift_before_grasp_mm": 3.71,
+   "cube_shift_during_grasp_mm": 5.46,
+   "cube_turn_during_grasp_deg": 7.96,
+   "max_joint_speed_rad_s": 1.0,
+   "done": true,
+   "physics": {
+    "mode": "matched",
+    "mujoco_dt": 0.000833333333333,
+    "contact_tc": 0.002,
+    "cone": "elliptic",
+    "impratio": 10.0,
+    "velocity_limit": 1.0,
+    "spec": "25550",
+    "policy": "grasp_lift_25550",
+    "feedback": "actual",
+    "arm": "servo constraint",
+    "contact_pairs": 33,
+    "finger_table_mu": null
+   },
+   "cube_turn_after_lift_deg": 46.94,
+   "cube_turn_in_hand_after_lift_deg": 3.58,
+   "cube_turn_in_hand_during_grasp_deg": 8.65,
+   "done_state": {
+    "t_after_handover_s": 5.367,
+    "episode_t_s": 14.767,
+    "arm_q_deg": [
+     -0.026,
+     -0.0,
+     7.2,
+     89.746,
+     0.024,
+     -2.758,
+     0.091,
+     -169.649
+    ],
+    "finger_q_deg": [
+     5.65,
+     5.307,
+     -40.662,
+     -0.028,
+     -0.029,
+     38.972
+    ],
+    "hand_pos_m": [
+     -0.26445,
+     0.29555,
+     0.94569
+    ],
+    "hand_quat_wxyz": [
+     0.48041,
+     -0.45452,
+     0.51664,
+     -0.54379
+    ],
+    "fingertip_mid_pos_m": [
+     -0.39371,
+     0.29681,
+     0.94528
+    ],
+    "cube_pos_m": [
+     -0.42317,
+     0.28409,
+     0.91562
+    ],
+    "cube_quat_wxyz": [
+     0.94262,
+     -0.01455,
+     0.05546,
+     0.32889
+    ],
+    "cube_rise_m": 0.1534,
+    "cube_minus_fingertip_mid_m": [
+     -0.02946,
+     -0.01272,
+     -0.02966
+    ],
+    "pad_N": [
+     -0.0,
+     -0.0,
+     0.0,
+     0.999,
+     1.123,
+     2.127
+    ],
+    "pad_normal_N": [
+     -0.0,
+     -0.0,
+     -0.0,
+     0.999,
+     1.123,
+     2.1
+    ],
+    "cube_tilt_deg": 6.57,
+    "robot_base_pos_m": [
+     0.0,
+     0.01,
+     -0.005
+    ],
+    "hand_below_shoulder_m": 0.2618
+   },
+   "still_up_at_end": true,
+   "fail_reason": null,
+   "condition": "diag_actual",
+   "yaw_obs_err_deg": 0.0
+  },
+  {
+   "spot_cm": [
+    1.27,
+    -0.01
+   ],
+   "cube_yaw_deg": -6.73,
+   "cube_mass_kg": 0.04,
+   "theta_deg": -0.02,
+   "spec": "25550",
+   "policy": "grasp_lift_25550",
+   "table_e_m": 0.0,
+   "table_e_pregrasp_m": -0.005,
+   "valid_spot": true,
+   "phase_t_s": {
+    "RAISE": 0.0,
+    "SETTLE": 8.0,
+    "INSERT": 8.65,
+    "GRASP_LIFT": 9.4,
+    "RETURN": 11.567,
+    "DONE": 14.55
+   },
+   "handover_by": "converged",
+   "handover_err_deg": 0.45,
+   "insert_end_arm_deg": [
+    -18.01,
+    -0.0,
+    1.62,
+    56.3,
+    -5.46,
+    42.95,
+    3.97,
+    -170.46
+   ],
+   "insert_end_grav_deg": [
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0
+   ],
+   "insert_end_err_deg": [
+    -0.112,
+    -0.001,
+    0.168,
+    -0.139,
+    -0.233,
+    0.37,
+    0.602,
+    -0.358
+   ],
+   "robot_table_force_insert_max_n": 66.982,
+   "robot_table_force_close_05s_mean_n": 9.034,
+   "robot_table_force_close_05s_max_n": 20.263,
+   "torque_limit_time_frac": {
+    "shoulder_pitch_to_shoulder_roll": 0.004,
+    "shoulder_roll_to_shoulder_yaw": 0.0,
+    "shoulder_yaw_to_upper_arm": 0.0,
+    "upper_arm_to_under_arm": 0.0,
+    "under_arm_to_wrist_pitch": 0.0,
+    "wrist_pitch_to_wrist_yaw": 0.003,
+    "wrist_yaw_to_hand_base": 0.0,
+    "hand_base_to_finger_1_1": 0.001,
+    "hand_base_to_finger_2_1": 0.008,
+    "hand_base_to_rotation_base": 0.0,
+    "finger_1_1_to_finger_1_2": 0.0,
+    "finger_1_2_to_finger_2_2": 0.001,
+    "rotation_base_to_finger_3_1": 0.401,
+    "finger_3_1_to_finger_3_2": 0.059
+   },
+   "first_touch_after_close_s": [
+    0.667,
+    0.7,
+    0.267
+   ],
+   "all_touch_after_close_s": 0.7,
+   "max_rise_m": 0.1544,
+   "raise_cube_robot_force_max_n": 0.0,
+   "insert_cube_robot_force_max_n": 0.0,
+   "lift_cube_robot_force_max_n": 5.935,
+   "cube_shift_before_grasp_mm": 0.0,
+   "cube_shift_during_grasp_mm": 4.55,
+   "cube_turn_during_grasp_deg": 12.7,
+   "max_joint_speed_rad_s": 1.0,
+   "done": true,
+   "physics": {
+    "mode": "matched",
+    "mujoco_dt": 0.000833333333333,
+    "contact_tc": 0.002,
+    "cone": "elliptic",
+    "impratio": 10.0,
+    "velocity_limit": 1.0,
+    "spec": "25550",
+    "policy": "grasp_lift_25550",
+    "feedback": "actual",
+    "arm": "servo constraint",
+    "contact_pairs": 33,
+    "finger_table_mu": null
+   },
+   "cube_turn_after_lift_deg": 8.2,
+   "cube_turn_in_hand_after_lift_deg": 6.8,
+   "cube_turn_in_hand_during_grasp_deg": 12.18,
+   "done_state": {
+    "t_after_handover_s": 5.15,
+    "episode_t_s": 14.55,
+    "arm_q_deg": [
+     -0.027,
+     -0.001,
+     7.2,
+     89.746,
+     0.016,
+     -2.758,
+     0.071,
+     -169.688
+    ],
+    "finger_q_deg": [
+     7.227,
+     3.634,
+     -37.914,
+     -0.049,
+     0.0,
+     51.62
+    ],
+    "hand_pos_m": [
+     -0.26445,
+     0.29555,
+     0.94569
+    ],
+    "hand_quat_wxyz": [
+     0.48028,
+     -0.45465,
+     0.51652,
+     -0.54391
+    ],
+    "fingertip_mid_pos_m": [
+     -0.39423,
+     0.29772,
+     0.94509
+    ],
+    "cube_pos_m": [
+     -0.42221,
+     0.29024,
+     0.91437
+    ],
+    "cube_quat_wxyz": [
+     0.99282,
+     -0.08704,
+     0.06026,
+     0.05573
+    ],
+    "cube_rise_m": 0.1544,
+    "cube_minus_fingertip_mid_m": [
+     -0.02798,
+     -0.00748,
+     -0.03072
+    ],
+    "pad_N": [
+     -0.0,
+     0.506,
+     0.0,
+     0.966,
+     0.403,
+     1.938
+    ],
+    "pad_normal_N": [
+     -0.0,
+     0.506,
+     -0.0,
+     0.966,
+     0.403,
+     1.929
+    ],
+    "cube_tilt_deg": 12.15,
+    "robot_base_pos_m": [
+     0.0,
+     0.01,
+     -0.005
+    ],
+    "hand_below_shoulder_m": 0.2618
+   },
+   "still_up_at_end": true,
+   "fail_reason": null,
+   "condition": "diag_actual",
+   "yaw_obs_err_deg": 0.0
+  }
+ ]
+}

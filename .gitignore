@@ -5,3 +5,5 @@ __pycache__/
 # sim2sim: per-spot traces (trace.npz, ~0.5 MB each) and videos stay local; summaries are committed
 sim2sim/results/*/*/
 sim2sim/results/*.mp4
+sim2sim/results_*/*/*/
+sim2sim/results_*/*.mp4

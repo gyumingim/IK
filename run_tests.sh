@@ -96,22 +96,24 @@ step m2_teleop "teleop: 3/3 scenarios passed" $P motion2/scripts/check_teleop.py
 step m2_dashboard "dashboard: ok" $P motion2/scripts/check_dashboard.py
 
 echo "== sim2sim (Jungwoo's JaxIsaacLab deploy chain in MuJoCo)"
-S2S_BEFORE=$(cksum < sim2sim/jax_v3_scene.xml)
-step s2s_generate "wrote sim2sim/jax_v3_scene.xml" $P sim2sim/build_scene.py
-[ "$S2S_BEFORE" = "$(cksum < sim2sim/jax_v3_scene.xml)" ] \
-  && ok "scene generator output == sim2sim/jax_v3_scene.xml" || bad "build_scene.py changed jax_v3_scene.xml (regenerate and commit it)"
+S2S_BEFORE=$(cat sim2sim/jax_v3_scene.xml sim2sim/jax_v3_scene_23025.xml | cksum)
+step s2s_generate "wrote sim2sim/jax_v3_scene_23025.xml" $P sim2sim/build_scene.py
+[ "$S2S_BEFORE" = "$(cat sim2sim/jax_v3_scene.xml sim2sim/jax_v3_scene_23025.xml | cksum)" ] \
+  && ok "scene generator output == sim2sim/jax_v3_scene*.xml" || bad "build_scene.py changed jax_v3_scene*.xml (regenerate and commit them)"
 # Layout and FK against Isaac's recorded hand-over states, the lookup tables against README's worked numbers,
 # the numpy policy against the ONNX weights.
-step s2s_spec "spec ok" $P sim2sim/check_spec.py
-# The reference cube (x 0, y 0, 0 deg) runs the whole chain to the done check; plain MuJoCo settings drop it.
+step s2s_spec "spec ok \(25550\)" $P sim2sim/check_spec.py
+step s2s_spec_23025 "spec ok \(23025\)" $P sim2sim/check_spec.py --spec 23025
+# The reference cube (x 0, y 0, 0 deg) runs the whole chain (default spec 25550) to the done check; the 11-08 spec
+# (23025) on plain MuJoCo settings drops it.
 step s2s_chain "chain ok" $P -c "
 import sys; sys.path.insert(0, 'sim2sim')
 import chain as C
 s, _ = C.run(0.0, 0.0, 0.0)
 assert s['handover_by'] == 'converged' and s['phase_t_s']['INSERT'] == 8.65, s['phase_t_s']
 assert s['done'] and 5.0 < s['phase_t_s']['DONE'] - s['phase_t_s']['GRASP_LIFT'] < 5.6, s['phase_t_s']
-assert abs(s['done_state']['hand_pos_m'][2] - 0.962) < 0.002, s['done_state']['hand_pos_m']
-p, _ = C.run(0.0, 0.0, 0.0, physics='plain')
+assert s['spec'] == '25550' and abs(s['done_state']['hand_below_shoulder_m'] - 0.262) < 0.003, s['done_state']
+p, _ = C.run(0.0, 0.0, 0.0, physics='plain', spec='23025')
 assert not p['done'], 'plain MuJoCo settings now finish the chain: recheck sim2sim/README.md'
 print('chain ok: close -> done', round(s['phase_t_s']['DONE'] - s['phase_t_s']['GRASP_LIFT'], 2), 's')"
 
@@ -209,7 +211,7 @@ if [ $FULL = 1 ]; then
   echo "== sim2sim, full"
   step s2s_eval "\\[base\\] done" $P sim2sim/run_eval.py --cond base --out "$LOGS/s2s"
   n=$(sed -nE 's/^\[base\] done ([0-9]+)\/27.*/\1/p' "$LOGS/s2s_eval.log")
-  [ "${n:-0}" -ge 23 ] && ok "sim2sim, 27 spots: $n/27 done" || bad "sim2sim, 27 spots: ${n:-0}/27 done (sim2sim/README.md says 23)" "$LOGS/s2s_eval.log"
+  [ "${n:-0}" -ge 25 ] && ok "sim2sim, 27 spots: $n/27 done" || bad "sim2sim, 27 spots: ${n:-0}/27 done (sim2sim/README.md says 27 for 25550)" "$LOGS/s2s_eval.log"
 fi
 
 if [ $VIEWERS = 1 ]; then
